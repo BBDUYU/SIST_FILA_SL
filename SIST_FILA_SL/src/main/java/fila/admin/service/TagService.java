@@ -3,8 +3,8 @@ package fila.admin.service;
 import java.sql.Connection;
 import java.util.ArrayList;
 
-import fila.categories.CategoriesDAO;
-import fila.categories.CategoriesDTO;
+import fila.categories.domain.CategoriesDAO;
+import fila.categories.domain.CategoriesDTO;
 import fila.com.util.ConnectionProvider;
 import fila.com.util.JdbcUtil;
 

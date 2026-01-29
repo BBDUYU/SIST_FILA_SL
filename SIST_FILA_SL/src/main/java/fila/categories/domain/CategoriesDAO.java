@@ -1,4 +1,4 @@
-package fila.categories;
+package fila.categories.domain;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

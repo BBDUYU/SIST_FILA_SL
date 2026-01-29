@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import fila.categories.CategoriesDTO;
+import fila.categories.domain.CategoriesDTO;
 import fila.com.util.JdbcUtil; 
 
 public class ProductsDAO {

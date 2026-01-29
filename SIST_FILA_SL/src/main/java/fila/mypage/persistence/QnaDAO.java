@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import fila.categories.CategoriesDTO;
+import fila.categories.domain.CategoriesDTO;
 import fila.mypage.domain.QNACategoriesDTO;
 import fila.mypage.domain.QnaDTO;
 

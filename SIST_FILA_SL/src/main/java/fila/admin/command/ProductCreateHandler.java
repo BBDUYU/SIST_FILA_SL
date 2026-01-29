@@ -16,8 +16,8 @@ import javax.servlet.http.Part;
 import fila.admin.domain.CreateproductDTO;
 import fila.admin.persistence.CreateproductDAO;
 import fila.admin.service.ProductService;
-import fila.categories.CategoriesDAO;
-import fila.categories.CategoriesDTO;
+import fila.categories.domain.CategoriesDAO;
+import fila.categories.domain.CategoriesDTO;
 import fila.com.util.ConnectionProvider;
 import fila.command.CommandHandler;
 

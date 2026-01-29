@@ -1,4 +1,4 @@
-package fila.search.mapper;
+package fila.mapper;
 
 import java.util.ArrayList;
 import org.apache.ibatis.annotations.Mapper;

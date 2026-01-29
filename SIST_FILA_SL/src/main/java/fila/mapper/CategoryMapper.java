@@ -1,9 +1,10 @@
-package fila.categories.mapper;
+package fila.mapper;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import org.apache.ibatis.annotations.Param;
-import fila.categories.CategoriesDTO;
+
+import fila.categories.domain.CategoriesDTO;
 
 public interface CategoryMapper {
     // 모든 카테고리 목록 조회

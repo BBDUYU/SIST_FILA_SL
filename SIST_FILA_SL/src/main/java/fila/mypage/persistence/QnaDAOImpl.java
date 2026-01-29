@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import fila.categories.CategoriesDTO;
+import fila.categories.domain.CategoriesDTO;
 import fila.mypage.domain.QNACategoriesDTO;
 import fila.mypage.domain.QnaDTO;
 

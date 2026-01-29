@@ -1,10 +1,10 @@
-package fila.categories;
+package fila.categories.domain;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import fila.categories.CategoriesDTO;
+import fila.categories.domain.CategoriesDTO;
 
 public interface ICategories {
     // 카테고리 목록 조회
