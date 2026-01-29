@@ -3,7 +3,7 @@ package fila.command;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import fila.search.SearchService;
+import fila.search.service.SearchService;
 
 public class SearchHandler implements CommandHandler {
 

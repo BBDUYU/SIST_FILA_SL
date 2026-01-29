@@ -1,4 +1,4 @@
-package fila.search;
+package fila.search.domain;
 
 
 import java.util.Date;
