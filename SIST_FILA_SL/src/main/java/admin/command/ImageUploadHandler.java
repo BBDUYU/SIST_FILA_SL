@@ -13,39 +13,39 @@ public class ImageUploadHandler implements CommandHandler {
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
         
-        // AJAX ¿äÃ»ÀÎÁö È®ÀÎ (POST)
+        // AJAX ìš”ì²­ì¸ì§€ í™•ì¸ (POST)
         if (!request.getMethod().equalsIgnoreCase("POST")) {
             return null;
         }
 
-        // 1. ÀúÀå °æ·Î ¼³Á¤
+        // 1. ì €ì¥ ê²½ë¡œ ì„¤ì •
         String savePath = "C:\\fila_upload\\notice";
         File uploadDir = new File(savePath);
-        if (!uploadDir.exists()) uploadDir.mkdirs(); // Æú´õ ¾øÀ¸¸é »ı¼º
+        if (!uploadDir.exists()) uploadDir.mkdirs(); // í´ë” ì—†ìœ¼ë©´ ìƒì„±
 
-        // 2. ÆÄÀÏ µ¥ÀÌÅÍ °¡Á®¿À±â (input type="file"ÀÇ id/nameÀÌ uploadFileÀÎ °æ¿ì)
+        // 2. íŒŒì¼ ë°ì´í„° ê°€ì ¸ì˜¤ê¸° (input type="file"ì˜ id/nameì´ uploadFileì¸ ê²½ìš°)
         Part part = request.getPart("uploadFile");
         String fileName = getFileName(part);
         
-        // ÆÄÀÏ Áßº¹ ¹æÁö¸¦ À§ÇÑ ·£´ı ÀÌ¸§ »ı¼º
+        // íŒŒì¼ ì¤‘ë³µ ë°©ì§€ë¥¼ ìœ„í•œ ëœë¤ ì´ë¦„ ìƒì„±
         String realFileName = UUID.randomUUID().toString() + "_" + fileName;
         String fullPath = savePath + File.separator + realFileName;
 
-        // 3. ¹°¸®Àû Æú´õ¿¡ ÀúÀå
+        // 3. ë¬¼ë¦¬ì  í´ë”ì— ì €ì¥
         part.write(fullPath);
 
-        // 4. Å¬¶óÀÌ¾ğÆ®¿¡ ÀÀ´äÇÒ ÀÌ¹ÌÁö URL ÁÖ¼Ò »ı¼º
-        // (º¸Åë ¼­¹ö ¼³Á¤¿¡¼­ /upload/°¡ C:/fila_upload¸¦ ¹Ù¶óº¸°Ô ¼³Á¤ÇÔ)
+        // 4. í´ë¼ì´ì–¸íŠ¸ì— ì‘ë‹µí•  ì´ë¯¸ì§€ URL ì£¼ì†Œ ìƒì„±
+        // (ë³´í†µ ì„œë²„ ì„¤ì •ì—ì„œ /upload/ê°€ C:/fila_uploadë¥¼ ë°”ë¼ë³´ê²Œ ì„¤ì •í•¨)
         String imageUrl = "/upload/notice/" + realFileName;
 
-        // 5. JSON ÀÀ´ä Àü¼Û
+        // 5. JSON ì‘ë‹µ ì „ì†¡
         response.setContentType("application/json; charset=UTF-8");
         response.getWriter().write("{\"url\": \"" + imageUrl + "\"}");
 
-        return null; // AJAX ÀÀ´äÀÌ¹Ç·Î JSP·Î Æ÷¿öµùÇÏÁö ¾ÊÀ½
+        return null; // AJAX ì‘ë‹µì´ë¯€ë¡œ JSPë¡œ í¬ì›Œë”©í•˜ì§€ ì•ŠìŒ
     }
 
-    // ÆÄÀÏ¸í ÃßÃâ À¯Æ¿
+    // íŒŒì¼ëª… ì¶”ì¶œ ìœ í‹¸
     private String getFileName(Part part) {
         for (String content : part.getHeader("content-disposition").split(";")) {
             if (content.trim().startsWith("filename")) {

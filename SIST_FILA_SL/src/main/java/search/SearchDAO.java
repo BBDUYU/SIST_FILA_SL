@@ -20,11 +20,10 @@ public class SearchDAO implements ISearch{
     }
 
     /**
-     * °Ë»ö¾î ±â·Ï Ãß°¡/°»½Å
-     * ±âÁ¸¿¡ Á¸ÀçÇÏ¸é °Ë»ö È½¼ö Áõ°¡, ¾øÀ¸¸é »õ·Î Ãß°¡
+     * ê²€ìƒ‰ì–´ ê¸°ë¡ ì¶”ê°€/ê°±ì‹ 
+     * ê¸°ì¡´ì— ì¡´ì¬í•˜ë©´ ê²€ìƒ‰ íšŸìˆ˜ ì¦ê°€, ì—†ìœ¼ë©´ ìƒˆë¡œ ì¶”ê°€
      */
     public void upsertKeyword(Connection conn, String keyword) throws SQLException {
-        // VALUES Àı¿¡ ½ÇÁ¦ »ı¼ºÇÏ½Å ½ÃÄö½º¸íÀÎ 'SEARCH_KEYWORDS_SEQ'¸¦ ³Ö¾î¾ß ÇÕ´Ï´Ù.
         String sql = "MERGE INTO SEARCH_KEYWORDS t " +
                      "USING (SELECT ? AS KEYWORD FROM dual) s " +
                      "ON (t.KEYWORD = s.KEYWORD) " +
@@ -32,7 +31,7 @@ public class SearchDAO implements ISearch{
                      "  UPDATE SET t.SEARCH_COUNT = t.SEARCH_COUNT + 1, t.LAST_SEARCH_DATE = SYSDATE " +
                      "WHEN NOT MATCHED THEN " +
                      "  INSERT (KEYWORD_ID, KEYWORD, SEARCH_COUNT, LAST_SEARCH_DATE) " +
-                     "  VALUES (SEARCH_KEYWORDS_SEQ.NEXTVAL, s.KEYWORD, 1, SYSDATE)"; // ½ÃÄö½º¸í ¼öÁ¤ ¿Ï·á
+                     "  VALUES (SEARCH_KEYWORDS_SEQ.NEXTVAL, s.KEYWORD, 1, SYSDATE)"; // ì‹œí€€ìŠ¤ëª… ìˆ˜ì • ì™„ë£Œ
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, keyword);
@@ -40,12 +39,11 @@ public class SearchDAO implements ISearch{
         }
     }
     /**
-     * »óÀ§ N°³ÀÇ ÀÎ±â °Ë»ö¾î Á¶È¸
+     * ìƒìœ„ Nê°œì˜ ì¸ê¸° ê²€ìƒ‰ì–´ ì¡°íšŒ
      */
     public ArrayList<SearchDTO> selectTopKeywords(Connection conn, int limit) throws SQLException {
         ArrayList<SearchDTO> list = new ArrayList<>();
         
-        // Oracle 11g ÀÌÇÏ´Â Á¤·Ä ÈÄ ROWNUMÀ¸·Î Àß¶ó³»´Â ¼­ºêÄõ¸® ¹æ½ÄÀ» ½á¾ß ÇÕ´Ï´Ù.
         String sql = "SELECT * FROM ( " +
                      "  SELECT KEYWORD_ID, KEYWORD, SEARCH_COUNT, LAST_SEARCH_DATE " +
                      "  FROM SEARCH_KEYWORDS " +

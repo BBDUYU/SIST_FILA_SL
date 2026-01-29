@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import search.SearchDTO;
 
 public interface ISearch {
-    // °Ë»ö¾î Ãß°¡ ¶Ç´Â Ä«¿îÆ® ¾÷µ¥ÀÌÆ®
+    // ê²€ìƒ‰ì–´ ì¶”ê°€ ë˜ëŠ” ì¹´ìš´íŠ¸ ì—…ë°ì´íŠ¸
     void upsertKeyword(Connection conn, String keyword) throws SQLException;
     
-    // ÀÎ±â °Ë»ö¾î »óÀ§ N°³ Á¶È¸
+    // ì¸ê¸° ê²€ìƒ‰ì–´ ìƒìœ„ Nê°œ ì¡°íšŒ
     ArrayList<SearchDTO> selectTopKeywords(Connection conn, int limit) throws SQLException;
 }

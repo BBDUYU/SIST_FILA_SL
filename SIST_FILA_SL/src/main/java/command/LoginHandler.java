@@ -3,40 +3,39 @@ package command;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
+import member.MemberDTO;
 import login.ILogin;
 import login.LoginService;
-import member.domain.MemberDTO;
 
 public class LoginHandler implements CommandHandler {
     
-    // ÀÎÅÍÆäÀÌ½º Å¸ÀÔÀ¸·Î ¼±¾ğ, ±¸ÇöÃ¼ »ı¼º
+    // ì¸í„°í˜ì´ìŠ¤ íƒ€ì…ìœ¼ë¡œ ì„ ì–¸, êµ¬í˜„ì²´ ìƒì„±
     private ILogin loginService = new LoginService();
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // GET ¹æ½Ä: ·Î±×ÀÎ ÆäÀÌÁö ÀÌµ¿
+        // GET ë°©ì‹: ë¡œê·¸ì¸ í˜ì´ì§€ ì´ë™
         if (request.getMethod().equalsIgnoreCase("GET")) {
             return "/view/user/login.jsp";
         } 
         
-        // POST ¹æ½Ä: ½ÇÁ¦ ·Î±×ÀÎ Ã³¸®
+        // POST ë°©ì‹: ì‹¤ì œ ë¡œê·¸ì¸ ì²˜ë¦¬
         if (request.getMethod().equalsIgnoreCase("POST")) {
             String id = request.getParameter("mb_id");
             String pw = request.getParameter("password");
 
-            // ¼­ºñ½º¸¦ ÅëÇØ ·Î±×ÀÎ °ËÁõ
+            // ì„œë¹„ìŠ¤ë¥¼ í†µí•´ ë¡œê·¸ì¸ ê²€ì¦
             MemberDTO member = loginService.login(id, pw);
 
             if (member == null) {
-                // ½ÇÆĞ ½Ã ¿¡·¯ ÆÄ¶ó¹ÌÅÍ¸¦ µé°í ´Ù½Ã ·Î±×ÀÎÃ¢À¸·Î
+                // ì‹¤íŒ¨ ì‹œ ì—ëŸ¬ íŒŒë¼ë¯¸í„°ë¥¼ ë“¤ê³  ë‹¤ì‹œ ë¡œê·¸ì¸ì°½ìœ¼ë¡œ
                 return "/view/user/login.jsp?error=fail";
             }
 
-            // ¼º°ø ½Ã ¼¼¼Ç¿¡ 'auth' ÀÌ¸§À¸·Î ÀúÀå
+            // ì„±ê³µ ì‹œ ì„¸ì…˜ì— 'auth' ì´ë¦„ìœ¼ë¡œ ì €ì¥
             HttpSession session = request.getSession();
             session.setAttribute("auth", member);
-            session.setMaxInactiveInterval(60 * 30); // 30ºĞ À¯Áö
+            session.setMaxInactiveInterval(60 * 30); // 30ë¶„ ìœ ì§€
 
             String returnUrl = request.getParameter("returnUrl");
             if (returnUrl != null && !returnUrl.trim().isEmpty()

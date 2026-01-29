@@ -9,7 +9,7 @@ import javax.servlet.http.HttpSession;
 import com.util.ConnectionProvider;
 import com.util.JdbcUtil;
 import command.CommandHandler;
-import member.domain.MemberDTO;
+import member.MemberDTO;
 import mypage.domain.AddressDTO;
 import mypage.persistence.AddressDAO;
 
@@ -17,12 +17,12 @@ public class OrderAddressHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // 1. ¼¼¼Ç¿¡¼­ ·Î±×ÀÎ Á¤º¸ È®ÀÎ
+        // 1. ì„¸ì…˜ì—ì„œ ë¡œê·¸ì¸ ì •ë³´ í™•ì¸
         HttpSession session = request.getSession();
         MemberDTO authUser = (MemberDTO) session.getAttribute("auth");
         
         if (authUser == null) {
-            return null; // ·Î±×ÀÎÀÌ ¾È µÇ¾î ÀÖÀ¸¸é ºó °á°ú ¹İÈ¯
+            return null; // ë¡œê·¸ì¸ì´ ì•ˆ ë˜ì–´ ìˆìœ¼ë©´ ë¹ˆ ê²°ê³¼ ë°˜í™˜
         }
 
         Connection conn = null;
@@ -30,10 +30,10 @@ public class OrderAddressHandler implements CommandHandler {
             conn = ConnectionProvider.getConnection();
             AddressDAO addressDao = new AddressDAO();
             
-            // 2. À¯ÀúÀÇ ¹è¼ÛÁö ¸ñ·Ï °¡Á®¿À±â
+            // 2. ìœ ì €ì˜ ë°°ì†¡ì§€ ëª©ë¡ ê°€ì ¸ì˜¤ê¸°
             List<AddressDTO> addressList = addressDao.selectListByUser(conn, authUser.getUserNumber());
             
-            // 3. JSP·Î Àü´Ş
+            // 3. JSPë¡œ ì „ë‹¬
             request.setAttribute("addressList", addressList);
             
         } catch (Exception e) {
@@ -42,7 +42,7 @@ public class OrderAddressHandler implements CommandHandler {
             JdbcUtil.close(conn);
         }
 
-        // 4. ¸ğ´Ş¿ë JSP·Î Æ÷¿öµù (°æ·Î È®ÀÎ ÇÊ¿ä)
+        // 4. ëª¨ë‹¬ìš© JSPë¡œ í¬ì›Œë”© (ê²½ë¡œ í™•ì¸ í•„ìš”)
         return "/view/order/order_address.jsp"; 
     }
 }

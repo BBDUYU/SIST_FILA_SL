@@ -13,11 +13,11 @@ public class StyleDetailHandler implements CommandHandler {
         StyleService service = StyleService.getInstance();
         String idParam = request.getParameter("id");
         
-        // Ajax ¿äÃ»ÀÎÁö È®ÀÎ (¸ğ´Ş¿ë È£ÃâÀÎÁö ÆÇº°)
+        // Ajax ìš”ì²­ì¸ì§€ í™•ì¸ (ëª¨ë‹¬ìš© í˜¸ì¶œì¸ì§€ íŒë³„)
         String xRequestedWith = request.getHeader("X-Requested-With");
         boolean isAjax = "XMLHttpRequest".equals(xRequestedWith);
 
-        // 1. id ÆÄ¶ó¹ÌÅÍ°¡ ÀÖ´Â °æ¿ì
+        // 1. id íŒŒë¼ë¯¸í„°ê°€ ìˆëŠ” ê²½ìš°
         if (idParam != null && !idParam.isEmpty()) {
             try {
                 int styleId = Integer.parseInt(idParam);
@@ -30,11 +30,11 @@ public class StyleDetailHandler implements CommandHandler {
                 request.setAttribute("style", style);
 
                 if (isAjax) {
-                    // [Case A] ¸ğ´Ş È£Ãâ (Ajax): ¸ğ´ŞÀÇ ¾Ë¸ÍÀÌ HTML¸¸ º¸³¿
+                    // [Case A] ëª¨ë‹¬ í˜¸ì¶œ (Ajax): ëª¨ë‹¬ì˜ ì•Œë§¹ì´ HTMLë§Œ ë³´ëƒ„
                     return "/view/product/style_modal_content.jsp";
                 } else {
-                    // [Case B] ¸ŞÀÎ¿¡¼­ Å¬¸¯ (ÆäÀÌÁö ÀÌµ¿): 
-                    // ÀüÃ¼ ¸ñ·Ï µ¥ÀÌÅÍ¸¦ ÇÔ²² ´ã¾Æ¼­ »ó¼¼ÆäÀÌÁö(¸ñ·Ï+ÀÚµ¿¸ğ´Ş)¸¦ º¸¿©ÁÜ
+                    // [Case B] ë©”ì¸ì—ì„œ í´ë¦­ (í˜ì´ì§€ ì´ë™): 
+                    // ì „ì²´ ëª©ë¡ ë°ì´í„°ë¥¼ í•¨ê»˜ ë‹´ì•„ì„œ ìƒì„¸í˜ì´ì§€(ëª©ë¡+ìë™ëª¨ë‹¬)ë¥¼ ë³´ì—¬ì¤Œ
                     List<StyleDTO> styleList = service.getActiveStyleList();
                     request.setAttribute("styleList", styleList);
                     return "/view/product/style_detail.jsp";
@@ -45,7 +45,7 @@ public class StyleDetailHandler implements CommandHandler {
             }
         }	
         
-        // 2. id ÆÄ¶ó¹ÌÅÍ°¡ ¾ø´Â °æ¿ì: ´Ü¼ø ¸ñ·Ï ·Îµå
+        // 2. id íŒŒë¼ë¯¸í„°ê°€ ì—†ëŠ” ê²½ìš°: ë‹¨ìˆœ ëª©ë¡ ë¡œë“œ
         List<StyleDTO> styleList = service.getActiveStyleList();
         request.setAttribute("styleList", styleList);
         return "/view/product/style_detail.jsp";

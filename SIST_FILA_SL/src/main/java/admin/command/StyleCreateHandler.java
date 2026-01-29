@@ -33,14 +33,14 @@ public class StyleCreateHandler implements CommandHandler {
             return "/view/admin/style_create.jsp";
         } 
 
-        else { // POST ¿äÃ»
-            request.setCharacterEncoding("UTF-8"); // ÇÑ±Û ±úÁü ¹æÁö
+        else { // POST ìš”ì²­
+            request.setCharacterEncoding("UTF-8"); // í•œê¸€ ê¹¨ì§ ë°©ì§€
             
             String styleName = request.getParameter("style_name");
             String description = request.getParameter("description");
             int useYn = Integer.parseInt(request.getParameter("use_yn") != null ? request.getParameter("use_yn") : "1");
             
-            // »óÇ° ¼±ÅÃ ¾È ÇßÀ» ¶§ ¿¡·¯ ¹æÁö
+            // ìƒí’ˆ ì„ íƒ ì•ˆ í–ˆì„ ë•Œ ì—ëŸ¬ ë°©ì§€
             String[] matchProducts = request.getParameterValues("match_products");
             if (matchProducts == null) matchProducts = new String[0];
 
@@ -54,7 +54,7 @@ public class StyleCreateHandler implements CommandHandler {
             int styleId = service.registerStyleMaster(styleDto);
 
             if (styleId > 0) {
-                // 1. ¹°¸®Àû ÀúÀå °æ·Î´Â À©µµ¿ì Çü½ÄÀ» µû¸§
+                // 1. ë¬¼ë¦¬ì  ì €ì¥ ê²½ë¡œëŠ” ìœˆë„ìš° í˜•ì‹ì„ ë”°ë¦„
                 String uploadPath = "C:\\fila_upload\\style\\" + styleId;
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) uploadDir.mkdirs();
@@ -67,14 +67,14 @@ public class StyleCreateHandler implements CommandHandler {
                     if (part.getName().equals("style_images") && part.getSize() > 0) {
                         String fileName = getFileName(part); 
                         if (fileName != null && !fileName.isEmpty()) {
-                            // ½ÇÁ¦ ÆÄÀÏ ¾²±â
+                            // ì‹¤ì œ íŒŒì¼ ì“°ê¸°
                             part.write(uploadPath + File.separator + fileName);
 
                             StyleImageDTO imgDto = new StyleImageDTO();
                             imgDto.setStyle_id(styleId);
                             
-                            // [ÇÙ½É¼öÁ¤] DB¿¡´Â ½½·¡½Ã(/)·Î ÀúÀåÇØ¾ß ÅèÄ¹ ¿¡·¯(RFC 7230)°¡ ¹ß»ıÇÏÁö ¾Ê½À´Ï´Ù.
-                            // À©µµ¿ì OSµµ C:/fila_upload/... °æ·Î¸¦ ¹®Á¦¾øÀÌ ÀÎ½ÄÇÕ´Ï´Ù.
+                            // [í•µì‹¬ìˆ˜ì •] DBì—ëŠ” ìŠ¬ë˜ì‹œ(/)ë¡œ ì €ì¥í•´ì•¼ í†°ìº£ ì—ëŸ¬(RFC 7230)ê°€ ë°œìƒí•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.
+                            // ìœˆë„ìš° OSë„ C:/fila_upload/... ê²½ë¡œë¥¼ ë¬¸ì œì—†ì´ ì¸ì‹í•©ë‹ˆë‹¤.
                             String dbPath = "C:/fila_upload/style/" + styleId + "/" + fileName;
                             imgDto.setImage_url(dbPath);
                             

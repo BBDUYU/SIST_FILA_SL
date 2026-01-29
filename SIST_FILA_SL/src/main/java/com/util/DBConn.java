@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-// ½Ì±ÛÅæ( singleton )
+// ì‹±ê¸€í†¤( singleton )
 public class DBConn {
 	
 	private static volatile Connection conn = null;
@@ -70,7 +70,7 @@ public class DBConn {
 			e.printStackTrace();
 		}
 		
-		conn = null;  // ÃÊ±âÈ­ *****
+		conn = null;  // ì´ˆê¸°í™” *****
     }
 
 }

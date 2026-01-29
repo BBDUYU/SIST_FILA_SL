@@ -25,12 +25,12 @@ public class ReviewDAOImpl implements ReviewDAO {
 	private ResultSet rs;
 	
 
-    // »ı¼ºÀÚ
+    // ìƒì„±ì
     public ReviewDAOImpl(Connection conn) {
         this.conn = conn;
     }
 
-    // 1. ¸®ºä µî·Ï ±â´É
+    // 1. ë¦¬ë·° ë“±ë¡ ê¸°ëŠ¥
     @Override
     public int insert(ReviewDTO dto) throws SQLException {
         int result = 0;
@@ -43,28 +43,28 @@ public class ReviewDAOImpl implements ReviewDAO {
         try {
             pstmt = conn.prepareStatement(sql);
             
-            // ¹°À½Ç¥ ¼ø¼­´ë·Î °ª Ã¤¿ì±â
+            // ë¬¼ìŒí‘œ ìˆœì„œëŒ€ë¡œ ê°’ ì±„ìš°ê¸°
             pstmt.setString(1, dto.getProduct_id());
             pstmt.setInt(2, dto.getUser_number());
             pstmt.setString(3, dto.getContent());
             pstmt.setInt(4, dto.getRating());
             
-            // [ÇÙ½É] ¿©±â°¡ ºüÁ®ÀÖÀ¸¸é DB¿¡ null·Î µé¾î°©´Ï´Ù!
+            // [í•µì‹¬] ì—¬ê¸°ê°€ ë¹ ì ¸ìˆìœ¼ë©´ DBì— nullë¡œ ë“¤ì–´ê°‘ë‹ˆë‹¤!
             pstmt.setString(5, dto.getReview_img()); 
 
             result = pstmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println("> ReviewDAOImpl.insert ¿¡·¯: " + e.getMessage());
-            e.printStackTrace(); // ¿¡·¯³ª¸é ÄÜ¼Ö¿¡ »¡°£ ÁÙ ¶ç¿ì±â
+            System.out.println("> ReviewDAOImpl.insert ì—ëŸ¬: " + e.getMessage());
+            e.printStackTrace(); // ì—ëŸ¬ë‚˜ë©´ ì½˜ì†”ì— ë¹¨ê°„ ì¤„ ë„ìš°ê¸°
         } finally {
             if (pstmt != null) try { pstmt.close(); } catch (Exception e) {}
         }
         return result;
     }
 
-    // 2. ¸®ºä ¸ñ·Ï Á¶È¸ (ÇÊÅÍ¸µ) ±â´É
+    // 2. ë¦¬ë·° ëª©ë¡ ì¡°íšŒ (í•„í„°ë§) ê¸°ëŠ¥
     @Override
- 	// [Áß¿ä] °ıÈ£ ¾È¿¡ int userNumber°¡ ¹İµå½Ã ÀÖ¾î¾ß ÇÕ´Ï´Ù!
+ 	// [ì¤‘ìš”] ê´„í˜¸ ì•ˆì— int userNumberê°€ ë°˜ë“œì‹œ ìˆì–´ì•¼ í•©ë‹ˆë‹¤!
     public List<ReviewDTO> selectListByFilter(String productId, String[] ratingArr, int userNumber, String sort, String keyword) {
      List<ReviewDTO> list = new ArrayList<>();
      StringBuilder sql = new StringBuilder();
@@ -73,13 +73,13 @@ public class ReviewDAOImpl implements ReviewDAO {
      sql.append("        u.id as user_id, ");
      sql.append("        (SELECT COUNT(*) FROM review_like l WHERE l.review_id = r.review_id AND l.type = 1) as like_cnt, ");
      sql.append("        (SELECT COUNT(*) FROM review_like l WHERE l.review_id = r.review_id AND l.type = 0) as dislike_cnt, ");
-     // [Ãß°¡] ³» ÁÁ¾Æ¿ä »óÅÂ Ã¼Å©
+     // [ì¶”ê°€] ë‚´ ì¢‹ì•„ìš” ìƒíƒœ ì²´í¬
      sql.append("        (SELECT type FROM review_like l WHERE l.review_id = r.review_id AND l.user_number = ?) as my_like ");
      sql.append(" FROM review r ");
      sql.append(" JOIN users u ON r.user_number = u.user_number ");
      sql.append(" WHERE r.product_id = ? ");
 
-  // [1] º°Á¡ ÇÊÅÍ
+  // [1] ë³„ì  í•„í„°
      if (ratingArr != null && ratingArr.length > 0) {
          sql.append(" AND r.rating IN (");
          for (int i = 0; i < ratingArr.length; i++) {
@@ -89,25 +89,25 @@ public class ReviewDAOImpl implements ReviewDAO {
          sql.append(") ");
      }
      
-     // [2] °Ë»ö¾î ÇÊÅÍ
+     // [2] ê²€ìƒ‰ì–´ í•„í„°
      if (keyword != null && !keyword.trim().equals("")) {
          sql.append(" AND r.content LIKE ? ");
      }
 
-     // [3] Á¤·Ä ·ÎÁ÷ (ÀÌ°Í ÇÏ³ª¸¸ ³²°Ü¾ß ÇÕ´Ï´Ù!)
+     // [3] ì •ë ¬ ë¡œì§ (ì´ê²ƒ í•˜ë‚˜ë§Œ ë‚¨ê²¨ì•¼ í•©ë‹ˆë‹¤!)
      sql.append(" ORDER BY ");
      
-     // 3-1. 'Æ÷Åä ¿ì¼±'ÀÌ¸é »çÁø ÀÖ´Â °É ¸Ç À§·Î (¿ì¼±¼øÀ§ 0¼øÀ§)
+     // 3-1. 'í¬í†  ìš°ì„ 'ì´ë©´ ì‚¬ì§„ ìˆëŠ” ê±¸ ë§¨ ìœ„ë¡œ (ìš°ì„ ìˆœìœ„ 0ìˆœìœ„)
      if ("photo".equals(sort) || "photo_rate".equals(sort)) {
          sql.append(" (CASE WHEN r.review_img IS NOT NULL THEN 0 ELSE 1 END) ASC, ");
      }
      
-     // 3-2. ±× ´ÙÀ½ Á¤·Ä ±âÁØ (º°Á¡¼ø vs ÃÖ½Å¼ø)
+     // 3-2. ê·¸ ë‹¤ìŒ ì •ë ¬ ê¸°ì¤€ (ë³„ì ìˆœ vs ìµœì‹ ìˆœ)
      if ("rate".equals(sort) || "photo_rate".equals(sort)) {
-         // º°Á¡ ³ôÀº¼ø -> ±× ´ÙÀ½ ÃÖ½Å¼ø
+         // ë³„ì  ë†’ì€ìˆœ -> ê·¸ ë‹¤ìŒ ìµœì‹ ìˆœ
          sql.append(" r.rating DESC, r.created_at DESC ");
      } else {
-         // ±âº»: ÃÖ½Å¼ø
+         // ê¸°ë³¸: ìµœì‹ ìˆœ
          sql.append(" r.created_at DESC ");
      }
 
@@ -115,7 +115,7 @@ public class ReviewDAOImpl implements ReviewDAO {
          pstmt = conn.prepareStatement(sql.toString());
          int pIndex = 1;
          
-         // [Áß¿ä] Ã¹ ¹øÂ° ¹°À½Ç¥°¡ userNumberÀÔ´Ï´Ù.
+         // [ì¤‘ìš”] ì²« ë²ˆì§¸ ë¬¼ìŒí‘œê°€ userNumberì…ë‹ˆë‹¤.
          pstmt.setInt(pIndex++, userNumber); 
          pstmt.setString(pIndex++, productId);
 
@@ -125,9 +125,9 @@ public class ReviewDAOImpl implements ReviewDAO {
              }
          }
 
-         // °Ë»ö¾î ¹ÙÀÎµù
+         // ê²€ìƒ‰ì–´ ë°”ì¸ë”©
          if (keyword != null && !keyword.trim().equals("")) {
-             pstmt.setString(pIndex++, "%" + keyword + "%"); // ¾ÕµÚ·Î % ºÙ¿©¼­ ºÎºĞÀÏÄ¡ °Ë»ö
+             pstmt.setString(pIndex++, "%" + keyword + "%"); // ì•ë’¤ë¡œ % ë¶™ì—¬ì„œ ë¶€ë¶„ì¼ì¹˜ ê²€ìƒ‰
          }
          
          rs = pstmt.executeQuery();
@@ -145,7 +145,7 @@ public class ReviewDAOImpl implements ReviewDAO {
              dto.setLike_cnt(rs.getInt("like_cnt"));
              dto.setDislike_cnt(rs.getInt("dislike_cnt"));
 
-             // ³» ÁÁ¾Æ¿ä »óÅÂ ´ã±â
+             // ë‚´ ì¢‹ì•„ìš” ìƒíƒœ ë‹´ê¸°
              if (rs.getObject("my_like") != null) {
                  dto.setMyLike(rs.getInt("my_like"));
              } else {
@@ -154,7 +154,7 @@ public class ReviewDAOImpl implements ReviewDAO {
              list.add(dto);
          }
      } catch (Exception e) {
-         System.out.println("> ReviewDAOImpl.selectListByFilter ¿¡·¯");
+         System.out.println("> ReviewDAOImpl.selectListByFilter ì—ëŸ¬");
          e.printStackTrace();
      } finally {
          if (rs != null) try { rs.close(); } catch (Exception e) {}
@@ -178,7 +178,7 @@ public class ReviewDAOImpl implements ReviewDAO {
                     int total = rs.getInt("total_cnt");
                     double avg = rs.getDouble("avg_score");
                     int best = rs.getInt("best_cnt");
-                    // ¾ÆÁÖ ÁÁ¾Æ¿ä ºñÀ² °è»ê (5Á¡ °³¼ö / ÀüÃ¼ °³¼ö * 100)
+                    // ì•„ì£¼ ì¢‹ì•„ìš” ë¹„ìœ¨ ê³„ì‚° (5ì  ê°œìˆ˜ / ì „ì²´ ê°œìˆ˜ * 100)
                     int bestRate = (total > 0) ? (int)((double)best / total * 100) : 0;
 
                     summary.put("total_cnt", total);
@@ -190,9 +190,9 @@ public class ReviewDAOImpl implements ReviewDAO {
         return summary;
     }
     
-    // µµ¿òµÅ¿ä, µµ¿ò¾ÈµÅ¿ä ¹öÆ°
+    // ë„ì›€ë¼ìš”, ë„ì›€ì•ˆë¼ìš” ë²„íŠ¼
     public int insertReviewLike(int reviewId, int userNumber, int type) throws Exception {
-        // ÀÌ¹Ì ÇØ´ç ¸®ºä¿¡ ´ëÇØ ¾×¼ÇÀ» ÃëÇß´ÂÁö È®ÀÎ (Áßº¹ ¹æÁö)
+        // ì´ë¯¸ í•´ë‹¹ ë¦¬ë·°ì— ëŒ€í•´ ì•¡ì…˜ì„ ì·¨í–ˆëŠ”ì§€ í™•ì¸ (ì¤‘ë³µ ë°©ì§€)
         String checkSql = "SELECT COUNT(*) FROM review_like WHERE review_id = ? AND user_number = ?";
         String insertSql = "INSERT INTO review_like (like_id, review_id, user_number, type) VALUES (seq_review_like.NEXTVAL, ?, ?, ?)";
         
@@ -201,7 +201,7 @@ public class ReviewDAOImpl implements ReviewDAO {
             pstmt.setInt(2, userNumber);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next() && rs.getInt(1) > 0) {
-                return -1; // ÀÌ¹Ì Âü¿©ÇÔ
+                return -1; // ì´ë¯¸ ì°¸ì—¬í•¨
             }
         }
 
@@ -209,7 +209,7 @@ public class ReviewDAOImpl implements ReviewDAO {
             pstmt.setInt(1, reviewId);
             pstmt.setInt(2, userNumber);
             pstmt.setInt(3, type);
-            return pstmt.executeUpdate(); // 1 ¼º°ø
+            return pstmt.executeUpdate(); // 1 ì„±ê³µ
         }
     }
     
@@ -224,14 +224,14 @@ public class ReviewDAOImpl implements ReviewDAO {
             conn = ConnectionProvider.getConnection();
 
             // ---------------------------------------------------------
-            // 1´Ü°è: '¹è¼Û¿Ï·á'µÈ ÁÖ¹® °Ç¼ö°¡ ¸î °³ÀÎÁö Á¶È¸
+            // 1ë‹¨ê³„: 'ë°°ì†¡ì™„ë£Œ'ëœ ì£¼ë¬¸ ê±´ìˆ˜ê°€ ëª‡ ê°œì¸ì§€ ì¡°íšŒ
             // ---------------------------------------------------------
             String buySql = " SELECT COUNT(*) "
                           + " FROM ORDERS o "
                           + " JOIN ORDER_ITEMS oi ON o.ORDER_ID = oi.ORDER_ID "
                           + " WHERE o.USER_NUMBER = ? "
                           + "   AND oi.PRODUCT_ID = ? "
-                          + "   AND o.ORDER_STATUS = '¹è¼Û¿Ï·á' "; // '¹è¼Û¿Ï·á'¸¸ Çã¿ë
+                          + "   AND o.ORDER_STATUS = 'ë°°ì†¡ì™„ë£Œ' "; // 'ë°°ì†¡ì™„ë£Œ'ë§Œ í—ˆìš©
 
             pstmt = conn.prepareStatement(buySql);
             pstmt.setInt(1, userNumber);
@@ -243,12 +243,12 @@ public class ReviewDAOImpl implements ReviewDAO {
                 buyCount = rs.getInt(1);
             }
             
-            // ÀÚ¿ø ÇØÁ¦ ÈÄ Àç»ç¿ë
+            // ìì› í•´ì œ í›„ ì¬ì‚¬ìš©
             JdbcUtil.close(rs);
             JdbcUtil.close(pstmt);
 
             // ---------------------------------------------------------
-            // 2´Ü°è: ÀÌ¹Ì ÀÛ¼ºÇÑ ¸®ºä °Ç¼ö°¡ ¸î °³ÀÎÁö Á¶È¸
+            // 2ë‹¨ê³„: ì´ë¯¸ ì‘ì„±í•œ ë¦¬ë·° ê±´ìˆ˜ê°€ ëª‡ ê°œì¸ì§€ ì¡°íšŒ
             // ---------------------------------------------------------
             String reviewSql = " SELECT COUNT(*) FROM REVIEW "
                              + " WHERE USER_NUMBER = ? AND PRODUCT_ID = ? ";
@@ -264,7 +264,7 @@ public class ReviewDAOImpl implements ReviewDAO {
             }
 
             // ---------------------------------------------------------
-            // 3´Ü°è: ÁÖ¹® È½¼ö°¡ ¸®ºä È½¼öº¸´Ù ¸¹À» ¶§¸¸ ÀÛ¼º °¡´É (1ÁÖ¹® 1¸®ºä)
+            // 3ë‹¨ê³„: ì£¼ë¬¸ íšŸìˆ˜ê°€ ë¦¬ë·° íšŸìˆ˜ë³´ë‹¤ ë§ì„ ë•Œë§Œ ì‘ì„± ê°€ëŠ¥ (1ì£¼ë¬¸ 1ë¦¬ë·°)
             // ---------------------------------------------------------
             if (buyCount > reviewCount) {
                 canReview = true;

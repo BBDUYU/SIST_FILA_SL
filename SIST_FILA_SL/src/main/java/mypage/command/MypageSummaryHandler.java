@@ -3,22 +3,21 @@ package mypage.command;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
+import member.MemberDTO;
 import admin.domain.UserInfoDTO;
 import admin.service.AdminUserService;
 import command.CommandHandler;
-import member.domain.MemberDTO;
 
 public class MypageSummaryHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // 1. ¼¼¼Ç¿¡¼­ ·Î±×ÀÎÇÑ À¯Àú Á¤º¸(MemberDTO) °¡Á®¿À±â
+        // 1. ì„¸ì…˜ì—ì„œ ë¡œê·¸ì¸í•œ ìœ ì € ì •ë³´(MemberDTO) ê°€ì ¸ì˜¤ê¸°
         HttpSession session = request.getSession();
         MemberDTO member = (MemberDTO) session.getAttribute("auth");
 
         if (member == null) {
-            // ·Î±×ÀÎ ¾È µÇ¾î ÀÖÀ¸¸é 401 ¿¡·¯
+            // ë¡œê·¸ì¸ ì•ˆ ë˜ì–´ ìˆìœ¼ë©´ 401 ì—ëŸ¬
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return null;
         }
@@ -35,7 +34,7 @@ public class MypageSummaryHandler implements CommandHandler {
         json.append("\"orderCount\": ").append(summary.getOrderCount());
         json.append("}");
 
-        // 4. Content-Type ¹× ÀÎÄÚµù ¼³Á¤ ÈÄ Ãâ·Â
+        // 4. Content-Type ë° ì¸ì½”ë”© ì„¤ì • í›„ ì¶œë ¥
         response.setContentType("application/json; charset=UTF-8");
         response.getWriter().write(json.toString());
         

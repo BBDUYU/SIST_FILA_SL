@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import categories.CategoriesDTO;
 
 public interface ICategories {
-    // Ä«Å×°í¸® ¸ñ·Ï Á¶È¸
+    // ì¹´í…Œê³ ë¦¬ ëª©ë¡ ì¡°íšŒ
     ArrayList<CategoriesDTO> selectCategoryList(Connection conn) throws SQLException;
     
-    // 1. Æ¯Á¤ Ä«Å×°í¸® ÇÏ³ª Á¶È¸ (ID·Î)
+    // 1. íŠ¹ì • ì¹´í…Œê³ ë¦¬ í•˜ë‚˜ ì¡°íšŒ (IDë¡œ)
     CategoriesDTO selectCategory(Connection conn, int categoryId) throws SQLException;
     
-    // 2. ÇÏÀ§/ÇüÁ¦ Ä«Å×°í¸® ¸ñ·Ï Á¶È¸ (»çÀÌµå¹Ù¿ë)
+    // 2. í•˜ìœ„/í˜•ì œ ì¹´í…Œê³ ë¦¬ ëª©ë¡ ì¡°íšŒ (ì‚¬ì´ë“œë°”ìš©)
     ArrayList<CategoriesDTO> selectChildCategories(Connection conn, int parentId) throws SQLException;
     int updateTag(Connection conn, int categoryId, String tagName) throws SQLException;
     int updateTagStatus(Connection conn, int categoryId,int status) throws SQLException;

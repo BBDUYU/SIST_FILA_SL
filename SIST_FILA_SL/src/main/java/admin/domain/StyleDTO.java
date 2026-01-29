@@ -11,16 +11,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class StyleDTO {
-    // 1. STYLE Å×ÀÌºí ÄÃ·³
+    // 1. STYLE í…Œì´ë¸” ì»¬ëŸ¼
     private int style_id;           // STYLE_ID (NUMBER(5))
     private String style_name;      // STYLE_NAME (VARCHAR2(100))
     private String description;     // DESCRIPTION (VARCHAR2(500))
     private int use_yn;             // USE_YN (NUMBER(1))
 
-    // 2. ¸ñ·Ï Á¶È¸ ¹× ÆíÀÇ¸¦ À§ÇÑ Ãß°¡ ÇÊµå
-    private String main_image_url;  // ¸ñ·Ï ÆäÀÌÁö¿¡¼­ º¸¿©ÁÙ ´ëÇ¥ ÀÌ¹ÌÁö (IS_MAIN = 1ÀÎ °Í)
+    // 2. ëª©ë¡ ì¡°íšŒ ë° í¸ì˜ë¥¼ ìœ„í•œ ì¶”ê°€ í•„ë“œ
+    private String main_image_url;  // ëª©ë¡ í˜ì´ì§€ì—ì„œ ë³´ì—¬ì¤„ ëŒ€í‘œ ì´ë¯¸ì§€ (IS_MAIN = 1ì¸ ê²ƒ)
     
-    // 3. ½ºÅ¸ÀÏ »ó¼¼ Á¶È¸ ½Ã Æ÷ÇÔµÉ ¸®½ºÆ®µé
-    private List<StyleImageDTO> images;   // ÇØ´ç ½ºÅ¸ÀÏ¿¡ Æ÷ÇÔµÈ È­º¸ ÀÌ¹ÌÁöµé
-    private List<StyleProductDTO> products; // ÇØ´ç ½ºÅ¸ÀÏ¿¡ ¸ÅÄªµÈ »óÇ°µé
+    // 3. ìŠ¤íƒ€ì¼ ìƒì„¸ ì¡°íšŒ ì‹œ í¬í•¨ë  ë¦¬ìŠ¤íŠ¸ë“¤
+    private List<StyleImageDTO> images;   // í•´ë‹¹ ìŠ¤íƒ€ì¼ì— í¬í•¨ëœ í™”ë³´ ì´ë¯¸ì§€ë“¤
+    private List<StyleProductDTO> products; // í•´ë‹¹ ìŠ¤íƒ€ì¼ì— ë§¤ì¹­ëœ ìƒí’ˆë“¤
 }

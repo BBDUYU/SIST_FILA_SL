@@ -3,26 +3,26 @@ package admin.command;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import admin.domain.CouponDTO; // DTO ÆĞÅ°Áö °æ·Î¿¡ ¸Â°Ô ¼öÁ¤ÇÏ¼¼¿ä
-import admin.service.CouponService; // Service ÆĞÅ°Áö °æ·Î¿¡ ¸Â°Ô ¼öÁ¤ÇÏ¼¼¿ä
+import admin.domain.CouponDTO; // DTO íŒ¨í‚¤ì§€ ê²½ë¡œì— ë§ê²Œ ìˆ˜ì •í•˜ì„¸ìš”
+import admin.service.CouponService; // Service íŒ¨í‚¤ì§€ ê²½ë¡œì— ë§ê²Œ ìˆ˜ì •í•˜ì„¸ìš”
 import command.CommandHandler;
 
 public class CouponListHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // 1. ¼­ºñ½º °´Ã¼ »ı¼º (½Ì±ÛÅæ)
+        // 1. ì„œë¹„ìŠ¤ ê°ì²´ ìƒì„± (ì‹±ê¸€í†¤)
         CouponService service = CouponService.getInstance();
         
         try {
-            // 2. DB¿¡¼­ ÄíÆù ¸ñ·Ï °¡Á®¿À±â
+            // 2. DBì—ì„œ ì¿ í° ëª©ë¡ ê°€ì ¸ì˜¤ê¸°
             List<CouponDTO> list = service.getCouponList();
             
-            // 3. JSP¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖµµ·Ï request¿¡ ÀúÀå
+            // 3. JSPì—ì„œ ì‚¬ìš©í•  ìˆ˜ ìˆë„ë¡ requestì— ì €ì¥
             request.setAttribute("couponList", list);
             
-            // 4. ¸®½ºÆ®¸¦ º¸¿©ÁÙ JSP °æ·Î ¸®ÅÏ
-            // ÆÄÀÏ À§Ä¡¿¡ µû¶ó /view/admin/coupon_list.jsp µîÀ¸·Î Á¶Á¤ÇÏ¼¼¿ä.
+            // 4. ë¦¬ìŠ¤íŠ¸ë¥¼ ë³´ì—¬ì¤„ JSP ê²½ë¡œ ë¦¬í„´
+            // íŒŒì¼ ìœ„ì¹˜ì— ë”°ë¼ /view/admin/coupon_list.jsp ë“±ìœ¼ë¡œ ì¡°ì •í•˜ì„¸ìš”.
             return "/view/admin/coupon_list.jsp"; 
             
         } catch (Exception e) {

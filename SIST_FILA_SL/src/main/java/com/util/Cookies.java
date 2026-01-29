@@ -10,11 +10,11 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 public class Cookies {
-    //         ÄíÅ°ÀÌ¸§  ÄíÅ°°´Ã¼
+    //         ì¿ í‚¤ì´ë¦„  ì¿ í‚¤ê°ì²´
    public Map<String, Cookie> cookieMap = new HashMap<>();
    
-   // »ı¼ºÀÚ
-   // ¸ğµç ÄíÅ° Á¤º¸¸¦ ¾ò¾î¿Í¼­...
+   // ìƒì„±ì
+   // ëª¨ë“  ì¿ í‚¤ ì •ë³´ë¥¼ ì–»ì–´ì™€ì„œ...
    public Cookies(HttpServletRequest request) {      
       Cookie [] cookieArr = request.getCookies();
       if( cookieArr != null ) {
@@ -41,13 +41,13 @@ public class Cookies {
       return cookieMap.containsKey(cookieName);
    }
    
-   // ÄíÅ° »ı¼º
+   // ì¿ í‚¤ ìƒì„±
    public static Cookie createCookie(String cookieName, String cookieValue) throws UnsupportedEncodingException {
       Cookie c = new Cookie( cookieName, URLEncoder.encode(cookieValue, "UTF-8"));
       return c;
    }
    
-   // ÄíÅ° »ı¼º
+   // ì¿ í‚¤ ìƒì„±
    public static Cookie createCookie(String cookieName, String cookieValue, int expiry) throws UnsupportedEncodingException {
       Cookie c = new Cookie( cookieName, URLEncoder.encode(cookieValue, "UTF-8"));
       c.setPath("/");
@@ -55,7 +55,7 @@ public class Cookies {
       return c;
    }
    
-   // ÄíÅ° »ı¼º
+   // ì¿ í‚¤ ìƒì„±
    public static Cookie createCookie(String cookieName, String cookieValue, String path, int expiry) throws UnsupportedEncodingException {
       Cookie c = new Cookie( cookieName, URLEncoder.encode(cookieValue, "UTF-8"));
       c.setPath(path);
@@ -63,7 +63,7 @@ public class Cookies {
       return c;
    }
    
-   // ÄíÅ° »ı¼º  ¿À¹ö·Îµù( overloading )
+   // ì¿ í‚¤ ìƒì„±  ì˜¤ë²„ë¡œë”©( overloading )
    public static Cookie createCookie(String cookieName, String cookieValue, String domain, String path, int expiry) throws UnsupportedEncodingException {
       Cookie c = new Cookie( cookieName, URLEncoder.encode(cookieValue, "UTF-8"));
       c.setDomain(domain);

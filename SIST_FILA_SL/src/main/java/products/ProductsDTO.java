@@ -15,32 +15,32 @@ import lombok.ToString;
 @Data
 public class ProductsDTO {
     
-    // 1. PRODUCTS Å×ÀÌºí ÄÃ·³
-    private String product_id;      // »óÇ° ID (PK)
-    private int category_id;        // Ä«Å×°í¸® ID (FK)
-    private String name;            // »óÇ°¸í
-    private String description;     // »óÇ° ¼³¸í
-    private int price;              // Á¤°¡
-    private int view_count;         // Á¶È¸¼ö
-    private Date created_at;        // µî·ÏÀÏ
-    private Date updated_at;        // ¼öÁ¤ÀÏ
-    private String status;          // »óÅÂ (SALE, SOLDOUT µî)
-    private int discount_rate;      // ÇÒÀÎÀ²
-    private int product_count; 		// Ä«Å×°í¸®º° »óÇ° °³¼ö¸¦ ´ãÀ» º¯¼ö
-    private String image_url;       // ´ëÇ¥ ÀÌ¹ÌÁö URL
+    // 1. PRODUCTS í…Œì´ë¸” ì»¬ëŸ¼
+    private String product_id;      // ìƒí’ˆ ID (PK)
+    private int category_id;        // ì¹´í…Œê³ ë¦¬ ID (FK)
+    private String name;            // ìƒí’ˆëª…
+    private String description;     // ìƒí’ˆ ì„¤ëª…
+    private int price;              // ì •ê°€
+    private int view_count;         // ì¡°íšŒìˆ˜
+    private Date created_at;        // ë“±ë¡ì¼
+    private Date updated_at;        // ìˆ˜ì •ì¼
+    private String status;          // ìƒíƒœ (SALE, SOLDOUT ë“±)
+    private int discount_rate;      // í• ì¸ìœ¨
+    private int product_count; 		// ì¹´í…Œê³ ë¦¬ë³„ ìƒí’ˆ ê°œìˆ˜ë¥¼ ë‹´ì„ ë³€ìˆ˜
+    private String image_url;       // ëŒ€í‘œ ì´ë¯¸ì§€ URL
     
- 	// 2. [Ãß°¡ ÇÊµå]
-    private String depth1_name;  	// »óÀ§ Ä«Å×°í¸® (¿©¼º/³²¼º µî)
-    private String tag_name;     	// ½ºÅ¸ÀÏ ÅÂ±× (¶óÀÌÇÁ½ºÅ¸ÀÏ/Æ®·¹ÀÌ´× µî)
-    private int like_count;      	// Âò(Wishlist) °³¼ö
-    private int review_count;    	// ¸®ºä ÃÑ °³¼ö
-    private double review_score; 	// ¸®ºä ÆòÁ¡ Æò±Õ
+ 	// 2. [ì¶”ê°€ í•„ë“œ]
+    private String depth1_name;  	// ìƒìœ„ ì¹´í…Œê³ ë¦¬ (ì—¬ì„±/ë‚¨ì„± ë“±)
+    private String tag_name;     	// ìŠ¤íƒ€ì¼ íƒœê·¸ (ë¼ì´í”„ìŠ¤íƒ€ì¼/íŠ¸ë ˆì´ë‹ ë“±)
+    private int like_count;      	// ì°œ(Wishlist) ê°œìˆ˜
+    private int review_count;    	// ë¦¬ë·° ì´ ê°œìˆ˜
+    private double review_score; 	// ë¦¬ë·° í‰ì  í‰ê· 
     
     public String getImage_url() {
-        // °ªÀÌ ¾øÀ¸¸é ºó ¹®ÀÚ¿­ ¸®ÅÏ
+        // ê°’ì´ ì—†ìœ¼ë©´ ë¹ˆ ë¬¸ìì—´ ë¦¬í„´
         if (this.image_url == null || this.image_url.isEmpty()) return "";
      
-        // ¿ª½½·¡½Ã¸¦ ½½·¡½Ã·Î ¹Ù²Ù°í ¼­ºí¸´ °æ·Î ºÙ¿©¼­ ¸®ÅÏ
+        // ì—­ìŠ¬ë˜ì‹œë¥¼ ìŠ¬ë˜ì‹œë¡œ ë°”ê¾¸ê³  ì„œë¸”ë¦¿ ê²½ë¡œ ë¶™ì—¬ì„œ ë¦¬í„´
         String webPath = this.image_url.replace("\\", "/");
         return "/SIST_FILA/displayImage.do?path=" + webPath;
     }

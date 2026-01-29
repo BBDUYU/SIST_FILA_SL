@@ -11,15 +11,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ProductDTO {
-    private String productid;    // »óÇ° ID
-    private String name;         // »óÇ°¸í
-    private String categoryName; // Ä«Å×°í¸®¸í (JOIN °á°ú)
-    private int price;           // °¡°İ
-    private int discountRate;    // ÇÒÀÎÀ²
-    private String status;       // ÆÇ¸Å »óÅÂ (ÆÇ¸ÅÁß/Ç°Àı µî)
-    private int totalStock;      // ÇØ´ç »óÇ°ÀÇ ¸ğµç ¿É¼Ç Àç°í ÇÕ°è
-    private Date createdAt;      // µî·ÏÀÏ
-    private String mainImageUrl; // »óÇ° ´ëÇ¥ ÀÌ¹ÌÁö
+    private String productid;    // ìƒí’ˆ ID
+    private String name;         // ìƒí’ˆëª…
+    private String categoryName; // ì¹´í…Œê³ ë¦¬ëª… (JOIN ê²°ê³¼)
+    private int price;           // ê°€ê²©
+    private int discountRate;    // í• ì¸ìœ¨
+    private String status;       // íŒë§¤ ìƒíƒœ (íŒë§¤ì¤‘/í’ˆì ˆ ë“±)
+    private int totalStock;      // í•´ë‹¹ ìƒí’ˆì˜ ëª¨ë“  ì˜µì…˜ ì¬ê³  í•©ê³„
+    private Date createdAt;      // ë“±ë¡ì¼
+    private String mainImageUrl; // ìƒí’ˆ ëŒ€í‘œ ì´ë¯¸ì§€
     
 
 }

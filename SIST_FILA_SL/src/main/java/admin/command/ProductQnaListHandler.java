@@ -5,26 +5,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import command.CommandHandler;
-import productsqna.QnaDAO;
-import productsqna.QnaDAOImpl;
-import productsqna.QnaDTO; 
+import qna.QnaDAO;
+import qna.QnaDAOImpl; // [ì¶”ê°€] ì´ê²Œ ìˆì–´ì•¼ QnaDAOImpl.getInstance()ë¥¼ ì“¸ ìˆ˜ ìˆìŠµë‹ˆë‹¤!
+import qna.QnaDTO; 
 
 public class ProductQnaListHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
         
-        // 1. »çÀÌµå¹Ù È°¼ºÈ­¸¦ À§ÇÑ ¼³Á¤
+        // 1. ì‚¬ì´ë“œë°” í™œì„±í™”ë¥¼ ìœ„í•œ ì„¤ì •
         request.setAttribute("pageName", "productQna");
 
-        // 2. ÀÎÅÍÆäÀÌ½º Å¸ÀÔ(QnaDAO)À¸·Î º¯¼ö¸¦ ¼±¾ğÇÏ°í, ½ÇÁ¦ °´Ã¼´Â ±¸ÇöÃ¼(QnaDAOImpl)¿¡¼­ °¡Á®¿É´Ï´Ù.
+        // 2. ì¸í„°í˜ì´ìŠ¤ íƒ€ì…(QnaDAO)ìœ¼ë¡œ ë³€ìˆ˜ë¥¼ ì„ ì–¸í•˜ê³ , ì‹¤ì œ ê°ì²´ëŠ” êµ¬í˜„ì²´(QnaDAOImpl)ì—ì„œ ê°€ì ¸ì˜µë‹ˆë‹¤.
         QnaDAO dao = QnaDAOImpl.getInstance();
         
-        // 3. °ü¸®ÀÚ¿ë ÀüÃ¼ ¸ñ·Ï Á¶È¸ ¸Ş¼­µå È£Ãâ
+        // 3. ê´€ë¦¬ììš© ì „ì²´ ëª©ë¡ ì¡°íšŒ ë©”ì„œë“œ í˜¸ì¶œ
         List<QnaDTO> list = dao.selectAdminQnaList(); 
         request.setAttribute("qnaList", list);
 
-        // 4. JSP °æ·Î ¸®ÅÏ (Á¶Àå´Ô ±ÔÄ¢ ÁØ¼ö)
+        // 4. JSP ê²½ë¡œ ë¦¬í„´ (ì¡°ì¥ë‹˜ ê·œì¹™ ì¤€ìˆ˜)
         return "/view/admin/product_qna_list.jsp"; 
     }
 }

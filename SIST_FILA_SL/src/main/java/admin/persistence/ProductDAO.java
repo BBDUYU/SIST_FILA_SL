@@ -39,9 +39,9 @@ public class ProductDAO {
 	    try {
 	        pstmt = conn.prepareStatement(sql);
 	        rs = pstmt.executeQuery();
-	     // ProductDAO.java ¼öÁ¤
+	     // ProductDAO.java ìˆ˜ì •
 	        while (rs.next()) {
-	            String rawPath = rs.getString("IMG"); // DB°ª °¡Á®¿À±â
+	            String rawPath = rs.getString("IMG"); // DBê°’ ê°€ì ¸ì˜¤ê¸°
 	            
 	            if (rawPath != null && !rawPath.isEmpty()) {
 	                if (rawPath.contains("path=")) {

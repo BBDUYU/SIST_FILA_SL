@@ -20,8 +20,8 @@ public class OrderDAO {
     }
 
     /**
-     * 1. ÁÖ¹®¹øÈ£ »ı¼º (¿À´Ã³¯Â¥ + ½ÃÄö½º Á¶ÇÕ µî)
-     * ¿¹: 20260108-0001
+     * 1. ì£¼ë¬¸ë²ˆí˜¸ ìƒì„± (ì˜¤ëŠ˜ë‚ ì§œ + ì‹œí€€ìŠ¤ ì¡°í•© ë“±)
+     * ì˜ˆ: 20260108-0001
      */
     public String generateOrderId(Connection conn) throws SQLException {
         String sql = "SELECT TO_CHAR(SYSDATE, 'YYYYMMDD') || '-' || LPAD(SEQ_ORDER_ID.NEXTVAL, 4, '0') FROM DUAL";
@@ -33,12 +33,12 @@ public class OrderDAO {
     }
 
     /**
-     * 2. ORDERS Å×ÀÌºí INSERT (ÁÖ¹® ±âº» Á¤º¸)
+     * 2. ORDERS í…Œì´ë¸” INSERT (ì£¼ë¬¸ ê¸°ë³¸ ì •ë³´)
      */
     public int insertOrder(Connection conn, OrderDTO dto) throws SQLException {
         String sql = "INSERT INTO ORDERS (ORDER_ID, USER_NUMBER, ADDRESS_ID, TOTAL_AMOUNT, "
                    + "ORDER_STATUS, CREATED_AT, DELIVERY_METHOD, DELIVERY_REQUEST) "
-                   + "VALUES (?, ?, ?, ?, '°áÁ¦¿Ï·á', SYSDATE, ?, ?)";
+                   + "VALUES (?, ?, ?, ?, 'ê²°ì œì™„ë£Œ', SYSDATE, ?, ?)";
         
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, dto.getOrderId());
@@ -52,7 +52,7 @@ public class OrderDAO {
     }
 
     /**
-     * 3. ORDER_ITEMS Å×ÀÌºí INSERT (ÁÖ¹® »óÇ° ¸ñ·Ï - Batch »ç¿ë)
+     * 3. ORDER_ITEMS í…Œì´ë¸” INSERT (ì£¼ë¬¸ ìƒí’ˆ ëª©ë¡ - Batch ì‚¬ìš©)
      */
     public void insertOrderItems(Connection conn, List<OrderItemDTO> items) throws SQLException {
         String sql = "INSERT INTO ORDER_ITEMS (ORDER_ITEM_ID, ORDER_ID, PRODUCT_ID, "
@@ -77,7 +77,7 @@ public class OrderDAO {
     }
 
     /**
-     * 4. PAYMENT Å×ÀÌºí INSERT (°áÁ¦ ±â·Ï)
+     * 4. PAYMENT í…Œì´ë¸” INSERT (ê²°ì œ ê¸°ë¡)
      */
     public int insertPayment(Connection conn, String orderId, int amount, String method) throws SQLException {
         String sql = "INSERT INTO PAYMENT (PAYMENT_ID, ORDER_ID, AMOUNT, PAYMENT_METHOD, "
@@ -93,7 +93,7 @@ public class OrderDAO {
     }
 
     /**
-     * 5. ÄíÆù »ç¿ë Ã³¸® (USER_COUPON »óÅÂ ¾÷µ¥ÀÌÆ®)
+     * 5. ì¿ í° ì‚¬ìš© ì²˜ë¦¬ (USER_COUPON ìƒíƒœ ì—…ë°ì´íŠ¸)
      */
     public void updateCouponUsed(Connection conn, int userCouponId) throws SQLException {
         String sql = "UPDATE USER_COUPON SET IS_USED = 1, USED_AT = SYSDATE WHERE USER_COUPON_ID = ?";
@@ -107,18 +107,18 @@ public class OrderDAO {
         String sql = "INSERT INTO USERPOINTS (POINT_ID, USER_NUMBER, ORDER_ID, POINT_TYPE, AMOUNT, BALANCE, DESCRIPTION, CREATED_AT) "
                    + "VALUES (SEQ_POINT.NEXTVAL, ?, ?, 'USED', ?, "
                    + "(SELECT NVL((SELECT BALANCE FROM (SELECT BALANCE FROM USERPOINTS WHERE USER_NUMBER = ? ORDER BY POINT_ID DESC) WHERE ROWNUM = 1), 0) - ? FROM DUAL), "
-                   + "'»óÇ° ±¸¸Å »ç¿ë', SYSDATE)";
+                   + "'ìƒí’ˆ êµ¬ë§¤ ì‚¬ìš©', SYSDATE)";
         
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userNumber);
             pstmt.setString(2, orderId);
             pstmt.setInt(3, -usedAmount);
-            pstmt.setInt(4, userNumber); // ¼­ºêÄõ¸®¿ë
-            pstmt.setInt(5, usedAmount); // Â÷°¨¾×
+            pstmt.setInt(4, userNumber); // ì„œë¸Œì¿¼ë¦¬ìš©
+            pstmt.setInt(5, usedAmount); // ì°¨ê°ì•¡
             pstmt.executeUpdate();
         }
     }
-    /* Àç°í °ü·Ã DAO ¸Ş¼­µå */
+    /* ì¬ê³  ê´€ë ¨ DAO ë©”ì„œë“œ */
     public int updateDecreaseStock(Connection conn, int combinationId, int quantity) throws SQLException {
         String sql = "UPDATE PRODUCT_OPTION_STOCK " +
                      "SET STOCK = STOCK - ?, " +
@@ -129,7 +129,7 @@ public class OrderDAO {
             pstmt.setInt(1, quantity);
             pstmt.setInt(2, quantity);
             pstmt.setInt(3, combinationId);
-            pstmt.setInt(4, quantity); // Àç°í°¡ ÁÖ¹®¼ö·®º¸´Ù ¸¹À» ¶§¸¸ ½ÇÇà
+            pstmt.setInt(4, quantity); // ì¬ê³ ê°€ ì£¼ë¬¸ìˆ˜ëŸ‰ë³´ë‹¤ ë§ì„ ë•Œë§Œ ì‹¤í–‰
             return pstmt.executeUpdate();
         }
     }
@@ -144,32 +144,32 @@ public class OrderDAO {
             pstmt.setInt(1, userNumber);
             pstmt.setString(2, orderId);
             pstmt.setInt(3, amount);
-            pstmt.setInt(4, userNumber); // ¼­ºêÄõ¸®¿ë
-            pstmt.setInt(5, amount);    // Àû¸³¾×
-            pstmt.setString(6, "ÁÖ¹® ¹øÈ£[" + orderId + "] °áÁ¦ Àû¸³(5%)");
+            pstmt.setInt(4, userNumber); // ì„œë¸Œì¿¼ë¦¬ìš©
+            pstmt.setInt(5, amount);    // ì ë¦½ì•¡
+            pstmt.setString(6, "ì£¼ë¬¸ ë²ˆí˜¸[" + orderId + "] ê²°ì œ ì ë¦½(5%)");
             pstmt.executeUpdate();
         }
     }
     /**
-     * 6. ÁÖ¹® ¸ñ·Ï Á¶È¸ (°ü¸®ÀÚ/»ç¿ëÀÚ °ø¿ë)
+     * 6. ì£¼ë¬¸ ëª©ë¡ ì¡°íšŒ (ê´€ë¦¬ì/ì‚¬ìš©ì ê³µìš©)
      */
- // OrderDAO.java ³»ÀÇ ¸Ş¼­µå ¼öÁ¤
+ // OrderDAO.java ë‚´ì˜ ë©”ì„œë“œ ìˆ˜ì •
 
     public List<OrderDTO> selectUserOrderList(Connection conn, int userNumber, String type) throws SQLException {
         List<OrderDTO> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM ORDERS WHERE USER_NUMBER = ? ");
 
         if ("ORDER".equals(type)) {
-            sql.append(" AND ORDER_STATUS IN ('°áÁ¦¿Ï·á', '»óÇ°ÁØºñÁß', '¹è¼ÛÁØºñÁß', '¹è¼ÛÁß', '¹è¼Û¿Ï·á') ");
+            sql.append(" AND ORDER_STATUS IN ('ê²°ì œì™„ë£Œ', 'ìƒí’ˆì¤€ë¹„ì¤‘', 'ë°°ì†¡ì¤€ë¹„ì¤‘', 'ë°°ì†¡ì¤‘', 'ë°°ì†¡ì™„ë£Œ') ");
         } 
         else if ("CANCEL".equals(type)) {
-            sql.append(" AND ORDER_STATUS IN ('Ãë¼Ò¿äÃ»', '¹İÇ°¿äÃ»', 'Ãë¼Ò¿Ï·á', '¹İÇ°¿Ï·á') ");
+            sql.append(" AND ORDER_STATUS IN ('ì·¨ì†Œìš”ì²­', 'ë°˜í’ˆìš”ì²­', 'ì·¨ì†Œì™„ë£Œ', 'ë°˜í’ˆì™„ë£Œ') ");
         }
 
         sql.append(" ORDER BY CREATED_AT DESC ");
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
-            pstmt.setInt(1, userNumber); // ÆÄ¶ó¹ÌÅÍ ¼³Á¤À» °íÁ¤
+            pstmt.setInt(1, userNumber); // íŒŒë¼ë¯¸í„° ì„¤ì •ì„ ê³ ì •
             
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -186,7 +186,7 @@ public class OrderDAO {
     }
 
     /**
-     * 7. °ü¸®ÀÚ Àü¿ë: ÁÖ¹® »óÅÂ ¹× ¼ÛÀå ¹øÈ£ ¾÷µ¥ÀÌÆ®
+     * 7. ê´€ë¦¬ì ì „ìš©: ì£¼ë¬¸ ìƒíƒœ ë° ì†¡ì¥ ë²ˆí˜¸ ì—…ë°ì´íŠ¸
      */
     public int updateOrderStatus(Connection conn, String orderId, String status) throws SQLException {
         String sql = "UPDATE ORDERS SET ORDER_STATUS = ?, UPDATED_AT = SYSDATE WHERE ORDER_ID = ?";
@@ -197,7 +197,7 @@ public class OrderDAO {
         }
     }
     /**
-     * Æ¯Á¤ ÁÖ¹®ÀÇ »ó¼¼ »óÇ° ¸ñ·Ï Á¶È¸
+     * íŠ¹ì • ì£¼ë¬¸ì˜ ìƒì„¸ ìƒí’ˆ ëª©ë¡ ì¡°íšŒ
      */
     public List<OrderItemDTO> selectOrderItemsDetail(Connection conn, String orderId) throws SQLException {
         List<OrderItemDTO> list = new ArrayList<>();
@@ -221,7 +221,7 @@ public class OrderDAO {
                         .quantity(rs.getInt("QUANTITY"))
                         .price(rs.getInt("PRICE"))
                         .combinationId(rs.getInt("COMBINATION_ID"))
-                        .size(rs.getString("OPTION_SIZE") == null ? "±âº»" : rs.getString("OPTION_SIZE"))
+                        .size(rs.getString("OPTION_SIZE") == null ? "ê¸°ë³¸" : rs.getString("OPTION_SIZE"))
                         .build();
                     list.add(item);
                 }
@@ -233,7 +233,7 @@ public class OrderDAO {
         String sql = "UPDATE PRODUCT_OPTION_STOCK " +
                      "SET STOCK = STOCK + ?, " +
                      "    IS_SOLDOUT = CASE WHEN (STOCK + ?) > 0 THEN 0 ELSE 1 END " +
-                     "WHERE COMBINATION_ID = ? AND STORE_ID = 4"; // ¸ÅÀå ID Á¶°Ç È®ÀÎ ÇÊ¿ä
+                     "WHERE COMBINATION_ID = ? AND STORE_ID = 4"; // ë§¤ì¥ ID ì¡°ê±´ í™•ì¸ í•„ìš”
         
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, quantity);
@@ -242,24 +242,24 @@ public class OrderDAO {
             return pstmt.executeUpdate();
         }
     }
- // OrderDAO.java ÇÏ´Ü¿¡ Ãß°¡
+ // OrderDAO.java í•˜ë‹¨ì— ì¶”ê°€
     public void updateMasterCouponStatus(Connection conn, int userCouponId) throws SQLException {
-        // À¯Àú°¡ °¡Áø ÄíÆù ID(userCouponId)¸¦ ÅëÇØ ÇØ´ç ¸¶½ºÅÍ ÄíÆù(COUPON_ID)À» Ã£¾Æ STATUS¸¦ 'N'À¸·Î º¯°æ
+        // ìœ ì €ê°€ ê°€ì§„ ì¿ í° ID(userCouponId)ë¥¼ í†µí•´ í•´ë‹¹ ë§ˆìŠ¤í„° ì¿ í°(COUPON_ID)ì„ ì°¾ì•„ STATUSë¥¼ 'N'ìœ¼ë¡œ ë³€ê²½
         String sql = "UPDATE COUPON SET STATUS = 'N' " +
                      "WHERE COUPON_ID = (SELECT COUPON_ID FROM USER_COUPON WHERE USER_COUPON_ID = ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userCouponId);
             pstmt.executeUpdate();
         }
-    }//ÀÌ°Ç¾È¾¸
+    }//ì´ê±´ì•ˆì”€
     /**
-     * ÁÖ¹®¹øÈ£·Î ÁÖ¹® ¸¶½ºÅÍ Á¤º¸ ´Ü°Ç Á¶È¸ (ÁÖ¹® ¿Ï·á/»ó¼¼ ÆäÀÌÁö¿ë)
+     * ì£¼ë¬¸ë²ˆí˜¸ë¡œ ì£¼ë¬¸ ë§ˆìŠ¤í„° ì •ë³´ ë‹¨ê±´ ì¡°íšŒ (ì£¼ë¬¸ ì™„ë£Œ/ìƒì„¸ í˜ì´ì§€ìš©)
      */
     public OrderDTO selectOrderById(Connection conn, String orderId) throws SQLException {
     	String sql = "SELECT o.*, a.RECIPIENT_NAME, a.RECIPIENT_PHONE, a.ZIPCODE, a.MAIN_ADDR, a.DETAIL_ADDR, p.PAYMENT_METHOD " +
                 "FROM ORDERS o " +
                 "JOIN DELIVERY_ADDRESS a ON o.ADDRESS_ID = a.ADDRESS_ID " +
-                "LEFT JOIN PAYMENT p ON o.ORDER_ID = p.ORDER_ID " + // °áÁ¦ Á¤º¸ Á¶ÀÎ Ãß°¡
+                "LEFT JOIN PAYMENT p ON o.ORDER_ID = p.ORDER_ID " + // ê²°ì œ ì •ë³´ ì¡°ì¸ ì¶”ê°€
                 "WHERE o.ORDER_ID = ?";
         
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {

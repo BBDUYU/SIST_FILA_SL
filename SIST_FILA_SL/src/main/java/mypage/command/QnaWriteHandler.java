@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import command.CommandHandler;
-import member.domain.MemberDTO;
+import member.MemberDTO;
 import mypage.domain.QnaDTO;
 import mypage.service.QnaService;
 
@@ -18,11 +18,11 @@ public class QnaWriteHandler implements CommandHandler {
 	        return null;
 	    }
 
-	    // JSPÀÇ <select name="categoryId">¿Í <input name="privacyAgree"> È®ÀÎ ÇÊ¼ö!
+	    // JSPì˜ <select name="categoryId">ì™€ <input name="privacyAgree"> í™•ì¸ í•„ìˆ˜!
 	    int categoryId = Integer.parseInt(request.getParameter("categoryId")); 
 	    String title = request.getParameter("title");
 	    String content = request.getParameter("content");
-	    int privacyAgree = Integer.parseInt(request.getParameter("privacyAgree")); // Ãß°¡
+	    int privacyAgree = Integer.parseInt(request.getParameter("privacyAgree")); // ì¶”ê°€
 
 	    QnaDTO dto = QnaDTO.builder()
 	            .category_id(categoryId)
@@ -31,7 +31,7 @@ public class QnaWriteHandler implements CommandHandler {
 	            .build();
 
 	    QnaService service = QnaService.getInstance();
-	    // privacyAgree ÀÎÀÚ Ãß°¡ Àü´Ş
+	    // privacyAgree ì¸ì ì¶”ê°€ ì „ë‹¬
 	    service.writeQna(loginUser, dto, privacyAgree);
 
 	    response.sendRedirect(request.getContextPath() + "/mypage/qna.htm");

@@ -9,7 +9,8 @@ import javax.servlet.http.HttpSession;
 import com.util.ConnectionProvider;
 
 import command.CommandHandler;
-import member.domain.MemberDTO;
+import member.MemberDTO;
+
 import order.domain.OrderDTO;
 import order.persistence.OrderDAO;
 
@@ -24,12 +25,12 @@ public class CancelListHandler implements CommandHandler {
 
         try (Connection conn = ConnectionProvider.getConnection()) {
             OrderDAO dao = OrderDAO.getInstance();
-            // "CANCEL" Å¸ÀÔÀ» ÀÎÀÚ·Î Àü´ŞÇÏ¿© Ãë¼Ò/¹İÇ° °ü·Ã ÁÖ¹®¸¸ Á¶È¸
+            // "CANCEL" íƒ€ì…ì„ ì¸ìë¡œ ì „ë‹¬í•˜ì—¬ ì·¨ì†Œ/ë°˜í’ˆ ê´€ë ¨ ì£¼ë¬¸ë§Œ ì¡°íšŒ
             List<OrderDTO> list = dao.selectUserOrderList(conn, auth.getUserNumber(), "CANCEL");
             request.setAttribute("orderList", list);
             request.setAttribute("totalCount", list.size());
         }
 
-        return "/view/mypage/inquiry.jsp"; // ±³È¯/Ãë¼Ò/¹İÇ° Àü¿ë JSP
+        return "/view/mypage/inquiry.jsp"; // êµí™˜/ì·¨ì†Œ/ë°˜í’ˆ ì „ìš© JSP
     }
 }

@@ -1,20 +1,20 @@
-package cart.command; // ÆĞÅ°Áö °æ·Î È®ÀÎÇÏ¼¼¿ä
+package cart.command; // íŒ¨í‚¤ì§€ ê²½ë¡œ í™•ì¸í•˜ì„¸ìš”
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.util.DBConn;
 import products.service.ProductService;
-import command.CommandHandler; // »ç¿ëÇÏ´Â ÀÎÅÍÆäÀÌ½º
+import command.CommandHandler; // ì‚¬ìš©í•˜ëŠ” ì¸í„°í˜ì´ìŠ¤
 
 public class CartOptionHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // ProductService¿¡ ¹Ì¸® ¸¸µé¾îµĞ ¸Ş¼­µå¸¦ È£ÃâÇÏ¿© µ¥ÀÌÅÍ¸¦ request¿¡ ´ã½À´Ï´Ù.
-        // (¾Õ¼­ ProductService¿¡ getCartOptionInfo ¸Ş¼­µå¸¦ Ãß°¡Çß¾úÁÒ?)
+        // ProductServiceì— ë¯¸ë¦¬ ë§Œë“¤ì–´ë‘” ë©”ì„œë“œë¥¼ í˜¸ì¶œí•˜ì—¬ ë°ì´í„°ë¥¼ requestì— ë‹´ìŠµë‹ˆë‹¤.
+        // (ì•ì„œ ProductServiceì— getCartOptionInfo ë©”ì„œë“œë¥¼ ì¶”ê°€í–ˆì—ˆì£ ?)
         ProductService.getInstance().getCartOptionInfo(request);
         
-        // µ¥ÀÌÅÍ°¡ ´ã±ä »óÅÂ·Î jsp¸¦ º¸¿©Áİ´Ï´Ù.
+        // ë°ì´í„°ê°€ ë‹´ê¸´ ìƒíƒœë¡œ jspë¥¼ ë³´ì—¬ì¤ë‹ˆë‹¤.
         return "/view/pay/cart_option_modal.jsp"; 
     }
 }

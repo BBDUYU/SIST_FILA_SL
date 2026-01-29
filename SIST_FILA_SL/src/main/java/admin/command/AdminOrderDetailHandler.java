@@ -8,7 +8,7 @@ import com.util.ConnectionProvider;
 import command.CommandHandler;
 import order.domain.OrderItemDTO;
 import order.persistence.OrderDAO;
-import net.sf.json.JSONArray; // ¶Ç´Â »ç¿ë ÁßÀÎ JSON ¶óÀÌºê·¯¸®
+import net.sf.json.JSONArray; // ë˜ëŠ” ì‚¬ìš© ì¤‘ì¸ JSON ë¼ì´ë¸ŒëŸ¬ë¦¬
 
 public class AdminOrderDetailHandler implements CommandHandler {
     @Override
@@ -17,10 +17,10 @@ public class AdminOrderDetailHandler implements CommandHandler {
         
         try (Connection conn = ConnectionProvider.getConnection()) {
             OrderDAO dao = OrderDAO.getInstance();
-            // ¾Æ±î ¸¸µç Á¶ÀÎ Äõ¸® ¸Ş¼­µå È£Ãâ
+            // ì•„ê¹Œ ë§Œë“  ì¡°ì¸ ì¿¼ë¦¬ ë©”ì„œë“œ í˜¸ì¶œ
             List<OrderItemDTO> items = dao.selectOrderItemsDetail(conn, orderId);
 
-            // ¸®½ºÆ®¸¦ JSON ¹è¿­·Î º¯È¯
+            // ë¦¬ìŠ¤íŠ¸ë¥¼ JSON ë°°ì—´ë¡œ ë³€í™˜
             JSONArray jsonArray = JSONArray.fromObject(items);
             
             response.setContentType("application/json; charset=UTF-8");
@@ -30,6 +30,6 @@ public class AdminOrderDetailHandler implements CommandHandler {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
         
-        return null; // AJAX ÀÀ´äÀÌ¹Ç·Î ºä ÆäÀÌÁö·Î ÀÌµ¿ÇÏÁö ¾ÊÀ½
+        return null; // AJAX ì‘ë‹µì´ë¯€ë¡œ ë·° í˜ì´ì§€ë¡œ ì´ë™í•˜ì§€ ì•ŠìŒ
     }
 }

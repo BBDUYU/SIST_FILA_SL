@@ -11,5 +11,5 @@ public class EventDTO {
     private String description;
     private Date startAt;
     private Date endAt;
-    private int isActive; // DB NUMBER(1) ¹İ¿µ
+    private int isActive; // DB NUMBER(1) ë°˜ì˜
 }

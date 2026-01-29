@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import admin.domain.UserInfoDTO;
 import command.CommandHandler;
-import member.domain.MemberDTO;
+import member.MemberDTO;
 import mypage.service.UserCouponService;
 
 public class CouponListHandler implements CommandHandler {
@@ -24,7 +24,7 @@ public class CouponListHandler implements CommandHandler {
         List<UserInfoDTO> couponList = service.getCouponList(auth.getUserNumber());
 
         request.setAttribute("couponList", couponList);
-        // º¸À¯ ÄíÆù °³¼ö °è»ê (¹Ì»ç¿ë¸¸)
+        // ë³´ìœ  ì¿ í° ê°œìˆ˜ ê³„ì‚° (ë¯¸ì‚¬ìš©ë§Œ)
         long activeCount = couponList.stream().filter(c -> "0".equals(c.getIsused())).count();
         request.setAttribute("activeCount", activeCount);
 

@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import command.CommandHandler;
-import member.domain.MemberDTO;
+import member.MemberDTO;
 
 import java.sql.Connection;
 
@@ -41,7 +41,7 @@ public class AddressEditHandler implements CommandHandler {
     dto.setDetailAddr(request.getParameter("addr2"));
 
     String addressName = request.getParameter("addressName");
-    if (addressName == null || addressName.trim().isEmpty()) addressName = "배송�?";
+    if (addressName == null || addressName.trim().isEmpty()) addressName = "배송지";
     dto.setAddressName(addressName);
 
     String def = request.getParameter("addrDefault");

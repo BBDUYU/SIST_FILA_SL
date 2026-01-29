@@ -1,14 +1,14 @@
 package login;
 
-import member.domain.MemberDTO;
-import member.persistence.MemberDAO;
+import member.MemberDAO;
+import member.MemberDTO;
 
 public class LoginService implements ILogin{
 	private MemberDAO dao = MemberDAO.getInstance();
 
     @Override
     public MemberDTO login(String id, String pw) {
-        // ºñ¹Ğ¹øÈ£ ¾ÏÈ£È­ ·ÎÁ÷ µîÀÌ ³ªÁß¿¡ ¿©±â¿¡ Ãß°¡µÉ ¼ö ÀÖ½À´Ï´Ù.
+        // ë¹„ë°€ë²ˆí˜¸ ì•”í˜¸í™” ë¡œì§ ë“±ì´ ë‚˜ì¤‘ì— ì—¬ê¸°ì— ì¶”ê°€ë  ìˆ˜ ìˆìŠµë‹ˆë‹¤.
         return dao.login(id, pw);
 
 

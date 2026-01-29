@@ -6,8 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.util.DBConn;
-
-import member.domain.MemberDTO;
+import member.MemberDTO;
 import review.ReviewDAO;
 import review.ReviewDAOImpl;
 import review.ReviewDTO;
@@ -17,24 +16,24 @@ public class ReviewListHandler implements CommandHandler {
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
         
-        // 1. ÆÄ¶ó¹ÌÅÍ ¹Ş±â
+        // 1. íŒŒë¼ë¯¸í„° ë°›ê¸°
         String productId = request.getParameter("product_id");
-        String sort = request.getParameter("sort"); // "photo" ¶Ç´Â null
+        String sort = request.getParameter("sort"); // "photo" ë˜ëŠ” null
         String keyword = request.getParameter("keyword");
         
-        // 2. ·Î±×ÀÎ À¯Àú È®ÀÎ
+        // 2. ë¡œê·¸ì¸ ìœ ì € í™•ì¸
         HttpSession session = request.getSession();
         MemberDTO auth = (MemberDTO) session.getAttribute("auth");
         int userNumber = (auth != null) ? auth.getUserNumber() : 0;
         
-        // 3. DB¿¡¼­ ¸®½ºÆ® ´Ù½Ã Á¶È¸
+        // 3. DBì—ì„œ ë¦¬ìŠ¤íŠ¸ ë‹¤ì‹œ ì¡°íšŒ
         ReviewDAO dao = new ReviewDAOImpl(DBConn.getConnection());
         
-        // Rating ÇÊÅÍ´Â ÀÏ´Ü null Ã³¸® (³ªÁß¿¡ ÇÊ¿äÇÏ¸é Ãß°¡)
+        // Rating í•„í„°ëŠ” ì¼ë‹¨ null ì²˜ë¦¬ (ë‚˜ì¤‘ì— í•„ìš”í•˜ë©´ ì¶”ê°€)
         List<ReviewDTO> list = dao.selectListByFilter(productId, null, userNumber, sort, keyword);
         DBConn.close();
         
-        // 4. °á°ú ÀúÀå
+        // 4. ê²°ê³¼ ì €ì¥
         request.setAttribute("reviewList", list);
         
         return "/view/review/review_list.jsp";

@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import command.CommandHandler;
-import member.domain.MemberDTO;
+import member.MemberDTO;
 import mypage.domain.QNACategoriesDTO;
 import mypage.domain.QnaDTO;
 import mypage.service.QnaService;
@@ -23,13 +23,13 @@ public class QnaListHandler implements CommandHandler {
 
         QnaService service = QnaService.getInstance();
 
-        // 1. ³» ¹®ÀÇ ¸ñ·Ï
+        // 1. ë‚´ ë¬¸ì˜ ëª©ë¡
         List<QnaDTO> qnaList = service.getQnaList(loginUser.getUserNumber());
         request.setAttribute("qnaList", qnaList);
 
-        // 2. ¹®ÀÇ Ä«Å×°í¸® (¸ğ´Ş¿ë)
+        // 2. ë¬¸ì˜ ì¹´í…Œê³ ë¦¬ (ëª¨ë‹¬ìš©)
         List<QNACategoriesDTO> categoryList = service.getCategoryList();
-        System.out.println(">>> Ä«Å×°í¸® °³¼ö: " + (categoryList != null ? categoryList.size() : "null"));
+        System.out.println(">>> ì¹´í…Œê³ ë¦¬ ê°œìˆ˜: " + (categoryList != null ? categoryList.size() : "null"));
         if (categoryList != null) {
             for(QNACategoriesDTO c : categoryList) {
                 System.out.println("ID: " + c.getCategory_id() + ", Name: " + c.getCategory_name());
@@ -37,7 +37,7 @@ public class QnaListHandler implements CommandHandler {
         }
         request.setAttribute("categoryList", categoryList);
 
-        // 3. mypage ·¹ÀÌ¾Æ¿ô »ç¿ë
+        // 3. mypage ë ˆì´ì•„ì›ƒ ì‚¬ìš©
         return "/view/mypage/qna.jsp";
     }
 }

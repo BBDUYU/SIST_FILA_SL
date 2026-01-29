@@ -14,31 +14,31 @@ public class ReviewImageLoader implements CommandHandler {
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
         
-        // 1. ¿äÃ»ÇÑ ÆÄÀÏ ÀÌ¸§ ¹Ş±â (¿¹: neko1.jpg)
+        // 1. ìš”ì²­í•œ íŒŒì¼ ì´ë¦„ ë°›ê¸° (ì˜ˆ: neko1.jpg)
         String fileName = request.getParameter("file");
         
-        // ÆÄÀÏ¸íÀÌ ¾øÀ¸¸é Á¾·á
+        // íŒŒì¼ëª…ì´ ì—†ìœ¼ë©´ ì¢…ë£Œ
         if (fileName == null || fileName.trim().equals("")) {
             return null;
         }
 
-        // 2. ½ÇÁ¦ ÆÄÀÏÀÌ ÀÖ´Â °æ·Î (¾Æ±î ¸¸µç Cµå¶óÀÌºê Æú´õ)
+        // 2. ì‹¤ì œ íŒŒì¼ì´ ìˆëŠ” ê²½ë¡œ (ì•„ê¹Œ ë§Œë“  Cë“œë¼ì´ë¸Œ í´ë”)
         String savePath = "C:\\fila_upload\\review";
         
-        // ÀüÃ¼ °æ·Î ¿Ï¼º (C:\fila_upload\review\neko1.jpg)
+        // ì „ì²´ ê²½ë¡œ ì™„ì„± (C:\fila_upload\review\neko1.jpg)
         File file = new File(savePath, fileName);
 
-        // 3. ÆÄÀÏÀÌ ÀÖÀ¸¸é ÀĞ¾î¼­ ºê¶ó¿ìÀú¿¡ ½÷ÁÖ±â
+        // 3. íŒŒì¼ì´ ìˆìœ¼ë©´ ì½ì–´ì„œ ë¸Œë¼ìš°ì €ì— ì´ì£¼ê¸°
         if (file.exists()) {
             
-            // ÇÑ±Û ÆÄÀÏ¸í ±úÁü ¹æÁö
+            // í•œê¸€ íŒŒì¼ëª… ê¹¨ì§ ë°©ì§€
             String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replaceAll("\\+", "%20");
             
-            // ÀÀ´ä Çì´õ ¼³Á¤ (ÀÌ°Ô ÀÌ¹ÌÁö´Ù! ¶ó°í ¾Ë·ÁÁÜ)
-            response.setContentType("image/jpeg"); // jpg, png µî ÀÚµ¿ ÀÎ½ÄÀº º¹ÀâÇÏ´Ï ÀÏ´Ü jpeg·Î
+            // ì‘ë‹µ í—¤ë” ì„¤ì • (ì´ê²Œ ì´ë¯¸ì§€ë‹¤! ë¼ê³  ì•Œë ¤ì¤Œ)
+            response.setContentType("image/jpeg"); // jpg, png ë“± ìë™ ì¸ì‹ì€ ë³µì¡í•˜ë‹ˆ ì¼ë‹¨ jpegë¡œ
             response.setHeader("Content-Disposition", "inline; filename=" + encodedFileName);
             
-            // ½ºÆ®¸² ¿­¾î¼­ Àü¼Û (º¹»ç ºÙ¿©³Ö±â ·ÎÁ÷)
+            // ìŠ¤íŠ¸ë¦¼ ì—´ì–´ì„œ ì „ì†¡ (ë³µì‚¬ ë¶™ì—¬ë„£ê¸° ë¡œì§)
             BufferedInputStream in = null;
             BufferedOutputStream out = null;
             
@@ -60,6 +60,6 @@ public class ReviewImageLoader implements CommandHandler {
             }
         }
         
-        return null; // ÆäÀÌÁö ÀÌµ¿ ¾øÀ½ (ÀÌ¹ÌÁö µ¥ÀÌÅÍ¸¸ ½î°í ³¡)
+        return null; // í˜ì´ì§€ ì´ë™ ì—†ìŒ (ì´ë¯¸ì§€ ë°ì´í„°ë§Œ ì˜ê³  ë)
     }
 }

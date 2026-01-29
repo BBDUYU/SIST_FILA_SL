@@ -7,8 +7,8 @@ import javax.servlet.http.HttpSession;
 import com.util.ConnectionProvider;
 import com.util.JdbcUtil;
 import command.CommandHandler;
-import member.domain.MemberDTO;
-import member.persistence.MemberDAO;
+import member.MemberDAO;
+import member.MemberDTO;
 
 public class MemberRetireHandler implements CommandHandler {
 
@@ -26,16 +26,16 @@ public class MemberRetireHandler implements CommandHandler {
             conn = ConnectionProvider.getConnection();
             MemberDAO dao = MemberDAO.getInstance();
             
-            // 1. DB »óÅÂ º¯°æ
+            // 1. DB ìƒíƒœ ë³€ê²½
             int result = dao.retireMember(conn, auth.getUserNumber());
             
             if (result > 0) {
-                // 2. Å»Åğ ¼º°ø ½Ã ¼¼¼Ç ¹«È¿È­ (·Î±×¾Æ¿ô)
+                // 2. íƒˆí‡´ ì„±ê³µ ì‹œ ì„¸ì…˜ ë¬´íš¨í™” (ë¡œê·¸ì•„ì›ƒ)
                 session.invalidate();
                 
-                // 3. ¾Ë¸²Ã¢À» ¶ç¿ì±â À§ÇØ Àü¿ë ÆäÀÌÁö·Î ÀÌµ¿ÇÏ°Å³ª ÀÀ´ä
+                // 3. ì•Œë¦¼ì°½ì„ ë„ìš°ê¸° ìœ„í•´ ì „ìš© í˜ì´ì§€ë¡œ ì´ë™í•˜ê±°ë‚˜ ì‘ë‹µ
                 response.setContentType("text/html; charset=UTF-8");
-                response.getWriter().println("<script>alert('È¸¿øÅ»Åğ°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù. ±×µ¿¾È ÀÌ¿ëÇØÁÖ¼Å¼­ °¨»çÇÕ´Ï´Ù.'); location.href='" + request.getContextPath() + "/index.htm';</script>");
+                response.getWriter().println("<script>alert('íšŒì›íƒˆí‡´ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤. ê·¸ë™ì•ˆ ì´ìš©í•´ì£¼ì…”ì„œ ê°ì‚¬í•©ë‹ˆë‹¤.'); location.href='" + request.getContextPath() + "/index.htm';</script>");
                 return null; 
             } else {
                 return "redirect:/mypage/modifyInfo.htm?error=retire_fail";

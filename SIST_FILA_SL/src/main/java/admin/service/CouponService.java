@@ -22,23 +22,23 @@ public class CouponService {
         try (Connection conn = ConnectionProvider.getConnection()) {
             return dao.selectList(conn);
         } catch (Exception e) {
-            throw new RuntimeException("ÄíÆù ¸ñ·Ï Á¶È¸ ½ÇÆĞ", e);
+            throw new RuntimeException("ì¿ í° ëª©ë¡ ì¡°íšŒ ì‹¤íŒ¨", e);
         }
     }
     public void createCoupon(CouponDTO dto) {
         try (Connection conn = ConnectionProvider.getConnection()) {
             dao.insertCoupon(conn, dto);
         } catch (Exception e) {
-            throw new RuntimeException("ÄíÆù µî·Ï ½ÇÆĞ", e);
+            throw new RuntimeException("ì¿ í° ë“±ë¡ ì‹¤íŒ¨", e);
         }
     }
 
     public void toggleCouponStatus(int couponId, String status) {
         try (Connection conn = ConnectionProvider.getConnection()) {
-            // DAOÀÇ updateStatus¸¦ È£ÃâÇÕ´Ï´Ù.
+            // DAOì˜ updateStatusë¥¼ í˜¸ì¶œí•©ë‹ˆë‹¤.
             dao.updateStatus(conn, couponId, status);
         } catch (Exception e) {
-            throw new RuntimeException("ÄíÆù »óÅÂ º¯°æ ½ÇÆĞ", e);
+            throw new RuntimeException("ì¿ í° ìƒíƒœ ë³€ê²½ ì‹¤íŒ¨", e);
         }
     }
     public List<UserInfoDTO> getUserCouponList(int userNum) {
@@ -46,7 +46,7 @@ public class CouponService {
             CouponDAO dao = CouponDAO.getInstance();
             return dao.getUserCouponList(conn, userNum);
         } catch (SQLException | javax.naming.NamingException e) { 
-            throw new RuntimeException("È¸¿ø ÄíÆù ¸ñ·Ï Á¶È¸ Áß ¼­¹ö ¿À·ù ¹ß»ı", e);
+            throw new RuntimeException("íšŒì› ì¿ í° ëª©ë¡ ì¡°íšŒ ì¤‘ ì„œë²„ ì˜¤ë¥˜ ë°œìƒ", e);
         }
     }
 }

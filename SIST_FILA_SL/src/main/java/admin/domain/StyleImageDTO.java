@@ -7,7 +7,7 @@ public class StyleImageDTO {
     private int style_image_id;
     private int style_id;
     private String image_url;
-    private int is_main;      // 1: ¸ŞÀÎ, 0: ÀÏ¹İ
+    private int is_main;      // 1: ë©”ì¸, 0: ì¼ë°˜
     private int sort_order;
     private String alt_text;
 }

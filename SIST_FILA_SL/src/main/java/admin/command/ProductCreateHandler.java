@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,6 @@ import admin.service.ProductService;
 import categories.CategoriesDAO;
 import categories.CategoriesDTO;
 import command.CommandHandler;
-import net.sf.json.JSONObject;
 
 public class ProductCreateHandler implements CommandHandler {
 
@@ -61,7 +61,8 @@ public class ProductCreateHandler implements CommandHandler {
             response.setContentType("application/json; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
-            JSONObject jsonResponse = new JSONObject();
+            Map<String, Object> jsonResponse = new HashMap<>();
+
 
             try (Connection conn = ConnectionProvider.getConnection()) {
                 ProductService service = ProductService.getInstance();

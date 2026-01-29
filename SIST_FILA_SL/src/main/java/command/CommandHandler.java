@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface CommandHandler {
 	
-	// View ¸¦ ¸®ÅÏ°ªÀ¸·Î »ç¿ë.
+	// View ë¥¼ ë¦¬í„´ê°’ìœ¼ë¡œ ì‚¬ìš©.
 	String process(HttpServletRequest request
 			, HttpServletResponse response) throws Exception;
 

@@ -10,12 +10,12 @@ import mypage.service.QnaService;
 public class QnaWriteFormHandler implements CommandHandler {
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) {
-        // ¿©±â¼­ µ¥ÀÌÅÍ¸¦ ´ã¾ÆÁà¾ß JSPÀÇ c:forEach°¡ ÀÛµ¿ÇÕ´Ï´Ù!
+        // ì—¬ê¸°ì„œ ë°ì´í„°ë¥¼ ë‹´ì•„ì¤˜ì•¼ JSPì˜ c:forEachê°€ ì‘ë™í•©ë‹ˆë‹¤!
         QnaService service = QnaService.getInstance();
         List<QNACategoriesDTO> categoryList = service.getCategoryList();
         request.setAttribute("categoryList", categoryList);
         
-        // ½ÇÁ¦ JSP ÆÄÀÏ °æ·Î ¸®ÅÏ
+        // ì‹¤ì œ JSP íŒŒì¼ ê²½ë¡œ ë¦¬í„´
         return "/view/mypage/qna_write.jsp"; 
     }
 }

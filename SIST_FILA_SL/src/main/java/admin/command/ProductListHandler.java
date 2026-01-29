@@ -19,7 +19,7 @@ public class ProductListHandler implements CommandHandler {
             ArrayList<ProductDTO> list = dao.selectProductList(conn);
             
             request.setAttribute("productList", list);
-            return "/view/admin/product_list.jsp"; // ÀÌµ¿ÇÒ JSP °æ·Î
+            return "/view/admin/product_list.jsp"; // ì´ë™í•  JSP ê²½ë¡œ
             
         } catch (Exception e) {
             e.printStackTrace();

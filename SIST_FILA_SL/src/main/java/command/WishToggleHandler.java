@@ -3,7 +3,7 @@ package command;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import member.domain.MemberDTO;
+import member.MemberDTO;
 import mypage.service.WishListService;
 
 public class WishToggleHandler implements CommandHandler {

@@ -11,21 +11,21 @@ import com.util.ConnectionProvider;
 import com.util.JdbcUtil;
 import net.sf.json.JSONObject;
 import command.CommandHandler;
-import member.domain.MemberDTO;
+import member.MemberDTO;
 
 public class CouponProcessHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // AJAX ÀÀ´äÀ» À§ÇÑ ¼³Á¤
+        // AJAX ì‘ë‹µì„ ìœ„í•œ ì„¤ì •
         response.setContentType("application/json; charset=UTF-8");
-        String serialNo = request.getParameter("randomNo"); // JSP¿¡¼­ 'randomNo'·Î º¸³¿
+        String serialNo = request.getParameter("randomNo"); // JSPì—ì„œ 'randomNo'ë¡œ ë³´ëƒ„
         MemberDTO auth = (MemberDTO) request.getSession().getAttribute("auth");
 
         Map<String, Object> resultMap = new HashMap<>();
         
         if (auth == null) {
-            resultMap.put("msg", "alert('·Î±×ÀÎÀÌ ÇÊ¿äÇÕ´Ï´Ù.');");
+            resultMap.put("msg", "alert('ë¡œê·¸ì¸ì´ í•„ìš”í•©ë‹ˆë‹¤.');");
             return JSONObject.fromObject(resultMap).toString();
         }
 
@@ -35,9 +35,9 @@ public class CouponProcessHandler implements CommandHandler {
 
         try {
             conn = ConnectionProvider.getConnection();
-            conn.setAutoCommit(false); // Æ®·£Àè¼Ç ½ÃÀÛ
+            conn.setAutoCommit(false); // íŠ¸ëœì­ì…˜ ì‹œì‘
 
-            // 1. ÀÔ·Â¹ŞÀº ½Ã¸®¾ó ¹øÈ£°¡ Á¸ÀçÇÏ´Â À¯È¿ÇÑ ÄíÆùÀÎÁö È®ÀÎ
+            // 1. ì…ë ¥ë°›ì€ ì‹œë¦¬ì–¼ ë²ˆí˜¸ê°€ ì¡´ì¬í•˜ëŠ” ìœ íš¨í•œ ì¿ í°ì¸ì§€ í™•ì¸
             String sqlCheck = "SELECT COUPON_ID, EXPIRES_AT FROM COUPON WHERE SERIAL_NUMBER = ? AND STATUS = 'Y'";
             pstmt = conn.prepareStatement(sqlCheck);
             pstmt.setString(1, serialNo);
@@ -47,7 +47,7 @@ public class CouponProcessHandler implements CommandHandler {
                 int couponId = rs.getInt("COUPON_ID");
                 java.sql.Date expireDate = rs.getDate("EXPIRES_AT");
 
-                // 2. ÀÌ¹Ì µî·ÏÇÑ ÄíÆùÀÎÁö È®ÀÎ (Áßº¹ Áö±Ş ¹æÁö)
+                // 2. ì´ë¯¸ ë“±ë¡í•œ ì¿ í°ì¸ì§€ í™•ì¸ (ì¤‘ë³µ ì§€ê¸‰ ë°©ì§€)
                 String sqlDup = "SELECT COUNT(*) FROM USER_COUPON WHERE USER_NUMBER = ? AND COUPON_ID = ?";
                 PreparedStatement pstmt2 = conn.prepareStatement(sqlDup);
                 pstmt2.setInt(1, auth.getUserNumber());
@@ -56,9 +56,9 @@ public class CouponProcessHandler implements CommandHandler {
                 
                 if (rs2.next() && rs2.getInt(1) > 0) {
                 	resultMap.put("status", "fail");
-                    resultMap.put("message", "ÀÌ¹Ì µî·ÏµÈ ÄíÆùÀÔ´Ï´Ù.");
+                    resultMap.put("message", "ì´ë¯¸ ë“±ë¡ëœ ì¿ í°ì…ë‹ˆë‹¤.");
                 } else {
-                    // 3. USER_COUPON Å×ÀÌºí¿¡ µî·Ï
+                    // 3. USER_COUPON í…Œì´ë¸”ì— ë“±ë¡
                     String sqlInsert = "INSERT INTO USER_COUPON (USER_COUPON_ID, COUPON_ID, USER_NUMBER, IS_USED, EXPIRE_DATE, RECEIVED_AT) " +
                                        "VALUES (SEQ_USER_COUPON.NEXTVAL, ?, ?, 0, ?, SYSDATE)";
                     PreparedStatement pstmt3 = conn.prepareStatement(sqlInsert);
@@ -67,25 +67,25 @@ public class CouponProcessHandler implements CommandHandler {
                     pstmt3.setDate(3, expireDate);
                     pstmt3.executeUpdate();
                     
-                    conn.commit(); // ¼º°ø ½Ã È®Á¤
+                    conn.commit(); // ì„±ê³µ ì‹œ í™•ì •
                     resultMap.put("status", "success");
-                    resultMap.put("message", "ÄíÆùÀÌ ¼º°øÀûÀ¸·Î µî·ÏµÇ¾ú½À´Ï´Ù.");
+                    resultMap.put("message", "ì¿ í°ì´ ì„±ê³µì ìœ¼ë¡œ ë“±ë¡ë˜ì—ˆìŠµë‹ˆë‹¤.");
                 }
             } else {
             	resultMap.put("status", "fail");
-                resultMap.put("message", "À¯È¿ÇÏÁö ¾Ê°Å³ª ÁßÁöµÈ ÄíÆù ¹øÈ£ÀÔ´Ï´Ù.");
+                resultMap.put("message", "ìœ íš¨í•˜ì§€ ì•Šê±°ë‚˜ ì¤‘ì§€ëœ ì¿ í° ë²ˆí˜¸ì…ë‹ˆë‹¤.");
             }
         } catch (Exception e) {
             if (conn != null) conn.rollback();
-            resultMap.put("msg", "alert('Ã³¸® Áß ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù.');");
+            resultMap.put("msg", "alert('ì²˜ë¦¬ ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.');");
         } finally {
             JdbcUtil.close(rs);
             JdbcUtil.close(pstmt);
             JdbcUtil.close(conn);
         }
 
-        // JSON °á°ú Ãâ·Â (JSPÀÇ success: function(data)·Î Àü´ŞµÊ)
+        // JSON ê²°ê³¼ ì¶œë ¥ (JSPì˜ success: function(data)ë¡œ ì „ë‹¬ë¨)
         response.getWriter().write(JSONObject.fromObject(resultMap).toString());
-        return null; // AJAXÀÌ¹Ç·Î ÆäÀÌÁö ÀÌµ¿ ¾øÀ½
+        return null; // AJAXì´ë¯€ë¡œ í˜ì´ì§€ ì´ë™ ì—†ìŒ
     }
 }

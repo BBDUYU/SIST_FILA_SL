@@ -11,14 +11,14 @@ public class AdminUserListHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // 1. ¼­ºñ½º È£ÃâÇÏ¿© µ¥ÀÌÅÍ °¡Á®¿À±â
+        // 1. ì„œë¹„ìŠ¤ í˜¸ì¶œí•˜ì—¬ ë°ì´í„° ê°€ì ¸ì˜¤ê¸°
         AdminUserService service = AdminUserService.getInstance();
         ArrayList<UserInfoDTO> userList = service.getUserList();
         
-        // 2. °á°ú µ¥ÀÌÅÍ¸¦ request¿¡ ÀúÀå
+        // 2. ê²°ê³¼ ë°ì´í„°ë¥¼ requestì— ì €ì¥
         request.setAttribute("userList", userList);
         
-        // 3. ºä ÆäÀÌÁö(JSP) °æ·Î ¸®ÅÏ
+        // 3. ë·° í˜ì´ì§€(JSP) ê²½ë¡œ ë¦¬í„´
         return "/view/admin/admin_user.jsp";
     }
 }

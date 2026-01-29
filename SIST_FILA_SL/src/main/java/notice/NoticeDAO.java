@@ -4,13 +4,13 @@ import java.util.List;
 import notice.NoticeDTO;
 
 public interface NoticeDAO {
-    // ¸ñ·Ï Á¶È¸ (Ä«Å×°í¸®, °Ë»ö¾î Æ÷ÇÔ)
+    // ëª©ë¡ ì¡°íšŒ (ì¹´í…Œê³ ë¦¬, ê²€ìƒ‰ì–´ í¬í•¨)
     List<NoticeDTO> selectList(String category, String keyword) throws Exception;
     
-    // »ó¼¼ Á¶È¸ (ÀÌ¹ÌÁö º¸±â¿ë)
+    // ìƒì„¸ ì¡°íšŒ (ì´ë¯¸ì§€ ë³´ê¸°ìš©)
     NoticeDTO selectOne(int noticeId) throws Exception;
 
-    // °øÁö»çÇ× µî·Ï/»èÁ¦ (°ü¸®ÀÚ¿ë)
+    // ê³µì§€ì‚¬í•­ ë“±ë¡/ì‚­ì œ (ê´€ë¦¬ììš©)
     int insert(NoticeDTO dto) throws Exception;
     int delete(int noticeId) throws Exception;
 }

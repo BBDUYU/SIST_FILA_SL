@@ -15,7 +15,7 @@ public class TagProductsDAO {
     private TagProductsDAO() {}
 
     /**
-     * Æ¯Á¤ ÀÎ±â ÅÂ±×(CategoryId)¿¡ ¼ÓÇÑ »óÇ° ¸ñ·Ï Á¶È¸
+     * íŠ¹ì • ì¸ê¸° íƒœê·¸(CategoryId)ì— ì†í•œ ìƒí’ˆ ëª©ë¡ ì¡°íšŒ
      */
     public List<ProductsDTO> selectProductsByTag(Connection conn, int tagId) throws SQLException {
         List<ProductsDTO> list = new ArrayList<>();
@@ -45,7 +45,7 @@ public class TagProductsDAO {
         return list;
     }
 
-    // ±âÁ¸ ProductsDAOÀÇ makeDTO ·ÎÁ÷À» ±×´ë·Î °¡Á®¿Í¼­ È£È¯¼º À¯Áö
+    // ê¸°ì¡´ ProductsDAOì˜ makeDTO ë¡œì§ì„ ê·¸ëŒ€ë¡œ ê°€ì ¸ì™€ì„œ í˜¸í™˜ì„± ìœ ì§€
     private ProductsDTO makeDTO(ResultSet rs) throws SQLException {
         ProductsDTO dto = new ProductsDTO();
         dto.setProduct_id(rs.getString("PRODUCT_ID"));
@@ -56,7 +56,7 @@ public class TagProductsDAO {
         dto.setCategory_id(rs.getInt("CATEGORY_ID")); 
         
         String img = rs.getString("IMAGE_URL");
-        // ÀÌ¹ÌÁö ¾ø´Â °æ¿ì ±âº» ÈÙ¶ó ÀÌ¹ÌÁö ¼¼ÆÃ
+        // ì´ë¯¸ì§€ ì—†ëŠ” ê²½ìš° ê¸°ë³¸ íœ ë¼ ì´ë¯¸ì§€ ì„¸íŒ…
         if(img == null) img = "//filacdn.styleship.com/filaproduct2/data/productimages/a/1/FS261FT01X001_234.jpg"; 
         dto.setImage_url(img);
         

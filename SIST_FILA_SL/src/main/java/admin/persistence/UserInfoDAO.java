@@ -28,7 +28,7 @@ public class UserInfoDAO implements IUserInfo {
                 UserInfoDTO dto = UserInfoDTO.builder()
                         .usernumber(rs.getInt("USER_NUMBER"))
                         .id(rs.getString("ID"))
-                        .name(rs.getString("NAME")) // ±âÈ¹¿¡ µû¶ó ÇÊµå¸í ¸ÅÇÎ È®ÀÎ ÇÊ¿ä
+                        .name(rs.getString("NAME")) // ê¸°íšì— ë”°ë¼ í•„ë“œëª… ë§¤í•‘ í™•ì¸ í•„ìš”
                         .email(rs.getString("EMAIL"))
                         .phone(rs.getString("PHONE"))
                         .grade(rs.getString("GRADE"))
@@ -47,19 +47,19 @@ public class UserInfoDAO implements IUserInfo {
     public UserInfoDTO selectOne(Connection conn, int userNum) throws SQLException {
         UserInfoDTO userDto = null;
         
-        // 1. È¸¿ø ±âº» Á¤º¸ Á¶È¸
+        // 1. íšŒì› ê¸°ë³¸ ì •ë³´ ì¡°íšŒ
         String sqlUser = "SELECT u.*, " +
                 " (SELECT NVL(MAX(BALANCE) KEEP (DENSE_RANK LAST ORDER BY POINT_ID), 0) " +
                 "  FROM USERPOINTS WHERE USER_NUMBER = u.USER_NUMBER) as CURRENT_BALANCE " +
                 "FROM USERS u WHERE u.USER_NUMBER = ?";
-        // 2. ÇØ´ç È¸¿øÀÇ ÀÚ³à ¸®½ºÆ® Á¶È¸ (CHILD Å×ÀÌºí)
+        // 2. í•´ë‹¹ íšŒì›ì˜ ìë…€ ë¦¬ìŠ¤íŠ¸ ì¡°íšŒ (CHILD í…Œì´ë¸”)
         String sqlChild = "SELECT CHILD_NAME, CHILD_BIRTH, CHILD_GENDER FROM CHILD WHERE USER_NUMBER = ? ORDER BY CHILD_BIRTH ASC";
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
         try {
-            // È¸¿ø Á¤º¸ Ã³¸®
+            // íšŒì› ì •ë³´ ì²˜ë¦¬
             pstmt = conn.prepareStatement(sqlUser);
             pstmt.setInt(1, userNum);
             rs = pstmt.executeQuery();
@@ -81,7 +81,7 @@ public class UserInfoDAO implements IUserInfo {
             JdbcUtil.close(rs);
             JdbcUtil.close(pstmt);
 
-            // ÀÚ³à Á¤º¸ Ã³¸® (¸®½ºÆ®¿¡ ´ã±â)
+            // ìë…€ ì •ë³´ ì²˜ë¦¬ (ë¦¬ìŠ¤íŠ¸ì— ë‹´ê¸°)
             if (userDto != null) {
                 pstmt = conn.prepareStatement(sqlChild);
                 pstmt.setInt(1, userNum);
@@ -95,7 +95,7 @@ public class UserInfoDAO implements IUserInfo {
                     child.setChildgender(rs.getString("CHILD_GENDER"));
                     childList.add(child);
                 }
-                userDto.setChildList(childList); // DTO¿¡ ÀÚ³à ¸®½ºÆ® ¼¼ÆÃ
+                userDto.setChildList(childList); // DTOì— ìë…€ ë¦¬ìŠ¤íŠ¸ ì„¸íŒ…
             }
         } finally {
             JdbcUtil.close(rs);
@@ -106,7 +106,7 @@ public class UserInfoDAO implements IUserInfo {
     public ArrayList<UserInfoDTO> selectPointList(Connection conn, int userNum) throws SQLException {
         ArrayList<UserInfoDTO> list = new ArrayList<>();
         
-        // Å×ÀÌºí¸í: USERPOINTS, ÄÃ·³¸í: POINT_TYPE ¹İ¿µ
+        // í…Œì´ë¸”ëª…: USERPOINTS, ì»¬ëŸ¼ëª…: POINT_TYPE ë°˜ì˜
         String sql = "SELECT POINT_ID, ORDER_ID, POINT_TYPE, AMOUNT, BALANCE, DESCRIPTION, CREATED_AT " +
                      "FROM USERPOINTS " + 
                      "WHERE USER_NUMBER = ? " +
@@ -124,7 +124,7 @@ public class UserInfoDAO implements IUserInfo {
                 UserInfoDTO dto = UserInfoDTO.builder()
                         .pointid(rs.getInt("POINT_ID"))
                         .orderid(rs.getString("ORDER_ID"))
-                        .type(rs.getString("POINT_TYPE")) // DBÀÇ POINT_TYPEÀ» DTOÀÇ type¿¡ ¸ÅÇÎ
+                        .type(rs.getString("POINT_TYPE")) // DBì˜ POINT_TYPEì„ DTOì˜ typeì— ë§¤í•‘
                         .amout(rs.getInt("AMOUNT"))
                         .balance(rs.getInt("BALANCE"))
                         .description(rs.getString("DESCRIPTION"))
@@ -156,9 +156,9 @@ public class UserInfoDAO implements IUserInfo {
         }
     }
 
- // 1. À§½Ã¸®½ºÆ® °³¼ö Á¶È¸
+ // 1. ìœ„ì‹œë¦¬ìŠ¤íŠ¸ ê°œìˆ˜ ì¡°íšŒ
     public int getWishCount(Connection conn, int userNum) throws SQLException {
-        // Å×ÀÌºí¸í: WISHLIST, ÄÃ·³¸í: USER_NUMBER
+        // í…Œì´ë¸”ëª…: WISHLIST, ì»¬ëŸ¼ëª…: USER_NUMBER
         String sql = "SELECT COUNT(*) FROM WISHLIST WHERE USER_NUMBER = ?";
         
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -169,9 +169,9 @@ public class UserInfoDAO implements IUserInfo {
         }
     }
 
-    // 2. ÃÑ ÁÖ¹® °Ç¼ö Á¶È¸
+    // 2. ì´ ì£¼ë¬¸ ê±´ìˆ˜ ì¡°íšŒ
     public int getOrderCount(Connection conn, int userNum) throws SQLException {
-        // Å×ÀÌºí¸í: ORDERS, ÄÃ·³¸í: USER_NUMBER
+        // í…Œì´ë¸”ëª…: ORDERS, ì»¬ëŸ¼ëª…: USER_NUMBER
         String sql = "SELECT COUNT(*) FROM ORDERS WHERE USER_NUMBER = ?";
         
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {

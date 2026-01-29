@@ -10,7 +10,7 @@ public class SectionDTO {
     private int eventId;
     private int sortOrder;
 
-    private String title; // (ÃßÃµ) ¼½¼Ç Á¦¸ñ ÄÃ·³ÀÌ ¾øÀ¸¸é ÀÓ½Ã·Î sectionId·Î Ç¥½ÃÇÏ°Å³ª, ÄÃ·³ Ãß°¡ ÃßÃµ
+    private String title; // (ì¶”ì²œ) ì„¹ì…˜ ì œëª© ì»¬ëŸ¼ì´ ì—†ìœ¼ë©´ ì„ì‹œë¡œ sectionIdë¡œ í‘œì‹œí•˜ê±°ë‚˜, ì»¬ëŸ¼ ì¶”ê°€ ì¶”ì²œ
     private List<SectionImageDTO> images = new ArrayList<>();
     private List<ProductsDTO> products = new ArrayList<>();
 

@@ -12,10 +12,10 @@ public class CouponCreateHandler implements CommandHandler {
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (request.getMethod().equalsIgnoreCase("GET")) {
-            // µî·Ï Æû ÆäÀÌÁö·Î ÀÌµ¿
+            // ë“±ë¡ í¼ í˜ì´ì§€ë¡œ ì´ë™
             return "/view/admin/create_coupon.jsp";
         } else {
-            // POST: µ¥ÀÌÅÍº£ÀÌ½º ÀúÀå Ã³¸®
+            // POST: ë°ì´í„°ë² ì´ìŠ¤ ì €ì¥ ì²˜ë¦¬
             String name = request.getParameter("name");
             String discountType = request.getParameter("discount_type"); // AMOUNT or PERCENT
             int discountValue = Integer.parseInt(request.getParameter("discount_value"));
@@ -28,7 +28,7 @@ public class CouponCreateHandler implements CommandHandler {
             dto.setDiscount_value(discountValue);
             dto.setSerial_number(serialNumber);
             
-            // ¸¸·áÀÏÀÌ ÀÔ·ÂµÇ¾úÀ» °æ¿ì¿¡¸¸ Ã³¸®
+            // ë§Œë£Œì¼ì´ ì…ë ¥ë˜ì—ˆì„ ê²½ìš°ì—ë§Œ ì²˜ë¦¬
             if (expiresAtStr != null && !expiresAtStr.isEmpty()) {
                 dto.setExpires_at(Date.valueOf(expiresAtStr));
             }
@@ -36,7 +36,7 @@ public class CouponCreateHandler implements CommandHandler {
             CouponService service = CouponService.getInstance();
             service.createCoupon(dto);
 
-            // µî·Ï ÈÄ ¸®½ºÆ®·Î ¸®´ÙÀÌ·ºÆ®
+            // ë“±ë¡ í›„ ë¦¬ìŠ¤íŠ¸ë¡œ ë¦¬ë‹¤ì´ë ‰íŠ¸
             String contextPath = request.getContextPath();
             response.sendRedirect(contextPath + "/admin/coupon_list.htm");
             return null;

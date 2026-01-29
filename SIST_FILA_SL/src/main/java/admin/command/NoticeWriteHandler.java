@@ -24,19 +24,19 @@ public class NoticeWriteHandler implements CommandHandler {
             String title = request.getParameter("title");
             String imageUrl = request.getParameter("image_url");
             
-            // JSP¿¡¼­ Àü´ŞµÈ created_id ¹Ş±â
+            // JSPì—ì„œ ì „ë‹¬ëœ created_id ë°›ê¸°
             String createdId = request.getParameter("created_id");
 
-            // [¹æ¾î ÄÚµå] ¸¸¾à ¼¼¼ÇÀÌ ²÷°Ü¼­ nullÀÌ ³Ñ¾î¿À¸é ¿¡·¯ ¹æÁö¸¦ À§ÇØ °­Á¦ ¼¼ÆÃ
+            // [ë°©ì–´ ì½”ë“œ] ë§Œì•½ ì„¸ì…˜ì´ ëŠê²¨ì„œ nullì´ ë„˜ì–´ì˜¤ë©´ ì—ëŸ¬ ë°©ì§€ë¥¼ ìœ„í•´ ê°•ì œ ì„¸íŒ…
             if (createdId == null || createdId.isEmpty()) {
-                createdId = "admin"; // È¤Àº ¼¼¼Ç Ã¼Å© ·ÎÁ÷ Ãß°¡
+                createdId = "admin"; // í˜¹ì€ ì„¸ì…˜ ì²´í¬ ë¡œì§ ì¶”ê°€
             }
 
             NoticeDTO dto = new NoticeDTO();
             dto.setCategory_name(category);
             dto.setTitle(title);
             dto.setImage_url(imageUrl);
-            dto.setCreated_id(createdId); // ¿©±â°¡ NULLÀÌ¸é ORA-01400 ¿¡·¯ ¹ß»ı
+            dto.setCreated_id(createdId); // ì—¬ê¸°ê°€ NULLì´ë©´ ORA-01400 ì—ëŸ¬ ë°œìƒ
 
             NoticeDAOImpl dao = NoticeDAOImpl.getInstance();
             int result = dao.insert(dto);

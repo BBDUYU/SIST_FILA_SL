@@ -56,7 +56,7 @@ public class EventproductDAO {
     }
 
  
-    // √ﬂ√µªÛ«∞øÎ
+    // Ï∂îÏ≤úÏÉÅÌíàÏö©
     public ArrayList<EventproductDTO> selectRecommendProducts(Connection conn) throws SQLException {
         ArrayList<EventproductDTO> list = new ArrayList<>();
         
@@ -65,14 +65,14 @@ public class EventproductDAO {
                 "  (SELECT IMAGE_URL FROM PRODUCT_IMAGE pi WHERE pi.PRODUCT_ID = p.PRODUCT_ID AND pi.IMAGE_TYPE = 'MAIN' AND ROWNUM = 1) as IMG " +
                 "  FROM EVENT_PRODUCT ep " +
                 "  JOIN PRODUCTS p ON ep.PRODUCT_ID = p.PRODUCT_ID " +
-                "  ORDER BY p.PRODUCT_ID DESC " + // EVENT_PRODUCT_ID ¥ÎΩ≈ p.PRODUCT_ID ªÁøÎ
+                "  ORDER BY p.PRODUCT_ID DESC " + // EVENT_PRODUCT_ID ÎåÄÏã† p.PRODUCT_ID ÏÇ¨Ïö©
                 ") WHERE ROWNUM <= 12";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
                 String rawPath = rs.getString("IMG");
-                // ¡ﬂ∫π πÊ¡ˆ∏¶ ¿ß«— ¡§¡¶ (C:\... «¸≈¬∏∏ ≥≤±‚±‚)
+                // Ï§ëÎ≥µ Î∞©ÏßÄÎ•º ÏúÑÌïú Ï†ïÏ†ú (C:\... ÌòïÌÉúÎßå ÎÇ®Í∏∞Í∏∞)
                 if (rawPath != null && rawPath.contains("path=")) {
                     rawPath = rawPath.split("path=")[1];
                 }
@@ -85,7 +85,7 @@ public class EventproductDAO {
                         .name(rs.getString("NAME"))
                         .price(rs.getInt("PRICE"))
                         .discount_rate(rs.getInt("DISCOUNT_RATE"))
-                        .mainImageUrl(rawPath) // [ºˆ¡§] ∞°¡Æø¬ ∞Ê∑Œ ºº∆√
+                        .mainImageUrl(rawPath) // [ÏàòÏ†ï] Í∞ÄÏ†∏Ïò® Í≤ΩÎ°ú ÏÑ∏ÌåÖ
                         .build());
             }
         }

@@ -3,8 +3,8 @@ package admin.command;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import command.CommandHandler;
-import productsqna.QnaDAO;
-import productsqna.QnaDAOImpl;
+import qna.QnaDAO;
+import qna.QnaDAOImpl;
 
 public class ProductQnaAnswerHandler implements CommandHandler {
 
@@ -19,17 +19,17 @@ public class ProductQnaAnswerHandler implements CommandHandler {
 	    QnaDAO dao = QnaDAOImpl.getInstance();
 	    int result = dao.updateAnswer(qnaId, answerContent);
 
-	    // °æ°íÃ¢ ¶ç¿ì±â
+	    // ê²½ê³ ì°½ ë„ìš°ê¸°
 	    if (result > 0) {
-	        request.setAttribute("msg", "´äº¯ÀÌ ¼º°øÀûÀ¸·Î µî·ÏµÇ¾ú½À´Ï´Ù.");
+	        request.setAttribute("msg", "ë‹µë³€ì´ ì„±ê³µì ìœ¼ë¡œ ë“±ë¡ë˜ì—ˆìŠµë‹ˆë‹¤.");
 	    } else {
-	        request.setAttribute("msg", "´äº¯ µî·Ï¿¡ ½ÇÆĞÇÏ¿´½À´Ï´Ù.");
+	        request.setAttribute("msg", "ë‹µë³€ ë“±ë¡ì— ì‹¤íŒ¨í•˜ì˜€ìŠµë‹ˆë‹¤.");
 	    }
 	    
-	    // »ó¼¼ ÆäÀÌÁö·Î ´Ù½Ã º¸³»±â (¼öÁ¤µÈ ³»¿ëÀ» ¹Ù·Î È®ÀÎÇÏ±â À§ÇÔ)
+	    // ìƒì„¸ í˜ì´ì§€ë¡œ ë‹¤ì‹œ ë³´ë‚´ê¸° (ìˆ˜ì •ëœ ë‚´ìš©ì„ ë°”ë¡œ í™•ì¸í•˜ê¸° ìœ„í•¨)
 	    request.setAttribute("loc", request.getContextPath() + "/admin/productQnaDetail.htm?qna_id=" + qnaId);
 	    
-	    // alert¸¦ ¶ç¿öÁÙ Àü¿ë JSP ÆäÀÌÁö·Î Æ÷¿öµù
+	    // alertë¥¼ ë„ì›Œì¤„ ì „ìš© JSP í˜ì´ì§€ë¡œ í¬ì›Œë”©
 	    return "/view/admin/message.jsp"; 
 	}
 }

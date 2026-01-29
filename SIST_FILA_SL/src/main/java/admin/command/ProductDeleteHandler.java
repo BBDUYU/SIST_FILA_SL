@@ -17,7 +17,7 @@ public class ProductDeleteHandler implements CommandHandler {
                 ProductService.getInstance().deleteProduct(productId);
             } catch (Exception e) {
                 e.printStackTrace();
-                request.setAttribute("error", "»óÇ° »èÁ¦ Áß ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù.");
+                request.setAttribute("error", "ìƒí’ˆ ì‚­ì œ ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.");
             }
         }
 

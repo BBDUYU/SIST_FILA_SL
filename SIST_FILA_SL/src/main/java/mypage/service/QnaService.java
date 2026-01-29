@@ -7,7 +7,7 @@ import com.util.ConnectionProvider;
 import com.util.JdbcUtil;
 
 import categories.CategoriesDTO;
-import member.domain.MemberDTO;
+import member.MemberDTO;
 import mypage.domain.QNACategoriesDTO;
 import mypage.domain.QnaDTO;
 import mypage.persistence.QnaDAO;
@@ -25,60 +25,60 @@ public class QnaService {
     private QnaDAO dao = QnaDAOImpl.getInstance();
 
     /* ===============================
-     * 1. 1:1 ¹®ÀÇ ¸ñ·Ï Á¶È¸
+     * 1. 1:1 ë¬¸ì˜ ëª©ë¡ ì¡°íšŒ
      * =============================== */
     public List<QnaDTO> getQnaList(long userNumber) {
         try (Connection conn = ConnectionProvider.getConnection()) {
             return dao.selectByUser(conn, userNumber);
         } catch (Exception e) {
-            throw new RuntimeException("QNA ¸ñ·Ï Á¶È¸ ½ÇÆĞ", e);
+            throw new RuntimeException("QNA ëª©ë¡ ì¡°íšŒ ì‹¤íŒ¨", e);
         }
     }
 
     /* ===============================
-     * 2. »óÅÂº° ¹®ÀÇ ¸ñ·Ï Á¶È¸
+     * 2. ìƒíƒœë³„ ë¬¸ì˜ ëª©ë¡ ì¡°íšŒ
      * =============================== */
     public List<QnaDTO> getQnaListByStatus(long userNumber, String status) {
         try (Connection conn = ConnectionProvider.getConnection()) {
             return dao.selectByUserAndStatus(conn, userNumber, status);
         } catch (Exception e) {
-            throw new RuntimeException("QNA »óÅÂº° Á¶È¸ ½ÇÆĞ", e);
+            throw new RuntimeException("QNA ìƒíƒœë³„ ì¡°íšŒ ì‹¤íŒ¨", e);
         }
     }
 
     /* ===============================
-     * 3. ¹®ÀÇ Ä«Å×°í¸® ¸ñ·Ï
+     * 3. ë¬¸ì˜ ì¹´í…Œê³ ë¦¬ ëª©ë¡
      * =============================== */
  // QnaService.java
     public List<QNACategoriesDTO> getCategoryList() {
         try (Connection conn = ConnectionProvider.getConnection()) {
-            return dao.selectCategoryList(conn); // ÀÌÁ¦ DAO°¡ QNACategoriesDTO¸¦ ¹İÈ¯ÇÔ
+            return dao.selectCategoryList(conn); // ì´ì œ DAOê°€ QNACategoriesDTOë¥¼ ë°˜í™˜í•¨
         } catch (Exception e) {
-            throw new RuntimeException("¹®ÀÇ Ä«Å×°í¸® Á¶È¸ ½ÇÆĞ", e);
+            throw new RuntimeException("ë¬¸ì˜ ì¹´í…Œê³ ë¦¬ ì¡°íšŒ ì‹¤íŒ¨", e);
         }
     }
 
     /* ===============================
-     * 4. ¹®ÀÇ µî·Ï + °³ÀÎÁ¤º¸ µ¿ÀÇ ¾÷µ¥ÀÌÆ®
+     * 4. ë¬¸ì˜ ë“±ë¡ + ê°œì¸ì •ë³´ ë™ì˜ ì—…ë°ì´íŠ¸
      * =============================== */
     public void writeQna(MemberDTO loginUser, QnaDTO dto, int privacyAgree) {
         Connection conn = null;
         try {
             conn = ConnectionProvider.getConnection();
-            conn.setAutoCommit(false); // Æ®·£Àè¼Ç ½ÃÀÛ
+            conn.setAutoCommit(false); // íŠ¸ëœì­ì…˜ ì‹œì‘
 
             dto.setUser_number(loginUser.getUserNumber());
             
-            // 1. ¹®ÀÇ±Û ÀúÀå
+            // 1. ë¬¸ì˜ê¸€ ì €ì¥
             dao.insertInquiry(conn, dto);
             
-            // 2. °³ÀÎÁ¤º¸ ¼öÁı µ¿ÀÇ(5¹ø Ç×¸ñ) ÀúÀå
+            // 2. ê°œì¸ì •ë³´ ìˆ˜ì§‘ ë™ì˜(5ë²ˆ í•­ëª©) ì €ì¥
             dao.updatePrivacyAgree(conn, loginUser.getUserNumber(), privacyAgree);
 
             conn.commit();
         } catch (Exception e) {
             JdbcUtil.rollback(conn);
-            throw new RuntimeException("¹®ÀÇ µî·Ï ¹× µ¿ÀÇ ÀúÀå ½ÇÆĞ", e);
+            throw new RuntimeException("ë¬¸ì˜ ë“±ë¡ ë° ë™ì˜ ì €ì¥ ì‹¤íŒ¨", e);
         } finally {
             JdbcUtil.close(conn);
         }
@@ -87,7 +87,7 @@ public class QnaService {
         try (Connection conn = ConnectionProvider.getConnection()) {
             return dao.selectAllInquiries(conn);
         } catch (Exception e) {
-            throw new RuntimeException("ÀüÃ¼ ¹®ÀÇ ¸ñ·Ï Á¶È¸ ½ÇÆĞ", e);
+            throw new RuntimeException("ì „ì²´ ë¬¸ì˜ ëª©ë¡ ì¡°íšŒ ì‹¤íŒ¨", e);
         }
     }
 
@@ -95,7 +95,7 @@ public class QnaService {
         try (Connection conn = ConnectionProvider.getConnection()) {
             dao.updateReply(conn, inquiryId, replyContent);
         } catch (Exception e) {
-            throw new RuntimeException("´äº¯ µî·Ï ½ÇÆĞ", e);
+            throw new RuntimeException("ë‹µë³€ ë“±ë¡ ì‹¤íŒ¨", e);
         }
     }
 }

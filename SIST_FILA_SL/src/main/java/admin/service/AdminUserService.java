@@ -20,7 +20,7 @@ public class AdminUserService {
             UserInfoDAO dao = UserInfoDAO.getInstance();
             return dao.selectUserList(conn);
         } catch (Exception e) {
-            throw new RuntimeException("È¸¿ø ¸ñ·Ï ·Îµå ½ÇÆĞ", e);
+            throw new RuntimeException("íšŒì› ëª©ë¡ ë¡œë“œ ì‹¤íŒ¨", e);
         } finally {
             JdbcUtil.close(conn);
         }
@@ -32,14 +32,14 @@ public class AdminUserService {
             UserInfoDAO dao = UserInfoDAO.getInstance();
             UserInfoDTO user = dao.selectOne(conn, userNum);
             
-            // 2. Æ÷ÀÎÆ® ³»¿ª Ãß°¡·Î °¡Á®¿À±â
+            // 2. í¬ì¸íŠ¸ ë‚´ì—­ ì¶”ê°€ë¡œ ê°€ì ¸ì˜¤ê¸°
             if (user != null) {
                 ArrayList<UserInfoDTO> pointList = dao.selectPointList(conn, userNum);
-                user.setPointList(pointList); // DTO¿¡ List<UserInfoDTO> pointList ÇÊµå Ãß°¡ ÇÊ¿ä
+                user.setPointList(pointList); // DTOì— List<UserInfoDTO> pointList í•„ë“œ ì¶”ê°€ í•„ìš”
             }
             return user;
         } catch (Exception e) {
-            throw new RuntimeException("È¸¿ø »ó¼¼ Á¤º¸ ·Îµå ½ÇÆĞ", e);
+            throw new RuntimeException("íšŒì› ìƒì„¸ ì •ë³´ ë¡œë“œ ì‹¤íŒ¨", e);
         } finally {
             JdbcUtil.close(conn);
         }
@@ -50,10 +50,10 @@ public class AdminUserService {
             conn = ConnectionProvider.getConnection();
             UserInfoDAO dao = UserInfoDAO.getInstance();
             
-            // 1. ±âº» Á¤º¸ Á¶È¸ (ÀÜ¾× Æ÷ÇÔ)
+            // 1. ê¸°ë³¸ ì •ë³´ ì¡°íšŒ (ì”ì•¡ í¬í•¨)
             UserInfoDTO summary = dao.selectOne(conn, userNum);
             
-            // 2. °¢ Ç×¸ñ °³¼ö ¼¼ÆÃ (UserInfoDTO¿¡ ÇÊµå°¡ ÀÖ´Ù°í °¡Á¤)
+            // 2. ê° í•­ëª© ê°œìˆ˜ ì„¸íŒ… (UserInfoDTOì— í•„ë“œê°€ ìˆë‹¤ê³  ê°€ì •)
             if (summary != null) {
                 summary.setCouponCount(dao.getCouponCount(conn, userNum));
                 summary.setWishCount(dao.getWishCount(conn, userNum));
@@ -61,7 +61,7 @@ public class AdminUserService {
             }
             return summary;
         } catch (Exception e) {
-            throw new RuntimeException("¿ä¾à Á¤º¸ Á¶È¸ ½ÇÆĞ", e);
+            throw new RuntimeException("ìš”ì•½ ì •ë³´ ì¡°íšŒ ì‹¤íŒ¨", e);
         } finally {
             JdbcUtil.close(conn);
         }

@@ -1,6 +1,6 @@
 package login;
 
-import member.domain.MemberDTO;
+import member.MemberDTO;
 
 public interface ILogin {
 	MemberDTO login(String id, String pw);

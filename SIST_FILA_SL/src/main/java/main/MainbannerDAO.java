@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import com.util.JdbcUtil; // JdbcUtil Å¬·¡½º°¡ ÀÖ´Ù°í °¡Á¤
+import com.util.JdbcUtil; // JdbcUtil í´ë˜ìŠ¤ê°€ ìˆë‹¤ê³  ê°€ì •
 
 public class MainbannerDAO {
     
@@ -19,12 +19,11 @@ public class MainbannerDAO {
     }
     
     /**
-     * ¸ŞÀÎ »ó´Ü ¹è³Ê ¸®½ºÆ® Á¶È¸
+     * ë©”ì¸ ìƒë‹¨ ë°°ë„ˆ ë¦¬ìŠ¤íŠ¸ ì¡°íšŒ
      */
     public ArrayList<MainbannerDTO> selectMainBannerList(Connection conn) {
         ArrayList<MainbannerDTO> list = new ArrayList<>();
         
-        // Å×ÀÌºíÀÇ ½ÇÁ¦ ÄÃ·³¸í: BANNER_ID, BANNER_NAME, IMAGE_URL, LINK_URL
         String sql = "SELECT BANNER_ID, BANNER_NAME, IMAGE_URL, LINK_URL " +
                      "FROM MAIN_BANNER " +
                      "WHERE IS_ACTIVE = 'Y' " +

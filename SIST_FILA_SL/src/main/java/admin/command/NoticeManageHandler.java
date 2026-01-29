@@ -10,13 +10,13 @@ import notice.NoticeDTO;
 public class NoticeManageHandler implements CommandHandler {
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        request.setAttribute("pageName", "notice"); // »çÀÌµå¹Ù È°¼ºÈ­
+        request.setAttribute("pageName", "notice"); // ì‚¬ì´ë“œë°” í™œì„±í™”
 
         NoticeDAOImpl dao = NoticeDAOImpl.getInstance();
-        List<NoticeDTO> list = dao.selectList(null, null); // °ü¸®ÀÚ´Â ÀÏ´Ü ÀüÃ¼º¸±â
+        List<NoticeDTO> list = dao.selectList(null, null); // ê´€ë¦¬ìëŠ” ì¼ë‹¨ ì „ì²´ë³´ê¸°
 
         request.setAttribute("noticeList", list);
-        // °ü¸®ÀÚ¿ë(Ç¥ Çü½Ä) JSP ¸®ÅÏ
+        // ê´€ë¦¬ììš©(í‘œ í˜•ì‹) JSP ë¦¬í„´
         return "/view/admin/notice_admin_list.jsp"; 
     }
 }

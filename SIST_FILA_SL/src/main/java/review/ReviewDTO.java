@@ -24,7 +24,7 @@ public class ReviewDTO {
     private String review_img;
     private Date regdate; 
     
-    // Á¶ÀÎ¿ë / Ãß°¡ Á¤º¸ ÇÊµå
+    // ì¡°ì¸ìš© / ì¶”ê°€ ì •ë³´ í•„ë“œ
     private int like_id;
     private int type;
     private String user_id;

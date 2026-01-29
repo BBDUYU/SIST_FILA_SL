@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import command.CommandHandler;
-import member.domain.MemberDTO;
+import member.MemberDTO;
 import mypage.service.WishListService;
 
 public class WishDeleteSelectedHandler implements CommandHandler {
@@ -26,7 +26,7 @@ public class WishDeleteSelectedHandler implements CommandHandler {
         String idsParam = request.getParameter("ids");
         String returnUrl = request.getParameter("returnUrl");
 
-        // 1) ids ∆ƒΩÃ
+        // 1) ids ÌååÏã±
         List<Integer> ids = new ArrayList<>();
         if (idsParam != null && !idsParam.trim().isEmpty()) {
             String[] parts = idsParam.split(",");
@@ -36,12 +36,12 @@ public class WishDeleteSelectedHandler implements CommandHandler {
             }
         }
 
-        // 2) ªË¡¶
+        // 2) ÏÇ≠Ï†ú
         if (!ids.isEmpty()) {
             WishListService.getInstance().deleteSelected(loginUser.getUserNumber(), ids);
         }
 
-        // 3) ¿Ãµø target ∞·¡§
+        // 3) Ïù¥Îèô target Í≤∞Ï†ï
         String target = "/mypage/wishlist.htm";
         if (returnUrl != null && !returnUrl.trim().isEmpty()) {
             target = URLDecoder.decode(returnUrl.trim(), StandardCharsets.UTF_8);

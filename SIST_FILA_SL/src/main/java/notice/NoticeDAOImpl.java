@@ -16,7 +16,7 @@ public class NoticeDAOImpl implements NoticeDAO {
         return instance;
     }
 
-    // 1. °øÁö»çÇ× ¸ñ·Ï Á¶È¸ (ÀüÃ¼/ÇÊÅÍ¸µ ¿Ïº® ´ëÀÀ)
+    // 1. ê³µì§€ì‚¬í•­ ëª©ë¡ ì¡°íšŒ (ì „ì²´/í•„í„°ë§ ì™„ë²½ ëŒ€ì‘)
     @Override
     public List<NoticeDTO> selectList(String category, String keyword) throws Exception {
         Connection conn = null;
@@ -29,7 +29,7 @@ public class NoticeDAOImpl implements NoticeDAO {
         sql.append(" FROM notice ");
         sql.append(" WHERE 1=1 ");
 
-        // Ä«Å×°í¸®°¡ 'ÀüÃ¼'ÀÏ ¶§´Â ""ÀÌ ³Ñ¾î¿À¹Ç·Î trim().isEmpty()·Î °É·¯³»¾ß ÇÔ
+        // ì¹´í…Œê³ ë¦¬ê°€ 'ì „ì²´'ì¼ ë•ŒëŠ” ""ì´ ë„˜ì–´ì˜¤ë¯€ë¡œ trim().isEmpty()ë¡œ ê±¸ëŸ¬ë‚´ì•¼ í•¨
         if (category != null && !category.trim().isEmpty()) {
             sql.append(" AND category_name = ? ");
         }
@@ -53,7 +53,7 @@ public class NoticeDAOImpl implements NoticeDAO {
 
             rs = pstmt.executeQuery();
 
-            // [ÇÙ½É] ¿©±â¼­ if°¡ ¾Æ´Ï¶ó whileÀ» ½á¾ß ¸®½ºÆ® ÀüÃ¼°¡ ´ã±é´Ï´Ù!
+            // [í•µì‹¬] ì—¬ê¸°ì„œ ifê°€ ì•„ë‹ˆë¼ whileì„ ì¨ì•¼ ë¦¬ìŠ¤íŠ¸ ì „ì²´ê°€ ë‹´ê¹ë‹ˆë‹¤!
             while (rs.next()) {
                 NoticeDTO dto = new NoticeDTO();
                 dto.setNotice_id(rs.getInt("notice_id"));
@@ -65,8 +65,8 @@ public class NoticeDAOImpl implements NoticeDAO {
                 list.add(dto);
             }
             
-            // ÄÜ¼Ö¿¡¼­ ½ÇÁ¦ ¸î °³ °¡Á®¿Ô´ÂÁö È®ÀÎ¿ë
-            System.out.println("DEBUG: Á¶È¸µÈ ¸ñ·Ï °³¼ö = " + list.size());
+            // ì½˜ì†”ì—ì„œ ì‹¤ì œ ëª‡ ê°œ ê°€ì ¸ì™”ëŠ”ì§€ í™•ì¸ìš©
+            System.out.println("DEBUG: ì¡°íšŒëœ ëª©ë¡ ê°œìˆ˜ = " + list.size());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,7 +115,7 @@ public class NoticeDAOImpl implements NoticeDAO {
         return result;
     }
     
-    // 4. »ó¼¼ Á¶È¸ (ÇÑ °³¸¸ ¸®ÅÏ)
+    // 4. ìƒì„¸ ì¡°íšŒ (í•œ ê°œë§Œ ë¦¬í„´)
     @Override
     public NoticeDTO selectOne(int noticeId) throws Exception {
         Connection conn = null;

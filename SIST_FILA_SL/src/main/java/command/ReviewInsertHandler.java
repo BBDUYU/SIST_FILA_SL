@@ -9,19 +9,18 @@ import javax.servlet.http.HttpSession;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 import com.util.DBConn;
-
-import member.domain.MemberDTO;
 import review.ReviewDAO;
 import review.ReviewDAOImpl;
 import review.ReviewDTO;
+import member.MemberDTO;
 
 public class ReviewInsertHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    	// [°¡Àå À­ÁÙ¿¡ Ãß°¡] ¹«Á¶°Ç ÂïÇô¾ß ÇÔ!
+    	// [ê°€ì¥ ìœ—ì¤„ì— ì¶”ê°€] ë¬´ì¡°ê±´ ì°í˜€ì•¼ í•¨!
         System.out.println("=========================================");
-        System.out.println(">> [DEBUG] ReviewInsertHandler ÁøÀÔÇÔ!!!!");
+        System.out.println(">> [DEBUG] ReviewInsertHandler ì§„ì…í•¨!!!!");
         System.out.println(">> Content-Type: " + request.getContentType());
         System.out.println("=========================================");
 
@@ -31,28 +30,28 @@ public class ReviewInsertHandler implements CommandHandler {
         File dir = new File(savePath);
         if (!dir.exists()) dir.mkdirs(); 
 
-        // 2. ÆÄÀÏ Å©±â Á¦ÇÑ (10MB)
+        // 2. íŒŒì¼ í¬ê¸° ì œí•œ (10MB)
         int maxSize = 10 * 1024 * 1024;
         String encoding = "UTF-8";
 
         try {
-            // cos.jar ÆÄÀÏ ¾÷·Îµå Ã³¸®
+            // cos.jar íŒŒì¼ ì—…ë¡œë“œ ì²˜ë¦¬
             MultipartRequest multi = new MultipartRequest(request, savePath, maxSize, encoding, new DefaultFileRenamePolicy());
-            System.out.println(">> [DEBUG] MultipartRequest »ı¼º ¼º°ø!");
-            // 3. ·Î±×ÀÎ Ã¼Å©
+            System.out.println(">> [DEBUG] MultipartRequest ìƒì„± ì„±ê³µ!");
+            // 3. ë¡œê·¸ì¸ ì²´í¬
             HttpSession session = request.getSession();
             MemberDTO auth = (MemberDTO) session.getAttribute("auth");
             
-            // ·Î±×ÀÎÀÌ Ç®·È´Ù¸é ½ÇÆĞ ¸Ş½ÃÁö Àü¼Û
+            // ë¡œê·¸ì¸ì´ í’€ë ¸ë‹¤ë©´ ì‹¤íŒ¨ ë©”ì‹œì§€ ì „ì†¡
             if (auth == null) {
-                response.getWriter().print("{\"status\": \"fail\", \"message\": \"·Î±×ÀÎÀÌ ÇÊ¿äÇÑ ±â´ÉÀÔ´Ï´Ù.\"}");
+                response.getWriter().print("{\"status\": \"fail\", \"message\": \"ë¡œê·¸ì¸ì´ í•„ìš”í•œ ê¸°ëŠ¥ì…ë‹ˆë‹¤.\"}");
                 return null;
             }
 
-            // 4. ÆÄ¶ó¹ÌÅÍ ¹Ş±â (ÁÖÀÇ: request°¡ ¾Æ´Ï¶ó multi¿¡¼­ ²¨³»¾ß ÇÔ)
+            // 4. íŒŒë¼ë¯¸í„° ë°›ê¸° (ì£¼ì˜: requestê°€ ì•„ë‹ˆë¼ multiì—ì„œ êº¼ë‚´ì•¼ í•¨)
             String productNo = multi.getParameter("productNo");
             String content = multi.getParameter("reviewContent");
-            // º°Á¡ÀÌ ¾È ³Ñ¾î¿À¸é ±âº»°ª 5Á¡
+            // ë³„ì ì´ ì•ˆ ë„˜ì–´ì˜¤ë©´ ê¸°ë³¸ê°’ 5ì 
             int rating = 5;
             try {
                 rating = Integer.parseInt(multi.getParameter("reviewScore"));
@@ -60,53 +59,53 @@ public class ReviewInsertHandler implements CommandHandler {
             
             int userNumber = auth.getUserNumber();
 
-            // 5. [ÇÙ½É] ÆÄÀÏ 4°³¸¦ ÄŞ¸¶(,)·Î ÇÕÄ¡±â
+            // 5. [í•µì‹¬] íŒŒì¼ 4ê°œë¥¼ ì½¤ë§ˆ(,)ë¡œ í•©ì¹˜ê¸°
             StringBuilder sb = new StringBuilder();
-            String webPath = "/fila_upload/review/"; // À¥¿¡¼­ Á¢±ÙÇÒ ¶§ °æ·Î
+            String webPath = "/fila_upload/review/"; // ì›¹ì—ì„œ ì ‘ê·¼í•  ë•Œ ê²½ë¡œ
             
-            Enumeration files = multi.getFileNames(); // Àü¼ÛµÈ ¸ğµç ÆÄÀÏÀÇ ÀÌ¸§Ç¥(parameter name)¸¦ °¡Á®¿È
+            Enumeration files = multi.getFileNames(); // ì „ì†¡ëœ ëª¨ë“  íŒŒì¼ì˜ ì´ë¦„í‘œ(parameter name)ë¥¼ ê°€ì ¸ì˜´
 
             while(files.hasMoreElements()) {
-                String name = (String)files.nextElement(); // ¿¹: file1, file2, reviewFiles µî
-                String fileName = multi.getFilesystemName(name); // ½ÇÁ¦ ¼­¹ö¿¡ ÀúÀåµÈ ÆÄÀÏ ÀÌ¸§ (a.jpg)
+                String name = (String)files.nextElement(); // ì˜ˆ: file1, file2, reviewFiles ë“±
+                String fileName = multi.getFilesystemName(name); // ì‹¤ì œ ì„œë²„ì— ì €ì¥ëœ íŒŒì¼ ì´ë¦„ (a.jpg)
                 
-                // [µğ¹ö±ë¿ë] ÄÜ¼Ö¿¡ ¹«Á¶°Ç Âï¾îº¸±â
-                System.out.println(">> [DEBUG] ÆÄ¶ó¹ÌÅÍ¸í: " + name + " / ÀúÀåµÈ ÆÄÀÏ¸í: " + fileName);
+                // [ë””ë²„ê¹…ìš©] ì½˜ì†”ì— ë¬´ì¡°ê±´ ì°ì–´ë³´ê¸°
+                System.out.println(">> [DEBUG] íŒŒë¼ë¯¸í„°ëª…: " + name + " / ì €ì¥ëœ íŒŒì¼ëª…: " + fileName);
 
                 if(fileName != null) {
-                    // ÀÌ¹ÌÁö°¡ ÀÖÀ¸¸é ÄŞ¸¶(,)¸¦ ºÙ¿©¼­ Ãß°¡
+                    // ì´ë¯¸ì§€ê°€ ìˆìœ¼ë©´ ì½¤ë§ˆ(,)ë¥¼ ë¶™ì—¬ì„œ ì¶”ê°€
                     if(sb.length() > 0) sb.append(","); 
                     sb.append(webPath + fileName);
                 }
             }
             
-            // [È®ÀÎ¿ë] ÃÖÁ¾ÀûÀ¸·Î ÇÕÃÄÁø ¹®ÀÚ¿­ È®ÀÎ
-            System.out.println(">> ÃÖÁ¾ DB ÀúÀå¿ë ¹®ÀÚ¿­: " + sb.toString());
+            // [í™•ì¸ìš©] ìµœì¢…ì ìœ¼ë¡œ í•©ì³ì§„ ë¬¸ìì—´ í™•ì¸
+            System.out.println(">> ìµœì¢… DB ì €ì¥ìš© ë¬¸ìì—´: " + sb.toString());
 
-            // 6. DTO »ı¼º ¹× °ª ¼¼ÆÃ
+            // 6. DTO ìƒì„± ë° ê°’ ì„¸íŒ…
             ReviewDTO dto = new ReviewDTO();
             dto.setProduct_id(productNo);
             dto.setUser_number(userNumber);
             dto.setContent(content);
             dto.setRating(rating);
-            dto.setReview_img(sb.toString()); // ÇÕÄ£ ¹®ÀÚ¿­ ÀúÀå
+            dto.setReview_img(sb.toString()); // í•©ì¹œ ë¬¸ìì—´ ì €ì¥
 
-            // 7. DAO È£Ãâ (insert)
+            // 7. DAO í˜¸ì¶œ (insert)
             ReviewDAO dao = new ReviewDAOImpl(DBConn.getConnection());
             int result = dao.insert(dto); 
             DBConn.close();
 
-            // 8. °á°ú ÀÀ´ä
+            // 8. ê²°ê³¼ ì‘ë‹µ
             if (result == 1) {
                 response.getWriter().print("{\"status\": \"success\"}");
             } else {
-                response.getWriter().print("{\"status\": \"fail\", \"message\": \"DB µî·Ï ½ÇÆĞ\"}");
+                response.getWriter().print("{\"status\": \"fail\", \"message\": \"DB ë“±ë¡ ì‹¤íŒ¨\"}");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            // ¿¡·¯ ³ª¸é ¸Ş½ÃÁö Àü¼Û
-            response.getWriter().print("{\"status\": \"fail\", \"message\": \"¿¡·¯ ¹ß»ı: " + e.getMessage() + "\"}");
+            // ì—ëŸ¬ ë‚˜ë©´ ë©”ì‹œì§€ ì „ì†¡
+            response.getWriter().print("{\"status\": \"fail\", \"message\": \"ì—ëŸ¬ ë°œìƒ: " + e.getMessage() + "\"}");
         }
 
         return null;

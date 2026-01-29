@@ -11,30 +11,30 @@ public class NoticeDeleteHandler implements CommandHandler {
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
         
-        // 1. »èÁ¦ÇÒ °øÁö»çÇ× ¹øÈ£(id) °¡Á®¿À±â
+        // 1. ì‚­ì œí•  ê³µì§€ì‚¬í•­ ë²ˆí˜¸(id) ê°€ì ¸ì˜¤ê¸°
         String strId = request.getParameter("id");
         
         if (strId != null && !strId.isEmpty()) {
             try {
                 int noticeId = Integer.parseInt(strId);
                 
-                // 2. DAO¸¦ ÅëÇØ »èÁ¦ ½ÇÇà
+                // 2. DAOë¥¼ í†µí•´ ì‚­ì œ ì‹¤í–‰
                 NoticeDAOImpl dao = NoticeDAOImpl.getInstance();
                 int result = dao.delete(noticeId);
                 
                 if (result > 0) {
-                    System.out.println("°øÁö»çÇ× »èÁ¦ ¼º°ø: " + noticeId);
+                    System.out.println("ê³µì§€ì‚¬í•­ ì‚­ì œ ì„±ê³µ: " + noticeId);
                 }
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
         }
         
-        // 3. ¼­ºí¸´ÀÌ ¸®´ÙÀÌ·ºÆ® Ã³¸®¸¦ ¸øÇÏ¹Ç·Î ÇÚµé·¯¿¡¼­ Á÷Á¢ Ã³¸®
-        // »èÁ¦ ¼º°ø ¿©ºÎ¿Í »ó°ü¾øÀÌ ¸ñ·ÏÀ¸·Î µ¹¾Æ°¨
+        // 3. ì„œë¸”ë¦¿ì´ ë¦¬ë‹¤ì´ë ‰íŠ¸ ì²˜ë¦¬ë¥¼ ëª»í•˜ë¯€ë¡œ í•¸ë“¤ëŸ¬ì—ì„œ ì§ì ‘ ì²˜ë¦¬
+        // ì‚­ì œ ì„±ê³µ ì—¬ë¶€ì™€ ìƒê´€ì—†ì´ ëª©ë¡ìœ¼ë¡œ ëŒì•„ê°
         response.sendRedirect(request.getContextPath() + "/admin/noticeManage.htm");
         
-        // 4. nullÀ» ¸®ÅÏÇÏ¿© DispatcherServletÀÌ forward¸¦ ÇÏÁö ¾Êµµ·Ï Â÷´Ü
+        // 4. nullì„ ë¦¬í„´í•˜ì—¬ DispatcherServletì´ forwardë¥¼ í•˜ì§€ ì•Šë„ë¡ ì°¨ë‹¨
         return null;
     }
 }

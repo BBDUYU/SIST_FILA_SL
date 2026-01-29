@@ -6,17 +6,17 @@ import java.util.Map;
 
 public interface ReviewDAO {
 
-    // 1. ¸®ºä µî·Ï
+    // 1. ë¦¬ë·° ë“±ë¡
     public int insert(ReviewDTO dto) throws SQLException;
 
-    // 2. ¸®ºä ¸ñ·Ï Á¶È¸
+    // 2. ë¦¬ë·° ëª©ë¡ ì¡°íšŒ
     public List<ReviewDTO> selectListByFilter(String productId, String[] ratingArr, int userNumber, String sort, String keyword) throws Exception;
     
-    // ¸®ºä Åë°è Á¤º¸¸¦ ´ã±â À§ÇÑ °£´ÜÇÑ MapÀÌ³ª º°µµÀÇ DTO¸¦ ¹İÈ¯
+    // ë¦¬ë·° í†µê³„ ì •ë³´ë¥¼ ë‹´ê¸° ìœ„í•œ ê°„ë‹¨í•œ Mapì´ë‚˜ ë³„ë„ì˜ DTOë¥¼ ë°˜í™˜
     Map<String, Object> getReviewSummary(String productId) throws Exception;
     int insertReviewLike(int reviewId, int userNumber, int type) throws Exception;
     
-    // ±¸¸Å È®Á¤ ¿©ºÎ È®ÀÎ (¸®ºä ÀÛ¼º ±ÇÇÑ)
+    // êµ¬ë§¤ í™•ì • ì—¬ë¶€ í™•ì¸ (ë¦¬ë·° ì‘ì„± ê¶Œí•œ)
     boolean isPurchased(int userNumber, String productId) throws SQLException;
 
 }

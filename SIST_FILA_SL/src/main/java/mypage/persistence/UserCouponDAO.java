@@ -16,7 +16,7 @@ public class UserCouponDAO {
 
     public List<UserInfoDTO> selectMemberCoupons(Connection conn, int userNum) throws SQLException {
         List<UserInfoDTO> list = new ArrayList<>();
-        // COUPON Å×ÀÌºí°ú USER_COUPON Å×ÀÌºí Á¶ÀÎ
+        // COUPON í…Œì´ë¸”ê³¼ USER_COUPON í…Œì´ë¸” ì¡°ì¸
         String sql = "SELECT uc.USER_COUPON_ID, uc.COUPON_ID, uc.IS_USED, uc.EXPIRE_DATE, uc.RECEIVED_AT, " +
                      "       c.NAME as COUPON_NAME, c.DISCOUNT_TYPE, c.DISCOUNT_VALUE " +
                      "FROM USER_COUPON uc " +
@@ -35,12 +35,12 @@ public class UserCouponDAO {
                 UserInfoDTO dto = UserInfoDTO.builder()
                         .usercouponid(rs.getInt("USER_COUPON_ID"))
                         .couponid(rs.getInt("COUPON_ID"))
-                        .isused(rs.getString("IS_USED")) // 0 ¶Ç´Â 1
+                        .isused(rs.getString("IS_USED")) // 0 ë˜ëŠ” 1
                         .expireddate(rs.getDate("EXPIRE_DATE"))
                         .receivedat(rs.getDate("RECEIVED_AT"))
                         .coupon_name(rs.getString("COUPON_NAME"))
                         .discount_type(rs.getString("DISCOUNT_TYPE"))
-                        .price(rs.getInt("DISCOUNT_VALUE")) // ÇÒÀÎ±İ¾×/À²À» price ÇÊµå µî¿¡ ÀÓ½Ã¸ÅÇÎ
+                        .price(rs.getInt("DISCOUNT_VALUE")) // í• ì¸ê¸ˆì•¡/ìœ¨ì„ price í•„ë“œ ë“±ì— ì„ì‹œë§¤í•‘
                         .build();
                 list.add(dto);
             }

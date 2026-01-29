@@ -13,21 +13,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class OrderDTO {
-    private String orderId;        // ÁÖ¹®¹øÈ£ (¿¹: 20251230-001)
-    private int userNumber;        // È¸¿ø¹øÈ£
-    private int addressId;         // ¹è¼ÛÁöID (DELIVERY_ADDRESS ÂüÁ¶)
-    private int totalAmount;       // ÃÖÁ¾ °áÁ¦ ±İ¾×
-    private String orderStatus;    // ÁÖ¹®»óÅÂ (°áÁ¦¿Ï·á, ¹è¼ÛÁß µî)
-    private String deliveryMethod; // ¹è¼Û¹æ¹ı (ÀÏ¹İ, ¿À´ÃµµÂø)
-    private String deliveryRequest;// ¹è¼Û¿äÃ»»çÇ×
-    private Date createdAt;        // ÁÖ¹®ÀÏ½Ã
+    private String orderId;        // ì£¼ë¬¸ë²ˆí˜¸ (ì˜ˆ: 20251230-001)
+    private int userNumber;        // íšŒì›ë²ˆí˜¸
+    private int addressId;         // ë°°ì†¡ì§€ID (DELIVERY_ADDRESS ì°¸ì¡°)
+    private int totalAmount;       // ìµœì¢… ê²°ì œ ê¸ˆì•¡
+    private String orderStatus;    // ì£¼ë¬¸ìƒíƒœ (ê²°ì œì™„ë£Œ, ë°°ì†¡ì¤‘ ë“±)
+    private String deliveryMethod; // ë°°ì†¡ë°©ë²• (ì¼ë°˜, ì˜¤ëŠ˜ë„ì°©)
+    private String deliveryRequest;// ë°°ì†¡ìš”ì²­ì‚¬í•­
+    private Date createdAt;        // ì£¼ë¬¸ì¼ì‹œ
     private int issueId;
     private Date updatedAt;
     
-    // °áÁ¦ Ã³¸®¸¦ À§ÇØ Ãß°¡·Î ÇÊ¿äÇÑ ÇÊµå
-    private String paymentMethod;  // °áÁ¦¼ö´Ü (card, kakao µî)
-    private int usedPoint;         // »ç¿ëÇÑ Æ÷ÀÎÆ®
-    private int userCouponId;      // »ç¿ëÇÑ ÄíÆùID
+    // ê²°ì œ ì²˜ë¦¬ë¥¼ ìœ„í•´ ì¶”ê°€ë¡œ í•„ìš”í•œ í•„ë“œ
+    private String paymentMethod;  // ê²°ì œìˆ˜ë‹¨ (card, kakao ë“±)
+    private int usedPoint;         // ì‚¬ìš©í•œ í¬ì¸íŠ¸
+    private int userCouponId;      // ì‚¬ìš©í•œ ì¿ í°ID
     private List<OrderItemDTO> orderItems;
     private String recipientName;
     private String recipientPhone;

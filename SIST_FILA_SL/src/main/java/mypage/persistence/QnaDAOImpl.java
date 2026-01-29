@@ -9,7 +9,7 @@ import mypage.domain.QnaDTO;
 
 public class QnaDAOImpl implements QnaDAO {
 
-    // ½Ì±ÛÅæ ÆĞÅÏ
+    // ì‹±ê¸€í†¤ íŒ¨í„´
     private static QnaDAOImpl dao = new QnaDAOImpl();
     private QnaDAOImpl() {}
     public static QnaDAOImpl getInstance() { return dao; }
@@ -25,7 +25,7 @@ public class QnaDAOImpl implements QnaDAO {
             pstmt.setLong(1, userNumber);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    list.add(mapToDTO(rs)); // µ¥ÀÌÅÍ ¸ÅÇÎ
+                    list.add(mapToDTO(rs)); // ë°ì´í„° ë§¤í•‘
                 }
             }
         }
@@ -63,7 +63,7 @@ public class QnaDAOImpl implements QnaDAO {
         }
     }
 
-    // °á°ú¼ÂÀ» DTO·Î ¹Ù²ãÁÖ´Â ÇïÆÛ ¸Ş¼­µå
+    // ê²°ê³¼ì…‹ì„ DTOë¡œ ë°”ê¿”ì£¼ëŠ” í—¬í¼ ë©”ì„œë“œ
     private QnaDTO mapToDTO(ResultSet rs) throws SQLException {
         return QnaDTO.builder()
                 .inquiry_id(rs.getLong("INQUIRY_ID"))
@@ -112,7 +112,7 @@ public class QnaDAOImpl implements QnaDAO {
         try (PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
-                // QNACategoriesDTO·Î ºôµåÇØ¼­ ¸®½ºÆ®¿¡ Ãß°¡
+                // QNACategoriesDTOë¡œ ë¹Œë“œí•´ì„œ ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€
                 list.add(QNACategoriesDTO.builder()
                         .category_id(rs.getInt("CATEGORY_ID"))
                         .category_name(rs.getString("CATEGORY_NAME"))
@@ -154,7 +154,7 @@ public class QnaDAOImpl implements QnaDAO {
 
     @Override
     public int updateReply(Connection conn, long inquiryId, String replyContent) throws SQLException {
-        // ´äº¯ ³»¿ëÀ» ³Ö°í »óÅÂ¸¦ DONEÀ¸·Î, ´äº¯ ½Ã°¢À» SYSDATE·Î º¯°æ
+        // ë‹µë³€ ë‚´ìš©ì„ ë„£ê³  ìƒíƒœë¥¼ DONEìœ¼ë¡œ, ë‹µë³€ ì‹œê°ì„ SYSDATEë¡œ ë³€ê²½
         String sql = "UPDATE INQUIRY SET REPLY_CONTENT = ?, STATUS = 'DONE', REPLY_AT = SYSDATE WHERE INQUIRY_ID = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, replyContent);

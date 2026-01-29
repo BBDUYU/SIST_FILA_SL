@@ -10,7 +10,7 @@ import notice.NoticeDTO;
 public class NoticeListHandler implements CommandHandler {
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // °Ë»ö ÆÄ¶ó¹ÌÅÍ Ã³¸®
+        // ê²€ìƒ‰ íŒŒë¼ë¯¸í„° ì²˜ë¦¬
         String category = request.getParameter("category");
         String keyword = request.getParameter("keyword");
 
@@ -18,7 +18,7 @@ public class NoticeListHandler implements CommandHandler {
         List<NoticeDTO> list = dao.selectList(category, keyword);
 
         request.setAttribute("noticeList", list);
-        // »ç¿ëÀÚ¿ë(ÀÌ¹ÌÁö Å©°Ô ³ª¿À´Â ¹öÀü) JSP ¸®ÅÏ
+        // ì‚¬ìš©ììš©(ì´ë¯¸ì§€ í¬ê²Œ ë‚˜ì˜¤ëŠ” ë²„ì „) JSP ë¦¬í„´
         return "/view/notice/notice_list.jsp"; 
     }
 }

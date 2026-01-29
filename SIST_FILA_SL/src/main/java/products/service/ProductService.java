@@ -25,7 +25,7 @@ public class ProductService {
     }
 
     // -----------------------------------------------------------
-    // [Ãß°¡] 1. °Ë»ö¾î ±â¹İ »óÇ° ¸ñ·Ï Á¶È¸ (ÇÚµé·¯¿¡¼­ È£Ãâ)
+    // [ì¶”ê°€] 1. ê²€ìƒ‰ì–´ ê¸°ë°˜ ìƒí’ˆ ëª©ë¡ ì¡°íšŒ (í•¸ë“¤ëŸ¬ì—ì„œ í˜¸ì¶œ)
     // -----------------------------------------------------------
     public List<ProductsDTO> searchProducts(String searchItem) {
         Connection conn = null;
@@ -41,7 +41,7 @@ public class ProductService {
     }
 
     // -----------------------------------------------------------
-    // [Ãß°¡] 2. ¸Å°³º¯¼ö ¾ø´Â ÀüÃ¼ ¸ñ·Ï Á¶È¸ (¿À¹ö·Îµù)
+    // [ì¶”ê°€] 2. ë§¤ê°œë³€ìˆ˜ ì—†ëŠ” ì „ì²´ ëª©ë¡ ì¡°íšŒ (ì˜¤ë²„ë¡œë”©)
     // -----------------------------------------------------------
     public List<ProductsDTO> getProductList() {
         Connection conn = null;
@@ -57,7 +57,7 @@ public class ProductService {
     }
 
     // -----------------------------------------------------------
-    // 3. ±âÁ¸ Ä«Å×°í¸® ¸®½ºÆ® Á¶È¸ (Request °´Ã¼ Á¦¾î)
+    // 3. ê¸°ì¡´ ì¹´í…Œê³ ë¦¬ ë¦¬ìŠ¤íŠ¸ ì¡°íšŒ (Request ê°ì²´ ì œì–´)
     // -----------------------------------------------------------
     public void getProductList(HttpServletRequest request) {
         Connection conn = null;
@@ -66,13 +66,13 @@ public class ProductService {
             ProductsDAO pDao = ProductsDAO.getInstance();
             CategoriesDAO cDao = CategoriesDAO.getInstance();
             
-            // 1. Ä«Å×°í¸® ID ¹Ş±â
+            // 1. ì¹´í…Œê³ ë¦¬ ID ë°›ê¸°
             String cateParam = request.getParameter("category");
             int cateId = (cateParam != null) ? Integer.parseInt(cateParam) : 0;
             
-            // 2. Á¦¸ñ(Title) ÀÚµ¿ ¿Ï¼º ·ÎÁ÷
+            // 2. ì œëª©(Title) ìë™ ì™„ì„± ë¡œì§
             String mainTitle = ""; 
-            String subTitle = "ÀüÃ¼º¸±â"; 
+            String subTitle = "ì „ì²´ë³´ê¸°"; 
             
             if (cateId > 0) {
                 CategoriesDTO curDto = cDao.selectCategory(conn, cateId);
@@ -96,8 +96,8 @@ public class ProductService {
                         if (parent == null) parent = cDao.selectCategory(conn, curDto.getParent_id());
                         if (parent != null && parent.getName().equalsIgnoreCase("NewFeatured")) {
                             String myName = curDto.getName();
-                            if (myName.equals("º£½ºÆ®")) subTitle = "BEST";
-                            else if (myName.equals("¼¼ÀÏ")) subTitle = "SALE";
+                            if (myName.equals("ë² ìŠ¤íŠ¸")) subTitle = "BEST";
+                            else if (myName.equals("ì„¸ì¼")) subTitle = "SALE";
                             else subTitle = myName; 
                         } else {
                             if (parent != null) subTitle = parent.getName();
@@ -110,7 +110,7 @@ public class ProductService {
             
             if (mainTitle.equals("")) mainTitle = "WOMEN";
 
-            // 3. ¿ŞÂÊ »çÀÌµå¹Ù ±âÁØÁ¡ Àâ±â
+            // 3. ì™¼ìª½ ì‚¬ì´ë“œë°” ê¸°ì¤€ì  ì¡ê¸°
             int sidebarParentId = 0;
             CategoriesDTO currentCategory = null;
             if (cateId > 0) {
@@ -125,7 +125,7 @@ public class ProductService {
                 }
             }
 
-            // 4. »çÀÌµå¹Ù ¸ñ·Ï Á¶È¸
+            // 4. ì‚¬ì´ë“œë°” ëª©ë¡ ì¡°íšŒ
             List<CategoriesDTO> sidebarList = null;
             if (sidebarParentId > 0) {
                  sidebarList = cDao.selectChildCategories(conn, sidebarParentId);
@@ -143,7 +143,7 @@ public class ProductService {
                 request.setAttribute("totalSidebarCount", totalCount);
             }
 
-            // 5. »óÇ° ¸®½ºÆ® Á¶È¸
+            // 5. ìƒí’ˆ ë¦¬ìŠ¤íŠ¸ ì¡°íšŒ
             List<ProductsDTO> list = null;
             if (cateId == 0) {
                 list = pDao.selectAllProducts(conn);
@@ -165,7 +165,7 @@ public class ProductService {
         }
     }
 
-    // 4. »ó¼¼ÆäÀÌÁö ·ÎÁ÷
+    // 4. ìƒì„¸í˜ì´ì§€ ë¡œì§
     public void getProductDetail(HttpServletRequest request) {
         Connection conn = null;
         try {
@@ -173,7 +173,7 @@ public class ProductService {
             ProductsDAO pDao = ProductsDAO.getInstance();
             CategoriesDAO cDao = CategoriesDAO.getInstance();
             
-            // ReviewDAO °´Ã¼ »ı¼º
+            // ReviewDAO ê°ì²´ ìƒì„±
             review.ReviewDAO reviewDao = new review.ReviewDAOImpl(conn);
             
             String productId = request.getParameter("product_id");
@@ -184,7 +184,7 @@ public class ProductService {
             if (dto != null) {
                 productId = dto.getProduct_id();
                 
-                // ÀÌ¹ÌÁö ÆÄÀÏ ½ºÄµ ·ÎÁ÷
+                // ì´ë¯¸ì§€ íŒŒì¼ ìŠ¤ìº” ë¡œì§
                 List<String> mainImages = new ArrayList<>();
                 List<String> modelImages = new ArrayList<>();
                 List<String> detailImages = new ArrayList<>();
@@ -223,8 +223,8 @@ public class ProductService {
                             if (grandParent != null) depth1Name = grandParent.getName();
                         }
                     }
-                    if ("¿©¼º".equals(depth1Name)) genderTag = "FEMALE";
-                    else if ("³²¼º".equals(depth1Name)) genderTag = "MALE";
+                    if ("ì—¬ì„±".equals(depth1Name)) genderTag = "FEMALE";
+                    else if ("ë‚¨ì„±".equals(depth1Name)) genderTag = "MALE";
                     else if (!depth1Name.isEmpty()) genderTag = depth1Name;
                 }
 
@@ -234,30 +234,30 @@ public class ProductService {
                 }
 
                 String styleTag = pDao.getProductTag(conn, productId, 2);
-                if (styleTag == null) styleTag = "¶óÀÌÇÁ½ºÅ¸ÀÏ";
+                if (styleTag == null) styleTag = "ë¼ì´í”„ìŠ¤íƒ€ì¼";
 
                 // -----------------------------------------------------------
-                // [G] Ãß°¡ ¹× ¼öÁ¤: ·Î±×ÀÎÇÑ À¯Àú Á¤º¸ È®ÀÎ ÈÄ ¸®ºä ¸ñ·Ï Á¶È¸
+                // [G] ì¶”ê°€ ë° ìˆ˜ì •: ë¡œê·¸ì¸í•œ ìœ ì € ì •ë³´ í™•ì¸ í›„ ë¦¬ë·° ëª©ë¡ ì¡°íšŒ
                 // -----------------------------------------------------------
-                int userNumber = 0; // ±âº»°ª (ºñ·Î±×ÀÎ)
+                int userNumber = 0; // ê¸°ë³¸ê°’ (ë¹„ë¡œê·¸ì¸)
                 
-                // ¼¼¼Ç °¡Á®¿À±â
+                // ì„¸ì…˜ ê°€ì ¸ì˜¤ê¸°
                 javax.servlet.http.HttpSession session = request.getSession();
-                // MemberDTO´Â ÆĞÅ°Áö¸í Æ÷ÇÔÇØ¼­ ¸í½Ã (È¤½Ã import ¾È µÇ¾î ÀÖÀ»±îºÁ)
-                member.domain.MemberDTO auth = (member.domain.MemberDTO) session.getAttribute("auth");
+                // MemberDTOëŠ” íŒ¨í‚¤ì§€ëª… í¬í•¨í•´ì„œ ëª…ì‹œ (í˜¹ì‹œ import ì•ˆ ë˜ì–´ ìˆì„ê¹Œë´)
+                member.MemberDTO auth = (member.MemberDTO) session.getAttribute("auth");
                 
                 if (auth != null) {
-                    userNumber = auth.getUserNumber(); // ·Î±×ÀÎÇßÀ¸¸é ¹øÈ£ ÃßÃâ
+                    userNumber = auth.getUserNumber(); // ë¡œê·¸ì¸í–ˆìœ¼ë©´ ë²ˆí˜¸ ì¶”ì¶œ
                 }
 
-                // [¼öÁ¤] userNumber¸¦ ÆÄ¶ó¹ÌÅÍ·Î °°ÀÌ ³Ñ±è (³» ÁÁ¾Æ¿ä »óÅÂ È®ÀÎ¿ë)
+                // [ìˆ˜ì •] userNumberë¥¼ íŒŒë¼ë¯¸í„°ë¡œ ê°™ì´ ë„˜ê¹€ (ë‚´ ì¢‹ì•„ìš” ìƒíƒœ í™•ì¸ìš©)
                 List<review.ReviewDTO> reviewList = reviewDao.selectListByFilter(productId, null, userNumber, null, null);
                 java.util.Map<String, Object> reviewSummary = reviewDao.getReviewSummary(productId);
-                productsqna.QnaDAO qnaDao = productsqna.QnaDAOImpl.getInstance(); 
-                java.util.List<productsqna.QnaDTO> qnaList = qnaDao.selectList(productId);
+                qna.QnaDAO qnaDao = qna.QnaDAOImpl.getInstance(); 
+                java.util.List<qna.QnaDTO> qnaList = qnaDao.selectList(productId);
                 
                 // -----------------------------------------------------------
-                // 4. JSP Àü¼Û (Attribute ¼³Á¤)
+                // 4. JSP ì „ì†¡ (Attribute ì„¤ì •)
                 // -----------------------------------------------------------
                 request.setAttribute("product", dto);
                 request.setAttribute("mainImages", mainImages);
@@ -269,8 +269,8 @@ public class ProductService {
                 request.setAttribute("styleTag", styleTag);
                 request.setAttribute("genderTag", genderTag);
                 
-                request.setAttribute("reviewList", reviewList);       // ¸®ºä ¸®½ºÆ® (myLike Æ÷ÇÔµÊ)
-                request.setAttribute("reviewSummary", reviewSummary); // Åë°è Á¤º¸
+                request.setAttribute("reviewList", reviewList);       // ë¦¬ë·° ë¦¬ìŠ¤íŠ¸ (myLike í¬í•¨ë¨)
+                request.setAttribute("reviewSummary", reviewSummary); // í†µê³„ ì •ë³´
                 request.setAttribute("qnaList", qnaList);
                 
                 if(sizeOptions != null && !sizeOptions.isEmpty()) {
@@ -290,12 +290,12 @@ public class ProductService {
             conn = DBConn.getConnection();
             String productId = request.getParameter("productId");
             
-            // 1. »óÇ° »ó¼¼ Á¤º¸ °¡Á®¿À±â
+            // 1. ìƒí’ˆ ìƒì„¸ ì •ë³´ ê°€ì ¸ì˜¤ê¸°
             ProductsDTO product = ProductsDAO.getInstance().getProduct(conn, productId);
-            // 2. ÇØ´ç »óÇ°ÀÇ ¸ğµç ¿É¼Ç(»çÀÌÁî) °¡Á®¿À±â
+            // 2. í•´ë‹¹ ìƒí’ˆì˜ ëª¨ë“  ì˜µì…˜(ì‚¬ì´ì¦ˆ) ê°€ì ¸ì˜¤ê¸°
             List<ProductsOptionDTO> sizeOptions = ProductsDAO.getInstance().getProductOptions(conn, productId);
 
-            // 3. JSP¿¡¼­ ¾µ ¼ö ÀÖ°Ô request¿¡ ¼¼ÆÃ
+            // 3. JSPì—ì„œ ì“¸ ìˆ˜ ìˆê²Œ requestì— ì„¸íŒ…
             request.setAttribute("product", product);
             request.setAttribute("sizeOptions", sizeOptions);
             request.setAttribute("currentSize", request.getParameter("size"));

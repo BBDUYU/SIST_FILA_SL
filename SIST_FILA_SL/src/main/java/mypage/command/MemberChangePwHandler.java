@@ -7,14 +7,14 @@ import javax.servlet.http.HttpSession;
 import com.util.ConnectionProvider;
 import com.util.JdbcUtil;
 import command.CommandHandler;
-import member.domain.MemberDTO;
-import member.persistence.MemberDAO;
+import member.MemberDAO;
+import member.MemberDTO;
 
 public class MemberChangePwHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // POST ¹æ½ÄÀÏ ¶§¸¸ ºñ¹Ğ¹øÈ£ º¯°æ Ã³¸®
+        // POST ë°©ì‹ì¼ ë•Œë§Œ ë¹„ë°€ë²ˆí˜¸ ë³€ê²½ ì²˜ë¦¬
         if (request.getMethod().equalsIgnoreCase("POST")) {
             String newPassword = request.getParameter("newPassword");
             
@@ -31,12 +31,12 @@ public class MemberChangePwHandler implements CommandHandler {
                 conn = ConnectionProvider.getConnection();
                 MemberDAO dao = MemberDAO.getInstance();
                 
-                // DB ºñ¹Ğ¹øÈ£ ¾÷µ¥ÀÌÆ®
+                // DB ë¹„ë°€ë²ˆí˜¸ ì—…ë°ì´íŠ¸
                 dao.updatePassword(conn, auth.getUserNumber(), newPassword);
                 
-                // ¼º°ø ½Ã ÀÀ´ä (AJAX¿¡¼­ Ã³¸®ÇÒ ¼ö ÀÖµµ·Ï ¼º°ø ¸Ş¼¼Áö ¹İÈ¯)
+                // ì„±ê³µ ì‹œ ì‘ë‹µ (AJAXì—ì„œ ì²˜ë¦¬í•  ìˆ˜ ìˆë„ë¡ ì„±ê³µ ë©”ì„¸ì§€ ë°˜í™˜)
                 response.getWriter().write("success");
-                return null; // AJAX ¿äÃ»ÀÌ¹Ç·Î ºä ÆäÀÌÁö·Î ÀÌµ¿ÇÏÁö ¾ÊÀ½
+                return null; // AJAX ìš”ì²­ì´ë¯€ë¡œ ë·° í˜ì´ì§€ë¡œ ì´ë™í•˜ì§€ ì•ŠìŒ
             } catch (Exception e) {
                 e.printStackTrace();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -46,7 +46,7 @@ public class MemberChangePwHandler implements CommandHandler {
             }
         }
         
-        // GET ¹æ½ÄÀÏ °æ¿ì (Á÷Á¢ Á¢±Ù ½Ã)
+        // GET ë°©ì‹ì¼ ê²½ìš° (ì§ì ‘ ì ‘ê·¼ ì‹œ)
         return "/view/mypage/modifyInfo.htm"; 
     }
 }

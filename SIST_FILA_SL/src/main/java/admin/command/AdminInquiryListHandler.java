@@ -12,7 +12,7 @@ import mypage.service.QnaService;
 public class AdminInquiryListHandler implements CommandHandler {
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) {
-        // °ü¸®ÀÚ ±ÇÇÑ Ã¼Å© ·ÎÁ÷ (¿¹: ¼¼¼Ç¿¡¼­ admin ¿©ºÎ È®ÀÎ) ÇÊ¿ä
+        // ê´€ë¦¬ì ê¶Œí•œ ì²´í¬ ë¡œì§ (ì˜ˆ: ì„¸ì…˜ì—ì„œ admin ì—¬ë¶€ í™•ì¸) í•„ìš”
         
         QnaService service = QnaService.getInstance();
         List<QnaDTO> list = service.getAllInquiryList();

@@ -17,7 +17,7 @@ public class UpdateOrderStatusHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // POST ¹æ½Ä¸¸ Çã¿ë
+        // POST ë°©ì‹ë§Œ í—ˆìš©
         if (!request.getMethod().equalsIgnoreCase("POST")) {
             response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             return null;
@@ -35,20 +35,20 @@ public class UpdateOrderStatusHandler implements CommandHandler {
             conn = ConnectionProvider.getConnection();
             OrderDAO dao = OrderDAO.getInstance();
 
-            // ÁÖ¹® »óÅÂ ¾÷µ¥ÀÌÆ® ½ÇÇà
+            // ì£¼ë¬¸ ìƒíƒœ ì—…ë°ì´íŠ¸ ì‹¤í–‰
             int result = dao.updateOrderStatus(conn, orderId, status);
 
             if (result > 0) {
                 json.put("status", "success");
-                json.put("message", "[" + status + "] Ã³¸®°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù.");
+                json.put("message", "[" + status + "] ì²˜ë¦¬ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.");
             } else {
                 json.put("status", "error");
-                json.put("message", "»óÅÂ º¯°æ¿¡ ½ÇÆĞÇß½À´Ï´Ù.");
+                json.put("message", "ìƒíƒœ ë³€ê²½ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
             }
         } catch (Exception e) {
             e.printStackTrace();
             json.put("status", "error");
-            json.put("message", "¼­¹ö ¿À·ù: " + e.getMessage());
+            json.put("message", "ì„œë²„ ì˜¤ë¥˜: " + e.getMessage());
         } finally {
             JdbcUtil.close(conn);
         }

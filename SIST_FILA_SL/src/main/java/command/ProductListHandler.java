@@ -7,7 +7,7 @@ import java.util.Set; // wishedSet(Set<String>)
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import member.domain.MemberDTO;
+import member.MemberDTO; // ì„¸ì…˜ authì—ì„œ ë¡œê·¸ì¸ ìœ ì € êº¼ë‚´ë ¤ê³ 
 import mypage.service.WishListService;
 import products.ProductsDTO;
 import products.service.ProductService;
@@ -17,49 +17,49 @@ public class ProductListHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // 1. ¼­ºñ½º °´Ã¼ ÁØºñ
+        // 1. ì„œë¹„ìŠ¤ ê°ì²´ ì¤€ë¹„
         ProductService productService = ProductService.getInstance();
         
-        // 2. °Ë»ö¾î ÆÄ¶ó¹ÌÅÍ È®ÀÎ
+        // 2. ê²€ìƒ‰ì–´ íŒŒë¼ë¯¸í„° í™•ì¸
         String searchItem = request.getParameter("searchItem");
         
-        // 3. ºñÁî´Ï½º ·ÎÁ÷ ¼öÇà
+        // 3. ë¹„ì¦ˆë‹ˆìŠ¤ ë¡œì§ ìˆ˜í–‰
         if (searchItem != null && !searchItem.trim().isEmpty()) {
-            // [A] °Ë»ö¾î°¡ ÀÖ´Â °æ¿ì: °Ë»ö Àü¿ë ¸Ş¼­µå¸¸ ½ÇÇà
+            // [A] ê²€ìƒ‰ì–´ê°€ ìˆëŠ” ê²½ìš°: ê²€ìƒ‰ ì „ìš© ë©”ì„œë“œë§Œ ì‹¤í–‰
             List<ProductsDTO> productList = productService.searchProducts(searchItem);
             request.setAttribute("productList", productList);
             
-            // °Ë»ö °á°ú ÆäÀÌÁö¸¦ À§ÇÑ Á¦¸ñ ¼³Á¤
+            // ê²€ìƒ‰ ê²°ê³¼ í˜ì´ì§€ë¥¼ ìœ„í•œ ì œëª© ì„¤ì •
             request.setAttribute("mainTitle", "SEARCH");
-            request.setAttribute("subTitle", "'" + searchItem + "' °Ë»ö °á°ú");
+            request.setAttribute("subTitle", "'" + searchItem + "' ê²€ìƒ‰ ê²°ê³¼");
         } else {
-            // [B] °Ë»ö¾î°¡ ¾ø´Â °æ¿ì: ±âÁ¸ Ä«Å×°í¸®/ÀüÃ¼º¸±â ·ÎÁ÷ ¼öÇà
-            // ÀÌ ¸Ş¼­µå ³»ºÎ¿¡¼­ request.setAttribute("productList", ...) µîÀ» Ã³¸®ÇÔ
+            // [B] ê²€ìƒ‰ì–´ê°€ ì—†ëŠ” ê²½ìš°: ê¸°ì¡´ ì¹´í…Œê³ ë¦¬/ì „ì²´ë³´ê¸° ë¡œì§ ìˆ˜í–‰
+            // ì´ ë©”ì„œë“œ ë‚´ë¶€ì—ì„œ request.setAttribute("productList", ...) ë“±ì„ ì²˜ë¦¬í•¨
             productService.getProductList(request);
         }
 
-        // 4. ÀÎ±â °Ë»ö¾î ¼¼¼Ç °»½Å (Çì´õ¿ë)
+        // 4. ì¸ê¸° ê²€ìƒ‰ì–´ ì„¸ì…˜ ê°±ì‹  (í—¤ë”ìš©)
         try {
             Map<String, Object> mainData = MainService.getInstance().getMainData(null); 
             request.getSession().setAttribute("popularKeywords", mainData.get("popularKeywords"));
         } catch (Exception e) {
-            // ¸ŞÀÎ µ¥ÀÌÅÍ Á¶È¸ ½ÇÆĞ ½Ã ·Î±×¸¸ ³²±â°í Áß´ÜµÇÁö ¾Êµµ·Ï Ã³¸®
+            // ë©”ì¸ ë°ì´í„° ì¡°íšŒ ì‹¤íŒ¨ ì‹œ ë¡œê·¸ë§Œ ë‚¨ê¸°ê³  ì¤‘ë‹¨ë˜ì§€ ì•Šë„ë¡ ì²˜ë¦¬
             e.printStackTrace();
         }
         
-        // 5. ·Î±×ÀÎ À¯Àú ±âÁØ wishedSet ³»·ÁÁÖ±â (¸®½ºÆ® »óÇ° Ä«µå ÇÏÆ® Ç¥½Ã¿ë)
+        // 5. ë¡œê·¸ì¸ ìœ ì € ê¸°ì¤€ wishedSet ë‚´ë ¤ì£¼ê¸° (ë¦¬ìŠ¤íŠ¸ ìƒí’ˆ ì¹´ë“œ í•˜íŠ¸ í‘œì‹œìš©)
         MemberDTO loginUser = (MemberDTO) request.getSession().getAttribute("auth");
         if (loginUser != null) {
-            // ·Î±×ÀÎ À¯Àú°¡ ÂòÇÑ product_id ¸ñ·Ï(Set<String>)À» °¡Á®¿Í¼­ JSP·Î ³»·ÁÁÜ
+            // ë¡œê·¸ì¸ ìœ ì €ê°€ ì°œí•œ product_id ëª©ë¡(Set<String>)ì„ ê°€ì ¸ì™€ì„œ JSPë¡œ ë‚´ë ¤ì¤Œ
             Set<String> wishedSet = WishListService.getInstance()
                     .getWishedSet(loginUser.getUserNumber());
             request.setAttribute("wishedSet", wishedSet);
         } else {
-            // ºñ·Î±×ÀÎ: ºñ¾îÀÖ´Â Set ³»·ÁÁÜ (JSP/JS¿¡¼­ ÀüºÎ OFF Ã³¸®)
+            // ë¹„ë¡œê·¸ì¸: ë¹„ì–´ìˆëŠ” Set ë‚´ë ¤ì¤Œ (JSP/JSì—ì„œ ì „ë¶€ OFF ì²˜ë¦¬)
             request.setAttribute("wishedSet", java.util.Collections.emptySet());
         }
         
-        // 6. ºä ÆäÀÌÁö(JSP) °æ·Î ¸®ÅÏ (°æ·Î°¡ /view/product/ ÀÎÁö /product/ ÀÎÁö ´Ù½Ã È®ÀÎ!)
+        // 6. ë·° í˜ì´ì§€(JSP) ê²½ë¡œ ë¦¬í„´ (ê²½ë¡œê°€ /view/product/ ì¸ì§€ /product/ ì¸ì§€ ë‹¤ì‹œ í™•ì¸!)
         return "/view/product/list.jsp";
     }
 }

@@ -10,12 +10,12 @@ import lombok.Setter;
 @Setter
 public class ProductsOptionDTO {
 	private int combinationId;
-    private String groupName; // ¿É¼Ç Á¾·ù (¿¹: "»ö»ó", "»çÀÌÁî")
-    private List<String> values = new ArrayList<>(); // ¿É¼Ç °ª ¸ñ·Ï
+    private String groupName; // ì˜µì…˜ ì¢…ë¥˜ (ì˜ˆ: "ìƒ‰ìƒ", "ì‚¬ì´ì¦ˆ")
+    private List<String> values = new ArrayList<>(); // ì˜µì…˜ ê°’ ëª©ë¡
 
-    // ¡Ú Ãß°¡: »ó¼¼ ¿É¼Ç µ¥ÀÌÅÍ¿ë º¯¼ö
-    private String optionValue; // »çÀÌÁî ÀÌ¸§ (¿¹: "90(S)", "100(L)")
-    private int stock;          // Àç°í·®
+    // â˜… ì¶”ê°€: ìƒì„¸ ì˜µì…˜ ë°ì´í„°ìš© ë³€ìˆ˜
+    private String optionValue; // ì‚¬ì´ì¦ˆ ì´ë¦„ (ì˜ˆ: "90(S)", "100(L)")
+    private int stock;          // ì¬ê³ ëŸ‰
 
     public ProductsOptionDTO() {}
     public ProductsOptionDTO(String groupName) {

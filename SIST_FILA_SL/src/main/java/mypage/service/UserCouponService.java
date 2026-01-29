@@ -15,7 +15,7 @@ public class UserCouponService {
         try (Connection conn = ConnectionProvider.getConnection()) {
             return UserCouponDAO.getInstance().selectMemberCoupons(conn, userNum);
         } catch (Exception e) {
-            throw new RuntimeException("ÄíÆù ¸ñ·Ï Á¶È¸ ½ÇÆĞ", e);
+            throw new RuntimeException("ì¿ í° ëª©ë¡ ì¡°íšŒ ì‹¤íŒ¨", e);
         }
     }
 }

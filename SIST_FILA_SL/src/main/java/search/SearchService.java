@@ -15,20 +15,20 @@ public class SearchService {
     public void recordSearchKeyword(String keyword) {
         Connection conn = null;
         try {
-            // ConnectionProvider¸¦ »ç¿ëÇÏ¿© Ä¿³Ø¼Ç È®º¸
+            // ConnectionProviderë¥¼ ì‚¬ìš©í•˜ì—¬ ì»¤ë„¥ì…˜ í™•ë³´
             conn = ConnectionProvider.getConnection();
             
-            // DAO¸¦ ÅëÇÑ °Ë»ö¾î upsert ½ÇÇà
+            // DAOë¥¼ í†µí•œ ê²€ìƒ‰ì–´ upsert ì‹¤í–‰
             SearchDAO sDao = SearchDAO.getInstance();
             if (keyword != null && !keyword.trim().isEmpty()) {
                 sDao.upsertKeyword(conn, keyword.trim());
             }
 
         } catch (Exception e) {
-            // ¿¹¿Ü ¹ß»ı ½Ã ·±Å¸ÀÓ ¿¹¿Ü·Î ´øÁ®¼­ ¼­ºñ½º ·¹ÀÌ¾îÀÇ ¿À·ù¸¦ ¾Ë¸²
-            throw new RuntimeException("°Ë»ö¾î ±â·Ï Áß ¿À·ù ¹ß»ı", e);
+            // ì˜ˆì™¸ ë°œìƒ ì‹œ ëŸ°íƒ€ì„ ì˜ˆì™¸ë¡œ ë˜ì ¸ì„œ ì„œë¹„ìŠ¤ ë ˆì´ì–´ì˜ ì˜¤ë¥˜ë¥¼ ì•Œë¦¼
+            throw new RuntimeException("ê²€ìƒ‰ì–´ ê¸°ë¡ ì¤‘ ì˜¤ë¥˜ ë°œìƒ", e);
         } finally {
-            // Ä¿³Ø¼Ç ¹İÈ¯
+            // ì»¤ë„¥ì…˜ ë°˜í™˜
             JdbcUtil.close(conn);
         }
     }
@@ -38,7 +38,7 @@ public class SearchService {
             conn = ConnectionProvider.getConnection();
             return SearchDAO.getInstance().selectTopKeywords(conn, limit);
         } catch (Exception e) {
-            throw new RuntimeException("ÀÎ±â °Ë»ö¾î Á¶È¸ Áß ¿À·ù ¹ß»ı", e);
+            throw new RuntimeException("ì¸ê¸° ê²€ìƒ‰ì–´ ì¡°íšŒ ì¤‘ ì˜¤ë¥˜ ë°œìƒ", e);
         } finally {
             JdbcUtil.close(conn);
         }

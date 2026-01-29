@@ -10,7 +10,7 @@ public class WishAddDAO {
     public static WishAddDAO getInstance() { return instance; }
     private WishAddDAO() {}
 
-    // �ߺ� üũ
+    // 중복 체크
     public boolean exists(Connection conn, int userNumber, String productId) throws Exception {
         String sql = "SELECT 1 FROM WISHLIST WHERE USER_NUMBER = ? AND PRODUCT_ID = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

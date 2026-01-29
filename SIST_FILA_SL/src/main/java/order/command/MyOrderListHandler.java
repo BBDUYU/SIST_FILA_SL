@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import com.util.ConnectionProvider;
 import command.CommandHandler;
-import member.domain.MemberDTO;
+import member.MemberDTO;
 import order.domain.OrderDTO;
 import order.persistence.OrderDAO;
 
@@ -27,7 +27,7 @@ public class MyOrderListHandler implements CommandHandler {
          List<OrderDTO> list = dao.selectUserOrderList(conn, auth.getUserNumber(), "ORDER");
          
          request.setAttribute("orderList", list);
-         request.setAttribute("totalCount", list.size()); // ÃÑ °Ç¼ö Ç¥½Ã¿ë
+         request.setAttribute("totalCount", list.size()); // ì´ ê±´ìˆ˜ í‘œì‹œìš©
      }
      
      return "/view/mypage/orders.jsp";

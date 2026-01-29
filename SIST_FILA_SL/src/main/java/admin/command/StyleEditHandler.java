@@ -27,18 +27,18 @@ public class StyleEditHandler implements CommandHandler {
         StyleService service = StyleService.getInstance();
         
         if (request.getMethod().equalsIgnoreCase("GET")) {
-            // 1. ¼öÁ¤ÇÒ ½ºÅ¸ÀÏ ID ÆÄ¶ó¹ÌÅÍ ¼öÁı
+            // 1. ìˆ˜ì •í•  ìŠ¤íƒ€ì¼ ID íŒŒë¼ë¯¸í„° ìˆ˜ì§‘
             int styleId = Integer.parseInt(request.getParameter("id"));
             
             try (Connection conn = ConnectionProvider.getConnection()) {
-                // 2. ½ºÅ¸ÀÏ ±âº» Á¤º¸ Á¶È¸
+                // 2. ìŠ¤íƒ€ì¼ ê¸°ë³¸ ì •ë³´ ì¡°íšŒ
                 StyleDTO styleDto = service.getStyleDetail(styleId);
-                // 3. ½ºÅ¸ÀÏ ÀÌ¹ÌÁö ¸®½ºÆ® Á¶È¸
+                // 3. ìŠ¤íƒ€ì¼ ì´ë¯¸ì§€ ë¦¬ìŠ¤íŠ¸ ì¡°íšŒ
                 List<StyleImageDTO> imageList = service.getStyleImages(styleId);
-                // 4. ÀüÃ¼ »óÇ° ¸®½ºÆ® (¼±ÅÃ¿ë)
+                // 4. ì „ì²´ ìƒí’ˆ ë¦¬ìŠ¤íŠ¸ (ì„ íƒìš©)
                 ProductDAO pDao = ProductDAO.getInstance();
                 List<ProductDTO> productList = pDao.selectProductList(conn);
-                // 5. ÇöÀç ¸ÅÄªµÈ »óÇ° ID ¸®½ºÆ® (JSP¿¡¼­ checked Ã³¸®¿ë)
+                // 5. í˜„ì¬ ë§¤ì¹­ëœ ìƒí’ˆ ID ë¦¬ìŠ¤íŠ¸ (JSPì—ì„œ checked ì²˜ë¦¬ìš©)
                 List<String> matchedProductIds = service.getMatchedProductIds(styleId);
 
                 request.setAttribute("style", styleDto);
@@ -49,7 +49,7 @@ public class StyleEditHandler implements CommandHandler {
             return "/view/admin/style_edit.jsp";
         } 
 
-        else { // POST ¿äÃ» (¼öÁ¤ ½ÇÇà)
+        else { // POST ìš”ì²­ (ìˆ˜ì • ì‹¤í–‰)
             request.setCharacterEncoding("UTF-8");
             
             int styleId = Integer.parseInt(request.getParameter("style_id"));
@@ -59,7 +59,7 @@ public class StyleEditHandler implements CommandHandler {
             String[] matchProducts = request.getParameterValues("match_products");
             if (matchProducts == null) matchProducts = new String[0];
 
-            // 1. DTO »ı¼º ¹× ±âº» Á¤º¸ ¾÷µ¥ÀÌÆ®
+            // 1. DTO ìƒì„± ë° ê¸°ë³¸ ì •ë³´ ì—…ë°ì´íŠ¸
             StyleDTO styleDto = StyleDTO.builder()
                     .style_id(styleId)
                     .style_name(styleName)
@@ -67,7 +67,7 @@ public class StyleEditHandler implements CommandHandler {
                     .use_yn(useYn)
                     .build();
             
-            // 2. ÆÄÀÏ ¾÷·Îµå Ã³¸® (»õ·Î¿î ÆÄÀÏÀÌ ÀÖ´ÂÁö È®ÀÎ)
+            // 2. íŒŒì¼ ì—…ë¡œë“œ ì²˜ë¦¬ (ìƒˆë¡œìš´ íŒŒì¼ì´ ìˆëŠ”ì§€ í™•ì¸)
             Collection<Part> parts = request.getParts();
             List<StyleImageDTO> newImageList = new ArrayList<>();
             boolean hasNewImages = false;
@@ -80,9 +80,9 @@ public class StyleEditHandler implements CommandHandler {
             }
 
             if (hasNewImages) {
-                // [½Å±Ô ÆÄÀÏÀÌ ÀÖ´Â °æ¿ì] ±âÁ¸ ¹°¸® ÆÄÀÏ ¹× Æú´õ »èÁ¦ ÈÄ Àç»ı¼º
+                // [ì‹ ê·œ íŒŒì¼ì´ ìˆëŠ” ê²½ìš°] ê¸°ì¡´ ë¬¼ë¦¬ íŒŒì¼ ë° í´ë” ì‚­ì œ í›„ ì¬ìƒì„±
                 String uploadPath = "C:\\fila_upload\\style\\" + styleId;
-                deleteDirectory(new File(uploadPath)); // ±âÁ¸ Æú´õ »èÁ¦ À¯Æ¿ È£Ãâ
+                deleteDirectory(new File(uploadPath)); // ê¸°ì¡´ í´ë” ì‚­ì œ ìœ í‹¸ í˜¸ì¶œ
                 
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) uploadDir.mkdirs();
@@ -96,7 +96,7 @@ public class StyleEditHandler implements CommandHandler {
 
                             StyleImageDTO imgDto = new StyleImageDTO();
                             imgDto.setStyle_id(styleId);
-                            // µî·Ï ¶§¿Í ¸¶Âù°¡Áö·Î ¾ÈÀüÇÑ ½½·¡½Ã(/) °æ·Î »ç¿ë
+                            // ë“±ë¡ ë•Œì™€ ë§ˆì°¬ê°€ì§€ë¡œ ì•ˆì „í•œ ìŠ¬ë˜ì‹œ(/) ê²½ë¡œ ì‚¬ìš©
                             imgDto.setImage_url("C:/fila_upload/style/" + styleId + "/" + fileName);
                             imgDto.setIs_main(order == 1 ? 1 : 0);
                             imgDto.setSort_order(order++);
@@ -107,8 +107,8 @@ public class StyleEditHandler implements CommandHandler {
                 }
             }
 
-            // 3. ¼­ºñ½º È£Ãâ (Master Á¤º¸ ¼öÁ¤ + ÀÌ¹ÌÁö/»óÇ° Á¤º¸ °»½Å)
-            // hasNewImages°¡ true¸é ±âÁ¸ ÀÌ¹ÌÁö¸¦ DB¿¡¼­ Áö¿ì°í »õ·Î µî·ÏÇÏµµ·Ï ¼­ºñ½º¿¡¼­ Ã³¸®ÇØ¾ß ÇÔ
+            // 3. ì„œë¹„ìŠ¤ í˜¸ì¶œ (Master ì •ë³´ ìˆ˜ì • + ì´ë¯¸ì§€/ìƒí’ˆ ì •ë³´ ê°±ì‹ )
+            // hasNewImagesê°€ trueë©´ ê¸°ì¡´ ì´ë¯¸ì§€ë¥¼ DBì—ì„œ ì§€ìš°ê³  ìƒˆë¡œ ë“±ë¡í•˜ë„ë¡ ì„œë¹„ìŠ¤ì—ì„œ ì²˜ë¦¬í•´ì•¼ í•¨
             service.updateStyleComplete(styleDto, newImageList, matchProducts, hasNewImages);
 
             response.setContentType("text/plain; charset=UTF-8");
@@ -117,7 +117,7 @@ public class StyleEditHandler implements CommandHandler {
         }
     }
 
-    // ÆÄÀÏ¸í ÃßÃâ À¯Æ¿¸®Æ¼
+    // íŒŒì¼ëª… ì¶”ì¶œ ìœ í‹¸ë¦¬í‹°
     private String getFileName(Part part) {
         String contentDisp = part.getHeader("content-disposition");
         String[] tokens = contentDisp.split(";");
@@ -129,7 +129,7 @@ public class StyleEditHandler implements CommandHandler {
         return null;
     }
 
-    // ±âÁ¸ Æú´õ ¹× ÇÏÀ§ ÆÄÀÏ »èÁ¦ À¯Æ¿¸®Æ¼
+    // ê¸°ì¡´ í´ë” ë° í•˜ìœ„ íŒŒì¼ ì‚­ì œ ìœ í‹¸ë¦¬í‹°
     private void deleteDirectory(File directory) {
         if (directory.exists()) {
             File[] files = directory.listFiles();

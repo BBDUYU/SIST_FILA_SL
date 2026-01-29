@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import command.CommandHandler;
-import member.domain.MemberDTO;
+import member.MemberDTO;
 import mypage.persistence.AddressDAO;
 
 import com.util.ConnectionProvider;
@@ -16,13 +16,13 @@ public class AddressDefaultHandler implements CommandHandler {
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        // 1. ·Î±×ÀÎ Ã¼Å©
+        // 1. ë¡œê·¸ì¸ ì²´í¬
         MemberDTO loginUser = (MemberDTO) request.getSession().getAttribute("auth");
         if (loginUser == null) {
             return "redirect:/login.htm";
         }
 
-        // 2. POST¸¸ Çã¿ë
+        // 2. POSTë§Œ í—ˆìš©
         if (!"POST".equalsIgnoreCase(request.getMethod())) {
             response.sendError(405);
             return null;
@@ -36,16 +36,16 @@ public class AddressDefaultHandler implements CommandHandler {
         try (Connection conn = ConnectionProvider.getConnection()) {
             conn.setAutoCommit(false);
 
-            // 3. ±âÁ¸ ±âº» ¹è¼ÛÁö ÇØÁ¦
+            // 3. ê¸°ì¡´ ê¸°ë³¸ ë°°ì†¡ì§€ í•´ì œ
             dao.clearDefault(conn, userNumber);
 
-            // 4. ¼±ÅÃÇÑ ÁÖ¼Ò¸¦ ±âº» ¹è¼ÛÁö·Î ¼³Á¤
+            // 4. ì„ íƒí•œ ì£¼ì†Œë¥¼ ê¸°ë³¸ ë°°ì†¡ì§€ë¡œ ì„¤ì •
             dao.setDefault(conn, addrNo, userNumber);
 
             conn.commit();
         }
 
-        // 5. JSON ÀÀ´ä
+        // 5. JSON ì‘ë‹µ
         response.setContentType("application/json; charset=UTF-8");
         response.getWriter().write("{\"ok\":true}");
         return null;

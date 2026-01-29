@@ -8,25 +8,25 @@ import mypage.domain.QNACategoriesDTO;
 import mypage.domain.QnaDTO;
 
 public interface QnaDAO {
-    // ³» ¹®ÀÇ ¸ñ·Ï Á¶È¸
+    // ë‚´ ë¬¸ì˜ ëª©ë¡ ì¡°íšŒ
     List<QnaDTO> selectByUser(Connection conn, long userNumber) throws SQLException;
 
-    // »óÅÂº° ¹®ÀÇ ¸ñ·Ï Á¶È¸
+    // ìƒíƒœë³„ ë¬¸ì˜ ëª©ë¡ ì¡°íšŒ
     List<QnaDTO> selectByUserAndStatus(Connection conn, long userNumber, String status) throws SQLException;
 
-    // ¹®ÀÇ Ä«Å×°í¸® ¸ñ·Ï Á¶È¸
+    // ë¬¸ì˜ ì¹´í…Œê³ ë¦¬ ëª©ë¡ ì¡°íšŒ
     List<QNACategoriesDTO> selectCategoryList(Connection conn) throws SQLException;
     
-    // ¹®ÀÇ µî·Ï
+    // ë¬¸ì˜ ë“±ë¡
     int insertInquiry(Connection conn, QnaDTO dto) throws SQLException;
 
-    // °³ÀÎÁ¤º¸ ¼öÁı µ¿ÀÇ ¾÷µ¥ÀÌÆ® (5¹ø Ç×¸ñ)
+    // ê°œì¸ì •ë³´ ìˆ˜ì§‘ ë™ì˜ ì—…ë°ì´íŠ¸ (5ë²ˆ í•­ëª©)
     void updatePrivacyAgree(Connection conn, long userNumber, int isAgreed) throws SQLException;
     
- // °ü¸®ÀÚ: ÀüÃ¼ ¹®ÀÇ ¸ñ·Ï Á¶È¸
+ // ê´€ë¦¬ì: ì „ì²´ ë¬¸ì˜ ëª©ë¡ ì¡°íšŒ
     List<QnaDTO> selectAllInquiries(Connection conn) throws SQLException;
 
-    // °ü¸®ÀÚ: ´äº¯ µî·Ï ¹× »óÅÂ º¯°æ
+    // ê´€ë¦¬ì: ë‹µë³€ ë“±ë¡ ë° ìƒíƒœ ë³€ê²½
     int updateReply(Connection conn, long inquiryId, String replyContent) throws SQLException;
     
 }

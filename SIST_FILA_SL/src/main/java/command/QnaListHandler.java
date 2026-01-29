@@ -4,9 +4,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import productsqna.QnaDAO;
-import productsqna.QnaDAOImpl;
-import productsqna.QnaDTO;
+import qna.QnaDAO;
+import qna.QnaDAOImpl;
+import qna.QnaDTO;
 
 public class QnaListHandler implements CommandHandler {
 
@@ -15,14 +15,14 @@ public class QnaListHandler implements CommandHandler {
         
         String productId = request.getParameter("product_id");
         
-        // [¼öÁ¤µÈ ºÎºĞ] new QnaDAOImpl() ´ë½Å getInstance() »ç¿ë
+        // [ìˆ˜ì •ëœ ë¶€ë¶„] new QnaDAOImpl() ëŒ€ì‹  getInstance() ì‚¬ìš©
         QnaDAO dao = QnaDAOImpl.getInstance(); 
         
-        List<QnaDTO> list = dao.selectList(productId); // DB¿¡¼­ ¸ñ·Ï Á¶È¸
+        List<QnaDTO> list = dao.selectList(productId); // DBì—ì„œ ëª©ë¡ ì¡°íšŒ
         
         request.setAttribute("qnaList", list);
         
-        // ¸®½ºÆ®¿ë JSP Á¶°¢ ÆÄÀÏ °æ·Î (º»ÀÎ ÇÁ·ÎÁ§Æ® °æ·Î¿¡ ¸Â°Ô È®ÀÎ!)
+        // ë¦¬ìŠ¤íŠ¸ìš© JSP ì¡°ê° íŒŒì¼ ê²½ë¡œ (ë³¸ì¸ í”„ë¡œì íŠ¸ ê²½ë¡œì— ë§ê²Œ í™•ì¸!)
         return "/view/qna/qna_list.jsp"; 
     }
 }

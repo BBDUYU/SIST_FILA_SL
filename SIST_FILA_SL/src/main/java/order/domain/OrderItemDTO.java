@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class OrderItemDTO {
-    private int orderItemId;    // PK (½ÃÄö½º)
-    private String orderId;     // FK (ÁÖ¹®¹øÈ£)
-    private String productId;   // »óÇ°ID
-    private int combinationId;  // ¿É¼ÇID (»çÀÌÁî µî)
-    private int quantity;       // ÁÖ¹®¼ö·®
-    private int price;          // ÁÖ¹® ´ç½Ã ÆÇ¸Å°¡
-    private String cancelStatus;// Ãë¼Ò¿©ºÎ (N)
+    private int orderItemId;    // PK (ì‹œí€€ìŠ¤)
+    private String orderId;     // FK (ì£¼ë¬¸ë²ˆí˜¸)
+    private String productId;   // ìƒí’ˆID
+    private int combinationId;  // ì˜µì…˜ID (ì‚¬ì´ì¦ˆ ë“±)
+    private int quantity;       // ì£¼ë¬¸ìˆ˜ëŸ‰
+    private int price;          // ì£¼ë¬¸ ë‹¹ì‹œ íŒë§¤ê°€
+    private String cancelStatus;// ì·¨ì†Œì—¬ë¶€ (N)
     private String productName;
     private String size;
     private int originalPrice;

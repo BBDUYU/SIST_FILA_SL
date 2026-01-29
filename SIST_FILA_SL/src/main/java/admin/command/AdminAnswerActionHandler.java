@@ -9,7 +9,7 @@ public class AdminAnswerActionHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // 1. ÆÄ¶ó¹ÌÅÍ ¹Ş±â (JSPÀÇ AJAX data ¼Ó¼º ÀÌ¸§°ú ÀÏÄ¡ÇØ¾ß ÇÔ)
+        // 1. íŒŒë¼ë¯¸í„° ë°›ê¸° (JSPì˜ AJAX data ì†ì„± ì´ë¦„ê³¼ ì¼ì¹˜í•´ì•¼ í•¨)
         String inquiryIdStr = request.getParameter("inquiryId");
         String replyContent = request.getParameter("content");
 
@@ -20,11 +20,11 @@ public class AdminAnswerActionHandler implements CommandHandler {
 
         long inquiryId = Long.parseLong(inquiryIdStr);
 
-        // 2. ¼­ºñ½º È£ÃâÇÏ¿© ´äº¯ ÀúÀå
+        // 2. ì„œë¹„ìŠ¤ í˜¸ì¶œí•˜ì—¬ ë‹µë³€ ì €ì¥
         QnaService service = QnaService.getInstance();
         service.answerInquiry(inquiryId, replyContent);
 
-        // 3. AJAX ÀÀ´ä (¼º°ø ½Ã ¸Ş½ÃÁö³ª ºó °ª ¹İÈ¯)
+        // 3. AJAX ì‘ë‹µ (ì„±ê³µ ì‹œ ë©”ì‹œì§€ë‚˜ ë¹ˆ ê°’ ë°˜í™˜)
         response.getWriter().write("success");
         return null;
     }

@@ -15,7 +15,7 @@ public class EventDAO {
         List<SectionDTO> sections = selectSections(con, eventId);
         Map<Integer, SectionDTO> sectionMap = new LinkedHashMap<>();
         for (SectionDTO s : sections) {
-            // ¼½¼Ç Á¦¸ñ ÄÃ·³ÀÌ ¾ø´Ù¸é ÀÓ½Ã·Î ÀÌ·¸°Ô¶óµµ
+            // ì„¹ì…˜ ì œëª© ì»¬ëŸ¼ì´ ì—†ë‹¤ë©´ ì„ì‹œë¡œ ì´ë ‡ê²Œë¼ë„
             s.setTitle("SECTION " + s.getSectionId());
             sectionMap.put(s.getSectionId(), s);
         }

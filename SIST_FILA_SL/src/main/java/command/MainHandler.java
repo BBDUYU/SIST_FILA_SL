@@ -2,13 +2,13 @@ package command;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set; // wishedSet Å¸ÀÔ(Set)
+import java.util.Set; // wishedSet íƒ€ì…(Set)
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import event_product.EventproductDTO;
-import member.domain.MemberDTO;
+import member.MemberDTO; // ì„¸ì…˜ auth êº¼ë‚´ì„œ ìœ ì €ë²ˆí˜¸ ì“°ë ¤ê³ 
 import mypage.service.WishListService;
 import service.MainService;
 
@@ -17,25 +17,25 @@ public class MainHandler implements CommandHandler {
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
         
-        // 1. °Ë»ö ÆÄ¶ó¹ÌÅÍ ¹Ş±â
+        // 1. ê²€ìƒ‰ íŒŒë¼ë¯¸í„° ë°›ê¸°
         String searchItem = request.getParameter("searchItem");
         if (searchItem != null && !searchItem.trim().isEmpty()) {
             search.SearchService.getInstance().recordSearchKeyword(searchItem);
         }
         
-        // 2. ¼­ºñ½º¸¦ ÅëÇØ µ¥ÀÌÅÍ ¹¶Ä¡ °¡Á®¿À±â
+        // 2. ì„œë¹„ìŠ¤ë¥¼ í†µí•´ ë°ì´í„° ë­‰ì¹˜ ê°€ì ¸ì˜¤ê¸°
         MainService service = MainService.getInstance();
         Map<String, Object> mainData = service.getMainData(searchItem);
         
         request.setAttribute("activeTags", mainData.get("activeTags"));
         request.setAttribute("activeStyles", mainData.get("activeStyles"));
         
-        // 3. View(JSP)¿¡ Àü´ŞÇÒ µ¥ÀÌÅÍ ¼¼ÆÃ
-        // Ä«Å×°í¸®´Â Çì´õ¿¡¼­ °øÅëÀ¸·Î ¾²¹Ç·Î ¼¼¼Ç¿¡ ÀúÀå (±âÁ¸ ¼­ºí¸´ ·ÎÁ÷ À¯Áö)
+        // 3. View(JSP)ì— ì „ë‹¬í•  ë°ì´í„° ì„¸íŒ…
+        // ì¹´í…Œê³ ë¦¬ëŠ” í—¤ë”ì—ì„œ ê³µí†µìœ¼ë¡œ ì“°ë¯€ë¡œ ì„¸ì…˜ì— ì €ì¥ (ê¸°ì¡´ ì„œë¸”ë¦¿ ë¡œì§ ìœ ì§€)
         request.getSession().setAttribute("list", mainData.get("categoryList"));
         request.setAttribute("activeTags", mainData.get("activeTags"));
         
-        // ³ª¸ÓÁö µ¥ÀÌÅÍ´Â request¿¡ ÀúÀå
+        // ë‚˜ë¨¸ì§€ ë°ì´í„°ëŠ” requestì— ì €ì¥
         request.getSession().setAttribute("popularKeywords", mainData.get("popularKeywords"));
         request.getSession().setAttribute("recommendKeywords", mainData.get("recommendKeywords"));
         request.setAttribute("bannerList", mainData.get("bannerList"));
@@ -44,7 +44,7 @@ public class MainHandler implements CommandHandler {
         
         if (recommendProducts != null) {
             for (EventproductDTO p : recommendProducts) {
-                String img = p.getMainImageUrl(); // DTO¿¡ ÇØ´ç ÇÊµå°¡ ÀÖ´Ù¸é
+                String img = p.getMainImageUrl(); // DTOì— í•´ë‹¹ í•„ë“œê°€ ìˆë‹¤ë©´
                 if (img != null && img.contains("path=")) {
                     p.setMainImageUrl(img.split("path=")[1].replace("\\", "/"));
                 }
@@ -53,19 +53,19 @@ public class MainHandler implements CommandHandler {
         
         request.getSession().setAttribute("recommendProducts", recommendProducts);
         
-        // 4. ·Î±×ÀÎ À¯Àú ±âÁØ wishedSet ³»·ÁÁÖ±â (¸ŞÀÎ »óÇ° Ä«µå ÇÏÆ® Ç¥½Ã¿ë)
+        // 4. ë¡œê·¸ì¸ ìœ ì € ê¸°ì¤€ wishedSet ë‚´ë ¤ì£¼ê¸° (ë©”ì¸ ìƒí’ˆ ì¹´ë“œ í•˜íŠ¸ í‘œì‹œìš©)
         MemberDTO loginUser = (MemberDTO) request.getSession().getAttribute("auth");
         if (loginUser != null) {
-            // ·Î±×ÀÎ À¯Àú°¡ ÂòÇÑ product_id ¸ñ·Ï(Set<String>)À» °¡Á®¿Í¼­ JSP·Î ³»·ÁÁÜ
+            // ë¡œê·¸ì¸ ìœ ì €ê°€ ì°œí•œ product_id ëª©ë¡(Set<String>)ì„ ê°€ì ¸ì™€ì„œ JSPë¡œ ë‚´ë ¤ì¤Œ
             Set<String> wishedSet = WishListService.getInstance()
                     .getWishedSet(loginUser.getUserNumber());
             request.setAttribute("wishedSet", wishedSet);
         } else {
-            // ºñ·Î±×ÀÎ: ºñ¾îÀÖ´Â Set ³»·ÁÁÜ (JS¿¡¼­ ÀüºÎ OFF Ã³¸®)
+            // ë¹„ë¡œê·¸ì¸: ë¹„ì–´ìˆëŠ” Set ë‚´ë ¤ì¤Œ (JSì—ì„œ ì „ë¶€ OFF ì²˜ë¦¬)
             request.setAttribute("wishedSet", java.util.Collections.emptySet());
         }
         
-        // 5. ÀÌµ¿ÇÒ JSP °æ·Î ¸®ÅÏ
+        // 5. ì´ë™í•  JSP ê²½ë¡œ ë¦¬í„´
         return "/view/main.jsp";
     }
 }

@@ -13,13 +13,13 @@ import categories.CategoriesDTO;
 
 public class ProductsDAO {
 
-    // ½Ì±ÛÅæ ÆĞÅÏ
+    // ì‹±ê¸€í†¤ íŒ¨í„´
     private static ProductsDAO instance = new ProductsDAO();
     public static ProductsDAO getInstance() { return instance; }
     public ProductsDAO() {}
 
     // -----------------------------------------------------------
-    // 1. »óÇ° ÀüÃ¼ ¸ñ·Ï Á¶È¸ (ÀüÃ¼º¸±â¿ë)
+    // 1. ìƒí’ˆ ì „ì²´ ëª©ë¡ ì¡°íšŒ (ì „ì²´ë³´ê¸°ìš©)
     // -----------------------------------------------------------
     public List<ProductsDTO> selectAllProducts(Connection conn) throws SQLException {
         List<ProductsDTO> list = new ArrayList<>();
@@ -33,7 +33,7 @@ public class ProductsDAO {
                 "            FROM CATEGORIES " +
                 "            START WITH CATEGORY_ID = P.CATEGORY_ID " +
                 "            CONNECT BY PRIOR PARENT_ID = CATEGORY_ID " +
-                "            ORDER BY LVL DESC " + // °¡Àå ³ôÀº Á¶»ó(DEPTH 1)ÀÌ 1¹øÀ¸·Î ¿À°Ô ÇÔ
+                "            ORDER BY LVL DESC " + // ê°€ì¥ ë†’ì€ ì¡°ìƒ(DEPTH 1)ì´ 1ë²ˆìœ¼ë¡œ ì˜¤ê²Œ í•¨
                 "        ) WHERE ROWNUM = 1) as DEPTH1_NAME, " + 
                 "       (SELECT M.VALUE_NAME FROM OPTION_VALUE_MASTERS M " +
                 "        JOIN PRODUCT_OPTION_VALUES V ON M.V_MASTER_ID = V.V_MASTER_ID " +
@@ -68,7 +68,7 @@ public class ProductsDAO {
     } 
 
     // -----------------------------------------------------------
-    // 2. Ä«Å×°í¸®º° »óÇ° ¸ñ·Ï Á¶È¸
+    // 2. ì¹´í…Œê³ ë¦¬ë³„ ìƒí’ˆ ëª©ë¡ ì¡°íšŒ
     // -----------------------------------------------------------
     public List<ProductsDTO> selectProductsByCategory(Connection conn, int cateId) {
         List<ProductsDTO> list = new ArrayList<>();
@@ -114,7 +114,7 @@ public class ProductsDAO {
                 dto.setDiscount_rate(rs.getInt("DISCOUNT_RATE"));
                 dto.setImage_url(rs.getString("IMAGE_URL")); 
                 
-                // Ãß°¡µÈ ÇÊµåµé
+                // ì¶”ê°€ëœ í•„ë“œë“¤
                 dto.setDepth1_name(rs.getString("DEPTH1_NAME"));
                 dto.setTag_name(rs.getString("TAG_NAME"));
                 dto.setReview_count(rs.getInt("REVIEW_COUNT"));
@@ -133,7 +133,7 @@ public class ProductsDAO {
     }
 
     // -----------------------------------------------------------
-    // 3. ÃÖ»óÀ§ Ä«Å×°í¸® ÀÌ¸§ °¡Á®¿À±â
+    // 3. ìµœìƒìœ„ ì¹´í…Œê³ ë¦¬ ì´ë¦„ ê°€ì ¸ì˜¤ê¸°
     // -----------------------------------------------------------
     public String getRootCategoryName(Connection conn, int categoryId) throws SQLException {
         String name = "";
@@ -155,7 +155,7 @@ public class ProductsDAO {
     }
     
     // -----------------------------------------------------------
-    // 4. ÇöÀç Ä«Å×°í¸® ÀÌ¸§ °¡Á®¿À±â
+    // 4. í˜„ì¬ ì¹´í…Œê³ ë¦¬ ì´ë¦„ ê°€ì ¸ì˜¤ê¸°
     // -----------------------------------------------------------
     public String getCategoryName(Connection conn, int categoryId) throws SQLException {
         String name = "";
@@ -175,7 +175,7 @@ public class ProductsDAO {
     }
 
     // -----------------------------------------------------------
-    // 5. »óÇ° »ó¼¼ Á¤º¸ Á¶È¸
+    // 5. ìƒí’ˆ ìƒì„¸ ì •ë³´ ì¡°íšŒ
     // -----------------------------------------------------------
     public ProductsDTO getProduct(Connection conn, String productId) throws SQLException {
         ProductsDTO dto = null;
@@ -200,16 +200,16 @@ public class ProductsDAO {
     }
 
     // -----------------------------------------------------------
-    // 6. »óÇ° ¿É¼Ç Á¶È¸
+    // 6. ìƒí’ˆ ì˜µì…˜ ì¡°íšŒ
     // -----------------------------------------------------------
     public List<ProductsOptionDTO> getProductOptions(Connection conn, String productId) throws SQLException {
         List<ProductsOptionDTO> options = new ArrayList<>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         
-        // Äõ¸® ¼³¸í: 
-        // 1. POC(Á¶ÇÕ) Å×ÀÌºí¿¡¼­ ½ÃÀÛÇØ¼­ ½ÇÁ¦ »çÀÌÁî ÀÌ¸§(OVM)±îÁö Á¶ÀÎÇÕ´Ï´Ù.
-        // 2. MASTER_ID°¡ 1(¼ºº°), 2(½ºÆ÷Ã÷), 3(»ö»ó)ÀÎ °ÍÀº Á¦¿ÜÇÏ°í ³ª¸ÓÁö¸¸ °¡Á®¿É´Ï´Ù. (4, 5, 6, 7, 8¹øÀÌ ¸ğµÎ »çÀÌÁîÀÓ)
+        // ì¿¼ë¦¬ ì„¤ëª…: 
+        // 1. POC(ì¡°í•©) í…Œì´ë¸”ì—ì„œ ì‹œì‘í•´ì„œ ì‹¤ì œ ì‚¬ì´ì¦ˆ ì´ë¦„(OVM)ê¹Œì§€ ì¡°ì¸í•©ë‹ˆë‹¤.
+        // 2. MASTER_IDê°€ 1(ì„±ë³„), 2(ìŠ¤í¬ì¸ ), 3(ìƒ‰ìƒ)ì¸ ê²ƒì€ ì œì™¸í•˜ê³  ë‚˜ë¨¸ì§€ë§Œ ê°€ì ¸ì˜µë‹ˆë‹¤. (4, 5, 6, 7, 8ë²ˆì´ ëª¨ë‘ ì‚¬ì´ì¦ˆì„)
         String sql = " SELECT DISTINCT POC.COMBINATION_ID, OVM.VALUE_NAME, NVL(POS.STOCK, 0) AS STOCK "
                    + " FROM PRODUCT_OPTION_COMBINATIONS POC "
                    + " JOIN PRODUCT_OPTION_COMBI_VALUES POCV ON POC.COMBINATION_ID = POCV.COMBINATION_ID "
@@ -217,8 +217,8 @@ public class ProductsDAO {
                    + " JOIN OPTION_VALUE_MASTERS OVM ON POV.V_MASTER_ID = OVM.V_MASTER_ID "
                    + " LEFT JOIN PRODUCT_OPTION_STOCK POS ON POC.COMBINATION_ID = POS.COMBINATION_ID "
                    + " WHERE POC.PRODUCT_ID = ? "
-                   + " AND OVM.MASTER_ID NOT IN (1, 2, 3) " // ¼ºº°, ½ºÆ÷Ã÷, »ö»ó Á¦¿Ü = »çÀÌÁî¸¸ ³²À½
-                   + " ORDER BY OVM.VALUE_NAME ASC "; // »çÀÌÁî ¼ø¼­´ë·Î Á¤·Ä
+                   + " AND OVM.MASTER_ID NOT IN (1, 2, 3) " // ì„±ë³„, ìŠ¤í¬ì¸ , ìƒ‰ìƒ ì œì™¸ = ì‚¬ì´ì¦ˆë§Œ ë‚¨ìŒ
+                   + " ORDER BY OVM.VALUE_NAME ASC "; // ì‚¬ì´ì¦ˆ ìˆœì„œëŒ€ë¡œ ì •ë ¬
 
         try {
             pstmt = conn.prepareStatement(sql);
@@ -239,7 +239,7 @@ public class ProductsDAO {
         return options;
     }
     // -----------------------------------------------------------
-    // 7. Ä«Å×°í¸®º° »óÇ° °³¼ö ¼¼±â
+    // 7. ì¹´í…Œê³ ë¦¬ë³„ ìƒí’ˆ ê°œìˆ˜ ì„¸ê¸°
     // -----------------------------------------------------------
     public int getProductCount(Connection conn, int categoryId) {
         int count = 0;
@@ -263,11 +263,11 @@ public class ProductsDAO {
         return count;
     }
 
-    // [ÇïÆÛ] DTO »ı¼º
+    // [í—¬í¼] DTO ìƒì„±
     private ProductsDTO makeDTO(ResultSet rs) throws SQLException {
         ProductsDTO dto = new ProductsDTO();
         
-        // 1. ±âº» Á¤º¸
+        // 1. ê¸°ë³¸ ì •ë³´
         dto.setProduct_id(rs.getString("PRODUCT_ID"));
         dto.setName(rs.getString("NAME"));
         dto.setPrice(rs.getInt("PRICE"));
@@ -276,12 +276,12 @@ public class ProductsDAO {
         dto.setCreated_at(rs.getDate("CREATED_AT"));
         dto.setCategory_id(rs.getInt("CATEGORY_ID")); 
         
-        // 2. ÀÌ¹ÌÁö (¾øÀ¸¸é ±âº» ÀÌ¹ÌÁö)
+        // 2. ì´ë¯¸ì§€ (ì—†ìœ¼ë©´ ê¸°ë³¸ ì´ë¯¸ì§€)
         String img = rs.getString("IMAGE_URL");
         if(img == null) img = "//filacdn.styleship.com/filaproduct2/data/productimages/a/1/FS261FT01X001_234.jpg"; 
         dto.setImage_url(img);
         
-        // 3. Åë°è ¹× ÀÌ¸§ ('ÀÇ·ù' µîÀÌ DEPTH1_NAMEÀ¸·Î µé¾î°¨)
+        // 3. í†µê³„ ë° ì´ë¦„ ('ì˜ë¥˜' ë“±ì´ DEPTH1_NAMEìœ¼ë¡œ ë“¤ì–´ê°)
         try {
             dto.setDepth1_name(rs.getString("DEPTH1_NAME")); 
             dto.setTag_name(rs.getString("TAG_NAME"));     
@@ -289,22 +289,22 @@ public class ProductsDAO {
             dto.setReview_score(rs.getDouble("AVG_RATING"));
             dto.setLike_count(rs.getInt("WISH_COUNT"));
         } catch (SQLException e) {
-            // ÄÃ·³ÀÌ ¾ø´Â Äõ¸®ÀÏ °æ¿ì ¹«½Ã
+            // ì»¬ëŸ¼ì´ ì—†ëŠ” ì¿¼ë¦¬ì¼ ê²½ìš° ë¬´ì‹œ
         }
         
         return dto;
     }
     
     // -----------------------------------------------------------
-    // ¡Ú [Ãß°¡] »óÇ°ÀÇ ÅÂ±×(½ºÆ÷Ã÷/¶óÀÌÇÁ½ºÅ¸ÀÏ µî) °¡Á®¿À±â
+    // â˜… [ì¶”ê°€] ìƒí’ˆì˜ íƒœê·¸(ìŠ¤í¬ì¸ /ë¼ì´í”„ìŠ¤íƒ€ì¼ ë“±) ê°€ì ¸ì˜¤ê¸°
     // -----------------------------------------------------------
     public String getProductTag(Connection conn, String productId, int masterId) throws SQLException {
         String tagName = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         
-        // 1. »óÇ° ¿É¼Ç ±×·ì(PRODUCT_OPTION_GROUPS)¿¡¼­ ÇØ´ç »óÇ°ÀÇ ¿É¼ÇÀ» Ã£°í
-        // 2. ±× ¿É¼ÇÀÇ °ª(OPTION_VALUE_MASTERS)À» °¡Á®¿À´Â Äõ¸® (JOIN »ç¿ë)
+        // 1. ìƒí’ˆ ì˜µì…˜ ê·¸ë£¹(PRODUCT_OPTION_GROUPS)ì—ì„œ í•´ë‹¹ ìƒí’ˆì˜ ì˜µì…˜ì„ ì°¾ê³ 
+        // 2. ê·¸ ì˜µì…˜ì˜ ê°’(OPTION_VALUE_MASTERS)ì„ ê°€ì ¸ì˜¤ëŠ” ì¿¼ë¦¬ (JOIN ì‚¬ìš©)
         String sql = " SELECT M.VALUE_NAME "
                    + " FROM OPTION_VALUE_MASTERS M "
                    + " JOIN PRODUCT_OPTION_VALUES V ON M.V_MASTER_ID = V.V_MASTER_ID "
@@ -314,7 +314,7 @@ public class ProductsDAO {
         try {
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, productId);
-            pstmt.setInt(2, masterId); // 2¹øÀÌ '½ºÆ÷Ã÷' Ä«Å×°í¸®¶ó°í °¡Á¤
+            pstmt.setInt(2, masterId); // 2ë²ˆì´ 'ìŠ¤í¬ì¸ ' ì¹´í…Œê³ ë¦¬ë¼ê³  ê°€ì •
             rs = pstmt.executeQuery();
             
             if (rs.next()) {
@@ -327,28 +327,28 @@ public class ProductsDAO {
         return tagName;
     }
     
-   /* »ó¼¼ ÄÃ·¯ ¸Ş¼­µå ÄÆ~!!~!~!~
-    * // °°Àº ÀÌ¸§ÀÇ »óÇ°(´Ù¸¥ »ö»ó)µé °¡Á®¿À±â public List<ProductsDTO>
+   /* ìƒì„¸ ì»¬ëŸ¬ ë©”ì„œë“œ ì»·~!!~!~!~
+    * // ê°™ì€ ì´ë¦„ì˜ ìƒí’ˆ(ë‹¤ë¥¸ ìƒ‰ìƒ)ë“¤ ê°€ì ¸ì˜¤ê¸° public List<ProductsDTO>
     * selectColorVariants(Connection conn, String productName) { List<ProductsDTO>
     * list = new ArrayList<>(); PreparedStatement pstmt = null; ResultSet rs =
-    * null; // ¸®½ºÆ® ÆäÀÌÁöÃ³·³ ÀÌ¹ÌÁö¸¦ °¡Á®¿Àµµ·Ï Á¶ÀÎ Ãß°¡ String sql =
+    * null; // ë¦¬ìŠ¤íŠ¸ í˜ì´ì§€ì²˜ëŸ¼ ì´ë¯¸ì§€ë¥¼ ê°€ì ¸ì˜¤ë„ë¡ ì¡°ì¸ ì¶”ê°€ String sql =
     * " SELECT P.PRODUCT_ID, I.IMAGE_URL FROM PRODUCTS P " +
     * " LEFT JOIN PRODUCT_IMAGE I ON P.PRODUCT_ID = I.PRODUCT_ID AND I.IS_MAIN = 1 "
     * + " WHERE P.NAME = ? ORDER BY P.PRODUCT_ID ASC "; try { pstmt =
     * conn.prepareStatement(sql); pstmt.setString(1, productName); rs =
     * pstmt.executeQuery(); while (rs.next()) { ProductsDTO dto = new
     * ProductsDTO(); dto.setProduct_id(rs.getString("PRODUCT_ID"));
-    * dto.setImage_url(rs.getString("IMAGE_URL")); // ÀÌ¹ÌÁö URL Ãß°¡! list.add(dto); }
+    * dto.setImage_url(rs.getString("IMAGE_URL")); // ì´ë¯¸ì§€ URL ì¶”ê°€! list.add(dto); }
     * } catch (Exception e) { e.printStackTrace(); } finally { JdbcUtil.close(rs);
-    * JdbcUtil.close(pstmt); } // Á¦°øµÈ JdbcUtil »ç¿ë return list; }
+    * JdbcUtil.close(pstmt); } // ì œê³µëœ JdbcUtil ì‚¬ìš© return list; }
     */
- // ProductsDAO.java ¿¡ Ãß°¡
+ // ProductsDAO.java ì— ì¶”ê°€
     public List<ProductsDTO> selectProductsBySearch(Connection conn, String searchItem) throws SQLException {
         List<ProductsDTO> list = new ArrayList<>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
-        // Ä«Å×°í¸® °èÃşÇü Äõ¸®¸¦ Á¦°ÅÇÏ°í »óÇ°¸í(NAME)À¸·Î °Ë»öÇÏ´Â ´Ü¼ø Äõ¸®
+        // ì¹´í…Œê³ ë¦¬ ê³„ì¸µí˜• ì¿¼ë¦¬ë¥¼ ì œê±°í•˜ê³  ìƒí’ˆëª…(NAME)ìœ¼ë¡œ ê²€ìƒ‰í•˜ëŠ” ë‹¨ìˆœ ì¿¼ë¦¬
         String sql = 
                 "SELECT P.*, I.IMAGE_URL, " +
                 "       NVL(R.REVIEW_COUNT, 0) as REVIEW_COUNT, " +
@@ -359,12 +359,12 @@ public class ProductsDAO {
                 "    SELECT PRODUCT_ID, COUNT(*) as REVIEW_COUNT, ROUND(AVG(RATING), 1) as AVG_RATING " +
                 "    FROM REVIEW GROUP BY PRODUCT_ID " +
                 ") R ON P.PRODUCT_ID = R.PRODUCT_ID " +
-                "WHERE P.NAME LIKE ? " + // °Ë»ö¾î ÇÊÅÍ¸µ
+                "WHERE P.NAME LIKE ? " + // ê²€ìƒ‰ì–´ í•„í„°ë§
                 "ORDER BY P.CREATED_AT DESC";
 
         try {
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, "%" + searchItem + "%"); // Æ÷ÇÔµÈ ´Ü¾î Ã£±â
+            pstmt.setString(1, "%" + searchItem + "%"); // í¬í•¨ëœ ë‹¨ì–´ ì°¾ê¸°
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 list.add(makeDTO(rs));

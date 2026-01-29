@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import command.CommandHandler;
-import member.domain.MemberDTO;
+import member.MemberDTO;       
 import admin.domain.UserInfoDTO; 
 import admin.service.CouponService;
 import net.sf.json.JSONArray;
@@ -19,24 +19,24 @@ public class CouponAjaxHandler implements CommandHandler {
         
         HttpSession session = request.getSession();
         
-        // 1. ¼¼¼Ç¿¡¼­ 'auth' °´Ã¼ ²¨³»±â
+        // 1. ì„¸ì…˜ì—ì„œ 'auth' ê°ì²´ êº¼ë‚´ê¸°
         MemberDTO member = (MemberDTO) session.getAttribute("auth");
 
-        // 2. ·Î±×ÀÎ ¿©ºÎ Ã¼Å© (¹æ¾î ÄÚµå)
+        // 2. ë¡œê·¸ì¸ ì—¬ë¶€ ì²´í¬ (ë°©ì–´ ì½”ë“œ)
         if (member == null) {
             response.setContentType("application/json; charset=UTF-8");
             response.getWriter().print("[]");
             return null;
         }
 
-        // 3. MemberDTOÀÇ ¸Ş¼­µå¸í 'getUserNumber()' »ç¿ë
+        // 3. MemberDTOì˜ ë©”ì„œë“œëª… 'getUserNumber()' ì‚¬ìš©
         int userNum = member.getUserNumber(); 
 
-        // 4. ¼­ºñ½º È£Ãâ (CouponService¿¡ ÇØ´ç ¸Ş¼­µå°¡ ÀÖ´ÂÁö È®ÀÎ ÇÊ¼ö)
+        // 4. ì„œë¹„ìŠ¤ í˜¸ì¶œ (CouponServiceì— í•´ë‹¹ ë©”ì„œë“œê°€ ìˆëŠ”ì§€ í™•ì¸ í•„ìˆ˜)
         CouponService service = CouponService.getInstance();
         List<UserInfoDTO> list = service.getUserCouponList(userNum);
 
-        // 5. JSON Ãâ·Â
+        // 5. JSON ì¶œë ¥
         response.setContentType("application/json; charset=UTF-8");
         PrintWriter out = response.getWriter();
         

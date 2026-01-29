@@ -53,7 +53,7 @@ public class CouponDAO {
             pstmt.setString(2, dto.getDiscount_type());
             pstmt.setInt(3, dto.getDiscount_value());
             pstmt.setString(4, dto.getSerial_number());
-            pstmt.setDate(5, dto.getExpires_at()); // null «„øÎµ 
+            pstmt.setDate(5, dto.getExpires_at()); // null ÌóàÏö©Îê®
             return pstmt.executeUpdate();
         }
     }
@@ -71,7 +71,7 @@ public class CouponDAO {
                 while (rs.next()) {
                     UserInfoDTO dto = new UserInfoDTO();
                     dto.setUsercouponid(rs.getInt("USER_COUPON_ID"));
-                    dto.setIsused(rs.getString("IS_USED")); // 0:πÃªÁøÎ, 1:ªÁøÎ
+                    dto.setIsused(rs.getString("IS_USED")); // 0:ÎØ∏ÏÇ¨Ïö©, 1:ÏÇ¨Ïö©
                     dto.setUsedat(rs.getTimestamp("USED_AT"));
                     dto.setExpireddate(rs.getTimestamp("EXPIRE_DATE"));
                     dto.setReceivedat(rs.getTimestamp("RECEIVED_AT"));
@@ -86,9 +86,9 @@ public class CouponDAO {
         }
         return list;
     }
- // CouponDAO.java ø° √ﬂ∞°
+ // CouponDAO.java Ïóê Ï∂îÍ∞Ä
     public int useUserCoupon(Connection conn, int userCouponId) throws SQLException {
-        // IS_USED∏¶ '1'∑Œ ∫Ø∞Ê«œ∞Ì ªÁøÎ ¿œΩ√∏¶ ±‚∑œ
+        // IS_USEDÎ•º '1'Î°ú Î≥ÄÍ≤ΩÌïòÍ≥† ÏÇ¨Ïö© ÏùºÏãúÎ•º Í∏∞Î°ù
         String sql = "UPDATE USER_COUPON SET IS_USED = '1', USED_AT = SYSDATE WHERE USER_COUPON_ID = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userCouponId);

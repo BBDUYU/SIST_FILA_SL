@@ -14,7 +14,7 @@ public class CartDAO {
         return dao;
     }
 
-    // [1] ÀüÃ¼ Á¶È¸
+    // [1] ì „ì²´ ì¡°íšŒ
     public List<CartItemDTO> selectAll(Connection conn) throws Exception {
         String sql = "SELECT ci.cart_item_id, ci.user_number, ci.product_id, " +
                      "p.name AS product_name, p.price AS origin_unit_price, " +
@@ -22,7 +22,7 @@ public class CartDAO {
                      "ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) AS sale_unit_price, " +
                      "ci.quantity, " +
                      "(ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) * ci.quantity) AS line_amount, " +
-                     "NULL AS main_image_url, " + // ÀÓ½Ã Ã³¸®
+                     "NULL AS main_image_url, " + // ì„ì‹œ ì²˜ë¦¬
                      "NULL AS size " +
                      "FROM cart_items ci " +
                      "JOIN products p ON ci.product_id = p.product_id";
@@ -49,9 +49,9 @@ public class CartDAO {
         return list;
     }
 
-    // [2] ÁÖ¹® ÀüÈ¯¿ë Á¶È¸ (Áß¿ä: Å×ÀÌºí¸íÀ» CART_ITEMS·Î ÅëÀÏ)
+    // [2] ì£¼ë¬¸ ì „í™˜ìš© ì¡°íšŒ (ì¤‘ìš”: í…Œì´ë¸”ëª…ì„ CART_ITEMSë¡œ í†µì¼)
     public List<OrderItemDTO> selectCartForOrder(Connection conn, int userNumber) throws SQLException {
-        // p.NAME ÄÃ·³À» Ãß°¡·Î Á¶È¸ÇÕ´Ï´Ù.
+        // p.NAME ì»¬ëŸ¼ì„ ì¶”ê°€ë¡œ ì¡°íšŒí•©ë‹ˆë‹¤.
         String sql = "SELECT ci.PRODUCT_ID, p.NAME, ci.COMBINATION_ID, ci.QUANTITY, " +
                      "ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) AS PRICE " +
                      "FROM CART_ITEMS ci " +
@@ -65,7 +65,7 @@ public class CartDAO {
                 while (rs.next()) {
                     list.add(OrderItemDTO.builder()
                             .productId(rs.getString("PRODUCT_ID"))
-                            .productName(rs.getString("NAME")) // <-- ¿©±â¼­ »óÇ°¸íÀ» ´ã¾ÆÁİ´Ï´Ù!
+                            .productName(rs.getString("NAME")) // <-- ì—¬ê¸°ì„œ ìƒí’ˆëª…ì„ ë‹´ì•„ì¤ë‹ˆë‹¤!
                             .combinationId(rs.getInt("COMBINATION_ID"))
                             .quantity(rs.getInt("QUANTITY"))
                             .price(rs.getInt("PRICE"))
@@ -76,7 +76,7 @@ public class CartDAO {
         return list;
     }
 
-    // [3] Àå¹Ù±¸´Ï ºñ¿ì±â (Service¿¡¼­ È£Ãâ¿ë)
+    // [3] ì¥ë°”êµ¬ë‹ˆ ë¹„ìš°ê¸° (Serviceì—ì„œ í˜¸ì¶œìš©)
     public void deleteCartAfterOrder(Connection conn, int userNumber) throws SQLException {
         String sql = "DELETE FROM CART_ITEMS WHERE USER_NUMBER = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -85,7 +85,7 @@ public class CartDAO {
         }
     }
 
-    // [4] ¼ö·® º¯°æ (Connection Ãß°¡)
+    // [4] ìˆ˜ëŸ‰ ë³€ê²½ (Connection ì¶”ê°€)
     public int updateQuantity(Connection conn, int cartItemId, int quantity) throws Exception {
         String sql = "UPDATE cart_items SET quantity = ? WHERE cart_item_id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -95,9 +95,9 @@ public class CartDAO {
         }
     }
     public List<OrderItemDTO> selectSelectedCartItems(Connection conn, String ids) throws SQLException {
-        // p.PRICE´Â Á¤°¡, °è»êµÈ °ªÀº ÇÒÀÎ°¡(PRICE)·Î °¡Á®¿É´Ï´Ù.
+        // p.PRICEëŠ” ì •ê°€, ê³„ì‚°ëœ ê°’ì€ í• ì¸ê°€(PRICE)ë¡œ ê°€ì ¸ì˜µë‹ˆë‹¤.
         String sql = "SELECT ci.PRODUCT_ID, p.NAME, ci.COMBINATION_ID, ci.QUANTITY, " +
-                     "p.PRICE AS ORIGINAL_PRICE, " + // Á¤°¡ Ãß°¡
+                     "p.PRICE AS ORIGINAL_PRICE, " + // ì •ê°€ ì¶”ê°€
                      "ROUND(p.PRICE * (100 - NVL(p.DISCOUNT_RATE, 0)) / 100) AS SALE_PRICE " +
                      "FROM CART_ITEMS ci " +
                      "JOIN PRODUCTS p ON ci.PRODUCT_ID = p.PRODUCT_ID " +
@@ -112,24 +112,24 @@ public class CartDAO {
                         .productName(rs.getString("NAME"))
                         .combinationId(rs.getInt("COMBINATION_ID"))
                         .quantity(rs.getInt("QUANTITY"))
-                        .originalPrice(rs.getInt("ORIGINAL_PRICE")) // Á¤°¡ ¼¼ÆÃ
-                        .price(rs.getInt("SALE_PRICE"))             // ÇÒÀÎ°¡ ¼¼ÆÃ
+                        .originalPrice(rs.getInt("ORIGINAL_PRICE")) // ì •ê°€ ì„¸íŒ…
+                        .price(rs.getInt("SALE_PRICE"))             // í• ì¸ê°€ ì„¸íŒ…
                         .build());
             }
         }
         return list;
     }
     public void deleteCartItems(Connection conn, String cartItemIds, int userNumber) throws Exception {
-        // 1. Å×ÀÌºí¸í: CART -> CART_ITEMS
-        // 2. ÄÃ·³¸í: CART_ID -> CART_ITEM_ID
+        // 1. í…Œì´ë¸”ëª…: CART -> CART_ITEMS
+        // 2. ì»¬ëŸ¼ëª…: CART_ID -> CART_ITEM_ID
         String sql = "DELETE FROM CART_ITEMS WHERE USER_NUMBER = ? AND CART_ITEM_ID IN (" + cartItemIds + ")";
         
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userNumber);
             pstmt.executeUpdate();
-            System.out.println("Àå¹Ù±¸´Ï »èÁ¦ ¿Ï·á: " + cartItemIds);
+            System.out.println("ì¥ë°”êµ¬ë‹ˆ ì‚­ì œ ì™„ë£Œ: " + cartItemIds);
         } catch (SQLException e) {
-            System.out.println("Àå¹Ù±¸´Ï »èÁ¦ Áß DB ¿¡·¯: " + e.getMessage());
+            System.out.println("ì¥ë°”êµ¬ë‹ˆ ì‚­ì œ ì¤‘ DB ì—ëŸ¬: " + e.getMessage());
             throw e;
         }
     }

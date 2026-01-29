@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import command.CommandHandler;
-import member.domain.MemberDTO;
+import member.MemberDTO;
 import mypage.service.WishListService;
 
 public class WishDeleteHandler implements CommandHandler {
@@ -24,19 +24,19 @@ public class WishDeleteHandler implements CommandHandler {
         String wid = request.getParameter("wishlist_id");
         String returnUrl = request.getParameter("returnUrl");
 
-        // 1) »èÁ¦
+        // 1) ì‚­ì œ
         if (wid != null && wid.matches("\\d+")) {
             WishListService.getInstance().deleteOne(loginUser.getUserNumber(), Integer.parseInt(wid));
         }
 
-        // 2) ÀÌµ¿ target °áÁ¤ (returnUrl ¿ì¼±)
+        // 2) ì´ë™ target ê²°ì • (returnUrl ìš°ì„ )
         String target = "/mypage/wishlist.htm";
         if (returnUrl != null && !returnUrl.trim().isEmpty()) {
-            // JS¿¡¼­ encodeURIComponent·Î º¸³»´Ï±î µğÄÚµùÇØÁÖ´Â °Ô ¾ÈÀü
+            // JSì—ì„œ encodeURIComponentë¡œ ë³´ë‚´ë‹ˆê¹Œ ë””ì½”ë”©í•´ì£¼ëŠ” ê²Œ ì•ˆì „
             target = URLDecoder.decode(returnUrl.trim(), StandardCharsets.UTF_8);
         }
 
-        // 3) ¿ÀÇÂ¸®´ÙÀÌ·ºÆ® ¹æÁö + ctx Áßº¹ ¹æÁö
+        // 3) ì˜¤í”ˆë¦¬ë‹¤ì´ë ‰íŠ¸ ë°©ì§€ + ctx ì¤‘ë³µ ë°©ì§€
         target = normalizeTarget(request.getContextPath(), target);
 
         response.sendRedirect(target);
@@ -46,22 +46,22 @@ public class WishDeleteHandler implements CommandHandler {
     private String normalizeTarget(String ctx, String target) {
         if (target == null || target.isBlank()) return ctx + "/mypage/wishlist.htm";
 
-        // ¿ÜºÎ·Î ¸ø ³ª°¡°Ô ¸·±â
+        // ì™¸ë¶€ë¡œ ëª» ë‚˜ê°€ê²Œ ë§‰ê¸°
         if (target.startsWith("http://") || target.startsWith("https://")) {
             return ctx + "/mypage/wishlist.htm";
         }
 
-        // ÀÌ¹Ì ctx Æ÷ÇÔÀÌ¸é ±×´ë·Î
+        // ì´ë¯¸ ctx í¬í•¨ì´ë©´ ê·¸ëŒ€ë¡œ
         if (target.startsWith(ctx + "/") || target.equals(ctx)) {
             return target;
         }
 
-        // /·Î ½ÃÀÛÇÏ¸é ctx ºÙÀÌ±â
+        // /ë¡œ ì‹œì‘í•˜ë©´ ctx ë¶™ì´ê¸°
         if (target.startsWith("/")) {
             return ctx + target;
         }
 
-        // ±× ¿Ü(»ó´ë°æ·Î)µµ ctx ºÙ¿©¼­ ¾ÈÀüÇÏ°Ô
+        // ê·¸ ì™¸(ìƒëŒ€ê²½ë¡œ)ë„ ctx ë¶™ì—¬ì„œ ì•ˆì „í•˜ê²Œ
         return ctx + "/" + target;
     }
 }

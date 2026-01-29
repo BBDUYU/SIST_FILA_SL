@@ -7,7 +7,7 @@ public class AddressDTO {
   private String recipientName;
   private String recipientPhone;
   private String zipcode;
-  private String mainAddr;   // addr3 ¾µ°Å¸é mainAddr¿¡ ³Ö±â
+  private String mainAddr;   // addr3 ì“¸ê±°ë©´ mainAddrì— ë„£ê¸°
   private String detailAddr; // addr2
   private int isDefault;     // 1/0
 

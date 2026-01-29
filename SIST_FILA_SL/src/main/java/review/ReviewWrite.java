@@ -12,28 +12,28 @@ import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 import com.util.DBConn;
 
 import command.CommandHandler;
-import member.domain.MemberDTO;
+import member.MemberDTO;
 
 public class ReviewWrite implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        // 1. ÆÄÀÏ ¾÷·Îµå ¼³Á¤
-        // ½ÇÁ¦ ¼­¹ö °æ·Î Ã£±â (images/review Æú´õ¿¡ ÀúÀåÇÑ´Ù°í °¡Á¤)
+        // 1. íŒŒì¼ ì—…ë¡œë“œ ì„¤ì •
+        // ì‹¤ì œ ì„œë²„ ê²½ë¡œ ì°¾ê¸° (images/review í´ë”ì— ì €ì¥í•œë‹¤ê³  ê°€ì •)
         String saveDirectory = request.getServletContext().getRealPath("/images/review");
         
-        // Æú´õ ¾øÀ¸¸é »ı¼º
+        // í´ë” ì—†ìœ¼ë©´ ìƒì„±
         File dir = new File(saveDirectory);
         if (!dir.exists()) dir.mkdirs();
 
-        int maxPostSize = 10 * 1024 * 1024; // 10MB Á¦ÇÑ
+        int maxPostSize = 10 * 1024 * 1024; // 10MB ì œí•œ
         String encoding = "UTF-8";
 
         MultipartRequest multi = new MultipartRequest(request, saveDirectory, maxPostSize, encoding, new DefaultFileRenamePolicy());
 
-        // 2. ÆÄ¶ó¹ÌÅÍ ¹Ş±â (request ´ë½Å multi »ç¿ë)
-        String productId = multi.getParameter("productNo"); // JSP input name="productNo" È®ÀÎ
+        // 2. íŒŒë¼ë¯¸í„° ë°›ê¸° (request ëŒ€ì‹  multi ì‚¬ìš©)
+        String productId = multi.getParameter("productNo"); // JSP input name="productNo" í™•ì¸
         String content = multi.getParameter("reviewContent"); // JSP textarea name="reviewContent"
         
         int rating = 5;
@@ -43,21 +43,21 @@ public class ReviewWrite implements CommandHandler {
             rating = 5;
         }
 
-        // ¾÷·ÎµåµÈ ÆÄÀÏ¸í °¡Á®¿À±â
+        // ì—…ë¡œë“œëœ íŒŒì¼ëª… ê°€ì ¸ì˜¤ê¸°
         String filesystemName = multi.getFilesystemName("reviewFile"); // JSP input type="file" name="reviewFile"
         String reviewImgPath = null;
         if (filesystemName != null) {
-            reviewImgPath = "/images/review/" + filesystemName; // DB¿¡ ÀúÀåÇÒ °æ·Î
+            reviewImgPath = "/images/review/" + filesystemName; // DBì— ì €ì¥í•  ê²½ë¡œ
         }
 
 
-        // 3. ¼¼¼Ç¿¡¼­ ·Î±×ÀÎ Á¤º¸ È®ÀÎ
+        // 3. ì„¸ì…˜ì—ì„œ ë¡œê·¸ì¸ ì •ë³´ í™•ì¸
         HttpSession session = request.getSession();
         Object authObj = session.getAttribute("auth");
 
         if (authObj == null) {
-            // ·Î±×ÀÎ ¾È µÊ -> ¿¡·¯ ÆäÀÌÁö ¶Ç´Â ·Î±×ÀÎ ÆäÀÌÁö·Î
-            request.setAttribute("message", "·Î±×ÀÎÀÌ ÇÊ¿äÇÑ ¼­ºñ½ºÀÔ´Ï´Ù.");
+            // ë¡œê·¸ì¸ ì•ˆ ë¨ -> ì—ëŸ¬ í˜ì´ì§€ ë˜ëŠ” ë¡œê·¸ì¸ í˜ì´ì§€ë¡œ
+            request.setAttribute("message", "ë¡œê·¸ì¸ì´ í•„ìš”í•œ ì„œë¹„ìŠ¤ì…ë‹ˆë‹¤.");
             return "redirect:/login.htm";
         }
 
@@ -65,7 +65,7 @@ public class ReviewWrite implements CommandHandler {
         int userNumber = member.getUserNumber(); 
 
 
-        // 4. DTO »ı¼º
+        // 4. DTO ìƒì„±
         ReviewDTO dto = new ReviewDTO();
         dto.setProduct_id(productId);
         dto.setUser_number(userNumber);
@@ -74,7 +74,7 @@ public class ReviewWrite implements CommandHandler {
         dto.setReview_img(reviewImgPath);
 
 
-        // 5. DB ÀúÀå
+        // 5. DB ì €ì¥
         Connection conn = null;
         int rowCount = 0;
 
@@ -88,23 +88,23 @@ public class ReviewWrite implements CommandHandler {
 
         }
 
-        // 6. °á°ú ÆäÀÌÁö ÀÌµ¿ (¼öÁ¤º»)
+        // 6. ê²°ê³¼ í˜ì´ì§€ ì´ë™ (ìˆ˜ì •ë³¸)
         response.setContentType("text/html; charset=UTF-8");
         java.io.PrintWriter out = response.getWriter();
         
         if (rowCount == 1) {
-            // ¼º°ø ½Ã: ºê¶ó¿ìÀú¿¡°Ô ÀÌ ÁÖ¼Ò·Î ´Ù½Ã Á¢¼ÓÇÏ¶ó°í Á÷Á¢ ¸í·É
+            // ì„±ê³µ ì‹œ: ë¸Œë¼ìš°ì €ì—ê²Œ ì´ ì£¼ì†Œë¡œ ë‹¤ì‹œ ì ‘ì†í•˜ë¼ê³  ì§ì ‘ ëª…ë ¹
         	String location = request.getContextPath() + "/product/product_detail.htm?product_id=" + productId;
             out.println("<script>");
-            out.println("alert('¸®ºä°¡ Á¤»óÀûÀ¸·Î µî·ÏµÇ¾ú½À´Ï´Ù.');");
+            out.println("alert('ë¦¬ë·°ê°€ ì •ìƒì ìœ¼ë¡œ ë“±ë¡ë˜ì—ˆìŠµë‹ˆë‹¤.');");
             out.println("location.href='" + location + "';");
             out.println("</script>");
             out.close();
             return null;
         } else {
             out.println("<script>");
-            out.println("alert('¸®ºä µî·Ï¿¡ ½ÇÆĞÇß½À´Ï´Ù. ´Ù½Ã ½ÃµµÇØÁÖ¼¼¿ä.');");
-            out.println("history.back();"); // ÀÌÀü ÀÛ¼º ÆäÀÌÁö·Î µ¹·Áº¸³¿
+            out.println("alert('ë¦¬ë·° ë“±ë¡ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤. ë‹¤ì‹œ ì‹œë„í•´ì£¼ì„¸ìš”.');");
+            out.println("history.back();"); // ì´ì „ ì‘ì„± í˜ì´ì§€ë¡œ ëŒë ¤ë³´ëƒ„
             out.println("</script>");
             out.close();
             return null;

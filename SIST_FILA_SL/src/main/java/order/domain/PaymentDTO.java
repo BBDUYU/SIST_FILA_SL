@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PaymentDTO {
     private int paymentId;      // PK
-    private String orderId;     // 林巩锅龋
-    private int amount;         // 搬力陛咀
-    private String paymentMethod; // 搬力荐窜
-    private String paymentStatus; // 搬力惑怕 (PAID)
-    private Date paidAt;        // 搬力老矫
+    private String orderId;     // 欤茧氩堩樃
+    private int amount;         // 瓴办牅旮堨暋
+    private String paymentMethod; // 瓴办牅靾橂嫧
+    private String paymentStatus; // 瓴办牅靸來儨 (PAID)
+    private Date paidAt;        // 瓴办牅鞚检嫓
 }

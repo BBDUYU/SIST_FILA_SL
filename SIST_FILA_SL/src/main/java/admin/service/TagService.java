@@ -8,22 +8,22 @@ import categories.CategoriesDAO;
 import categories.CategoriesDTO;
 
 public class TagService {
-    // ½Ì±ÛÅæ
+    // ì‹±ê¸€í†¤
     private TagService() {}
     private static TagService instance = new TagService();
     public static TagService getInstance() { return instance; }
 
-    // ÅÂ±× ¸®½ºÆ® Á¶È¸ ·ÎÁ÷
+    // íƒœê·¸ ë¦¬ìŠ¤íŠ¸ ì¡°íšŒ ë¡œì§
     public ArrayList<CategoriesDTO> getTagList() {
         Connection conn = null;
         try {
             conn = ConnectionProvider.getConnection();
             CategoriesDAO cDao = CategoriesDAO.getInstance();
             
-            // DAO¿¡ ÅÂ±×¸¸ °¡Á®¿À´Â ¸Ş¼­µå¸¦ Ãß°¡ÇØ¾ß ÇÕ´Ï´Ù.
+            // DAOì— íƒœê·¸ë§Œ ê°€ì ¸ì˜¤ëŠ” ë©”ì„œë“œë¥¼ ì¶”ê°€í•´ì•¼ í•©ë‹ˆë‹¤.
             return cDao.selectTagList(conn); 
         } catch (Exception e) {
-            throw new RuntimeException("ÅÂ±× ¸ñ·Ï ·Îµå ½ÇÆĞ", e);
+            throw new RuntimeException("íƒœê·¸ ëª©ë¡ ë¡œë“œ ì‹¤íŒ¨", e);
         } finally {
             JdbcUtil.close(conn);
         }
@@ -32,27 +32,27 @@ public class TagService {
         Connection conn = null;
         try {
             conn = ConnectionProvider.getConnection();
-            conn.setAutoCommit(false); // Æ®·£Àè¼Ç °ü¸® ½ÃÀÛ
+            conn.setAutoCommit(false); // íŠ¸ëœì­ì…˜ ê´€ë¦¬ ì‹œì‘
             
             CategoriesDAO dao = CategoriesDAO.getInstance();
             
-            // 1. ±âÁ¸ ÃÖ´ë°ª Á¶È¸ ÈÄ +1 (ÀÚµ¿ ¹øÈ£ »ı¼º)
+            // 1. ê¸°ì¡´ ìµœëŒ€ê°’ ì¡°íšŒ í›„ +1 (ìë™ ë²ˆí˜¸ ìƒì„±)
             int newId = dao.getMaxTagId(conn) + 1;
             
-            // 2. DTO °´Ã¼ »ı¼º
+            // 2. DTO ê°ì²´ ìƒì„±
             CategoriesDTO dto = CategoriesDTO.builder()
                                 .category_id(newId)
                                 .name(tagName)
                                 .build();
             
-            // 3. DB ÀúÀå
+            // 3. DB ì €ì¥
             int result = dao.insertTag(conn, dto);
             
-            conn.commit(); // ¸ğµç ÀÛ¾÷ ¼º°ø ½Ã È®Á¤
+            conn.commit(); // ëª¨ë“  ì‘ì—… ì„±ê³µ ì‹œ í™•ì •
             return result;
         } catch (Exception e) {
-            JdbcUtil.rollback(conn); // ¿¡·¯ ¹ß»ı ½Ã Ãë¼Ò
-            throw new RuntimeException("ÅÂ±× »ı¼º ½ÇÆĞ: " + e.getMessage(), e);
+            JdbcUtil.rollback(conn); // ì—ëŸ¬ ë°œìƒ ì‹œ ì·¨ì†Œ
+            throw new RuntimeException("íƒœê·¸ ìƒì„± ì‹¤íŒ¨: " + e.getMessage(), e);
         } finally {
             JdbcUtil.close(conn);
         }

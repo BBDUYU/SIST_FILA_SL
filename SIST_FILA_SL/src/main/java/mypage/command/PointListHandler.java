@@ -6,13 +6,13 @@ import javax.servlet.http.HttpSession;
 import admin.domain.UserInfoDTO;
 import admin.service.AdminUserService;
 import command.CommandHandler;
-import member.domain.MemberDTO;
+import member.MemberDTO;
 
 public class PointListHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // 1. ¼¼¼Ç¿¡¼­ ·Î±×ÀÎ Á¤º¸ È®ÀÎ
+        // 1. ì„¸ì…˜ì—ì„œ ë¡œê·¸ì¸ ì •ë³´ í™•ì¸
         HttpSession session = request.getSession();
         MemberDTO auth = (MemberDTO) session.getAttribute("auth");
 
@@ -20,13 +20,13 @@ public class PointListHandler implements CommandHandler {
             return "redirect:/login.htm";
         }
 
-        // 2. ¼­ºñ½º È£Ãâ (°ü¸®ÀÚ¿ë AdminUserService È°¿ë)
+        // 2. ì„œë¹„ìŠ¤ í˜¸ì¶œ (ê´€ë¦¬ììš© AdminUserService í™œìš©)
         AdminUserService service = AdminUserService.getInstance();
         
-        // getUserDetail ¸Ş¼­µå ³»ºÎ¿¡¼­ ÀÌ¹Ì selectPointList¸¦ È£ÃâÇÏ¿© pointList¸¦ Ã¤¿öÁİ´Ï´Ù.
+        // getUserDetail ë©”ì„œë“œ ë‚´ë¶€ì—ì„œ ì´ë¯¸ selectPointListë¥¼ í˜¸ì¶œí•˜ì—¬ pointListë¥¼ ì±„ì›Œì¤ë‹ˆë‹¤.
         UserInfoDTO user = service.getUserDetail(auth.getUserNumber());
         
-        // 3. ºä·Î µ¥ÀÌÅÍ Àü´Ş
+        // 3. ë·°ë¡œ ë°ì´í„° ì „ë‹¬
         request.setAttribute("user", user);
         
         return "/view/mypage/mypoint.jsp";

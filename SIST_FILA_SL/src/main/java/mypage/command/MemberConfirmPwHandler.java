@@ -5,37 +5,37 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import command.CommandHandler;
 import login.LoginService;
-import member.domain.MemberDTO;
+import member.MemberDTO;
 import net.sf.json.JSONObject;
 
 public class MemberConfirmPwHandler implements CommandHandler {
     
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // 1. ¼¼¼Ç¿¡¼­ ·Î±×ÀÎµÈ Á¤º¸ °¡Á®¿À±â
+        // 1. ì„¸ì…˜ì—ì„œ ë¡œê·¸ì¸ëœ ì •ë³´ ê°€ì ¸ì˜¤ê¸°
         HttpSession session = request.getSession();
         MemberDTO auth = (MemberDTO) session.getAttribute("auth");
         
-        // 2. »ç¿ëÀÚ°¡ ¸ğ´Ş¿¡¼­ ÀÔ·ÂÇÑ ºñ¹Ğ¹øÈ£
+        // 2. ì‚¬ìš©ìê°€ ëª¨ë‹¬ì—ì„œ ì…ë ¥í•œ ë¹„ë°€ë²ˆí˜¸
         String inputPw = request.getParameter("memberPassword");
         JSONObject json = new JSONObject();
 
         if (auth == null) {
             json.put("ok", false);
-            json.put("message", "¼¼¼ÇÀÌ ¸¸·áµÇ¾ú½À´Ï´Ù. ´Ù½Ã ·Î±×ÀÎÇØÁÖ¼¼¿ä.");
+            json.put("message", "ì„¸ì…˜ì´ ë§Œë£Œë˜ì—ˆìŠµë‹ˆë‹¤. ë‹¤ì‹œ ë¡œê·¸ì¸í•´ì£¼ì„¸ìš”.");
         } else {
-            // 3. ±âÁ¸ LoginService¸¦ È°¿ëÇÏ¿© º»ÀÎ È®ÀÎ
+            // 3. ê¸°ì¡´ LoginServiceë¥¼ í™œìš©í•˜ì—¬ ë³¸ì¸ í™•ì¸
             LoginService loginService = new LoginService();
-            // ¼¼¼ÇÀÇ ID¿Í ÀÔ·Â¹ŞÀº PW·Î ·Î±×ÀÎ ½Ãµµ
+            // ì„¸ì…˜ì˜ IDì™€ ì…ë ¥ë°›ì€ PWë¡œ ë¡œê·¸ì¸ ì‹œë„
             MemberDTO confirmUser = loginService.login(auth.getId(), inputPw);
 
             if (confirmUser != null) {
-                // º»ÀÎ È®ÀÎ ¼º°ø
+                // ë³¸ì¸ í™•ì¸ ì„±ê³µ
                 json.put("ok", true);
             } else {
-                // ºñ¹Ğ¹øÈ£ ºÒÀÏÄ¡
+                // ë¹„ë°€ë²ˆí˜¸ ë¶ˆì¼ì¹˜
                 json.put("ok", false);
-                json.put("message", "ºñ¹Ğ¹øÈ£°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù.");
+                json.put("message", "ë¹„ë°€ë²ˆí˜¸ê°€ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
             }
         }
 

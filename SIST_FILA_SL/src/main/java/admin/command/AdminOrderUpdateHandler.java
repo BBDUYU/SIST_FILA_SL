@@ -1,7 +1,10 @@
 package admin.command;
 
 import java.sql.Connection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.util.ConnectionProvider;
@@ -9,7 +12,6 @@ import com.util.JdbcUtil;
 import command.CommandHandler;
 import order.domain.OrderItemDTO;
 import order.persistence.OrderDAO;
-import net.sf.json.JSONObject;
 
 public class AdminOrderUpdateHandler implements CommandHandler {
     @Override
@@ -17,29 +19,29 @@ public class AdminOrderUpdateHandler implements CommandHandler {
         String orderId = request.getParameter("orderId");
         String newStatus = request.getParameter("status");
 
-        JSONObject json = new JSONObject();
+        Map<String, Object> json = new HashMap<>();
         Connection conn = null;
         
         try {
             conn = ConnectionProvider.getConnection();
-            conn.setAutoCommit(false); // Æ®·£Àè¼Ç ½ÃÀÛ (»óÅÂº¯°æ+Àç°íº¹±¸)
+            conn.setAutoCommit(false); // íŠ¸ëœì­ì…˜ ì‹œì‘ (ìƒíƒœë³€ê²½+ì¬ê³ ë³µêµ¬)
             
             OrderDAO dao = OrderDAO.getInstance();
             
-            // 1. ÁÖ¹® »óÅÂ ¾÷µ¥ÀÌÆ® ½ÇÇà
+            // 1. ì£¼ë¬¸ ìƒíƒœ ì—…ë°ì´íŠ¸ ì‹¤í–‰
             int result = dao.updateOrderStatus(conn, orderId, newStatus);
 
          // AdminOrderUpdateHandler.java
 
             if (result > 0) {
-                // 1. »óÅÂ°¡ 'Ãë¼Ò¿Ï·á' ¶Ç´Â '¹İÇ°¿Ï·á'·Î º¯°æµÉ ¶§¸¸ Àç°í º¹±¸ ½ÇÇà
-                if ("Ãë¼Ò¿Ï·á".equals(newStatus) || "¹İÇ°¿Ï·á".equals(newStatus)) {
+                // 1. ìƒíƒœê°€ 'ì·¨ì†Œì™„ë£Œ' ë˜ëŠ” 'ë°˜í’ˆì™„ë£Œ'ë¡œ ë³€ê²½ë  ë•Œë§Œ ì¬ê³  ë³µêµ¬ ì‹¤í–‰
+                if ("ì·¨ì†Œì™„ë£Œ".equals(newStatus) || "ë°˜í’ˆì™„ë£Œ".equals(newStatus)) {
 
                     List<OrderItemDTO> items = dao.selectOrderItemsDetail(conn, orderId);
                     
                     for (OrderItemDTO item : items) {
                         if (item.getCombinationId() > 0) {
-                            // DBÀÇ Àç°í¸¦ ÁÖ¹® ¼ö·®¸¸Å­ ´Ù½Ã ´õÇÔ
+                            // DBì˜ ì¬ê³ ë¥¼ ì£¼ë¬¸ ìˆ˜ëŸ‰ë§Œí¼ ë‹¤ì‹œ ë”í•¨
                             dao.updateIncreaseStock(conn, item.getCombinationId(), item.getQuantity());
                         }
                     }
@@ -50,13 +52,13 @@ public class AdminOrderUpdateHandler implements CommandHandler {
             } else {
                 conn.rollback();
                 json.put("status", "error");
-                json.put("message", "º¯°æÇÒ ÁÖ¹® ³»¿ªÀÌ ¾ø½À´Ï´Ù.");
+                json.put("message", "ë³€ê²½í•  ì£¼ë¬¸ ë‚´ì—­ì´ ì—†ìŠµë‹ˆë‹¤.");
             }
         } catch (Exception e) {
             if (conn != null) JdbcUtil.rollback(conn);
             e.printStackTrace();
             json.put("status", "error");
-            json.put("message", "¼­¹ö ¿À·ù: " + e.getMessage());
+            json.put("message", "ì„œë²„ ì˜¤ë¥˜: " + e.getMessage());
         } finally {
             JdbcUtil.close(conn);
         }

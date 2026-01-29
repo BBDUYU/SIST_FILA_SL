@@ -14,7 +14,7 @@ import order.domain.OrderDTO;
 @NoArgsConstructor
 @Builder
 public class UserInfoDTO {
-	//À¯Àú
+	//ìœ ì €
 	private int usernumber;
 	private String name;
 	private String id; 
@@ -32,7 +32,7 @@ public class UserInfoDTO {
 	private String kakaoid;
 	private String naverid;
 	
-	//Æ÷ÀÎÆ®
+	//í¬ì¸íŠ¸
 	private int pointid;
 	private String orderid;
 	private String type;
@@ -40,13 +40,13 @@ public class UserInfoDTO {
 	private int balance;
 	private String description;
 	
-	//ÀÚ³àÁ¤º¸
+	//ìë…€ì •ë³´
 	private int childid;
 	private String childname;
 	private Date childbirth;
 	private String childgender;
 	
-	//¹è¼ÛÁö
+	//ë°°ì†¡ì§€
 	private int addressid;
 	private String addressname;
 	private String recipientname;
@@ -56,7 +56,7 @@ public class UserInfoDTO {
 	private String detailaddr;
 	private String isdefault;
 	
-	//ÁÖ¹®»ó¼¼Á¤º¸
+	//ì£¼ë¬¸ìƒì„¸ì •ë³´
 	private int orderitemid;
 	private int quantity;
 	private int price;
@@ -65,7 +65,7 @@ public class UserInfoDTO {
 	private Date statusupdatedat;
 	private String productid;
 	
-	//È¸¿øº¸À¯ÄíÆù
+	//íšŒì›ë³´ìœ ì¿ í°
 	private int usercouponid;
 	private int couponid;
 	private String isused;
@@ -75,7 +75,7 @@ public class UserInfoDTO {
 	private String coupon_name;          
 	private String discount_type;
 	
-	//¹®ÀÇ ³»¿ª
+	//ë¬¸ì˜ ë‚´ì—­
 	private int inquiryid;
 	private int categoryid;
 	private String title;
@@ -85,13 +85,13 @@ public class UserInfoDTO {
 	private String reply;
 	private Date replyat;
 	
-	// UserInfoDTO.java ³»ºÎ¿¡ Ãß°¡
+	// UserInfoDTO.java ë‚´ë¶€ì— ì¶”ê°€
 	private java.util.List<UserInfoDTO> childList;
 	private java.util.List<UserInfoDTO> pointList;
 	private java.util.List<UserInfoDTO> couponList;
 	private List<OrderDTO> orderList;
 	
-	private int couponCount; // º¸À¯ ÄíÆù °³¼ö
-	private int wishCount;   // À§½Ã¸®½ºÆ® »óÇ° °³¼ö
-	private int orderCount;  // ÃÑ ÁÖ¹® °Ç¼ö
+	private int couponCount; // ë³´ìœ  ì¿ í° ê°œìˆ˜
+	private int wishCount;   // ìœ„ì‹œë¦¬ìŠ¤íŠ¸ ìƒí’ˆ ê°œìˆ˜
+	private int orderCount;  // ì´ ì£¼ë¬¸ ê±´ìˆ˜
 }

@@ -26,14 +26,14 @@ public class StyleService {
         try {
             conn = ConnectionProvider.getConnection();
             
-            // 1. È°¼ºÈ­µÈ(USE_YN=1) ½ºÅ¸ÀÏ ¸¶½ºÅÍ ¸ñ·Ï Á¶È¸
+            // 1. í™œì„±í™”ëœ(USE_YN=1) ìŠ¤íƒ€ì¼ ë§ˆìŠ¤í„° ëª©ë¡ ì¡°íšŒ
             List<StyleDTO> styleList = styleDAO.selectActiveStyleList(conn);
             
-            // 2. °¢ ½ºÅ¸ÀÏ °´Ã¼ ³»ºÎ¿¡ ÀüÃ¼ ÀÌ¹ÌÁö ¸®½ºÆ®(½½¶óÀÌ´õ¿ë)¸¦ Ã¤¿ò
+            // 2. ê° ìŠ¤íƒ€ì¼ ê°ì²´ ë‚´ë¶€ì— ì „ì²´ ì´ë¯¸ì§€ ë¦¬ìŠ¤íŠ¸(ìŠ¬ë¼ì´ë”ìš©)ë¥¼ ì±„ì›€
             if (styleList != null) {
                 for (StyleDTO style : styleList) {
                     List<StyleImageDTO> allImages = styleDAO.selectStyleImages(conn, style.getStyle_id());
-                    style.setImages(allImages); // DTOÀÇ images ÇÊµå¿¡ ÀúÀå
+                    style.setImages(allImages); // DTOì˜ images í•„ë“œì— ì €ì¥
                 }
             }
             return styleList;
@@ -69,7 +69,7 @@ public class StyleService {
                 return true;
             }
             return false;
-        } catch (SQLException | javax.naming.NamingException e) { // NamingException Ãß°¡
+        } catch (SQLException | javax.naming.NamingException e) { // NamingException ì¶”ê°€
             if (conn != null) JdbcUtil.rollback(conn); 
             e.printStackTrace();
             return false;
@@ -93,12 +93,12 @@ public class StyleService {
             conn = ConnectionProvider.getConnection();
             conn.setAutoCommit(false);
             
-            // 1. ÀÌ¹ÌÁö Á¤º¸ ÀúÀå
+            // 1. ì´ë¯¸ì§€ ì •ë³´ ì €ì¥
             for (StyleImageDTO img : images) {
                 styleDAO.insertStyleImage(conn, img);
             }
             
-            // 2. »óÇ° ¸ÅÄª Á¤º¸ ÀúÀå
+            // 2. ìƒí’ˆ ë§¤ì¹­ ì •ë³´ ì €ì¥
             if (productIds != null) {
                 for (int i = 0; i < productIds.length; i++) {
                     StyleProductDTO spDto = new StyleProductDTO();
@@ -116,7 +116,7 @@ public class StyleService {
             JdbcUtil.close(conn);
         }
     }
- // 1. ½ºÅ¸ÀÏ ±âº» Á¤º¸ Á¶È¸
+ // 1. ìŠ¤íƒ€ì¼ ê¸°ë³¸ ì •ë³´ ì¡°íšŒ
     public StyleDTO getStyleDetail(int styleId) {
         try (Connection conn = ConnectionProvider.getConnection()) {
             return styleDAO.selectStyleDetail(conn, styleId);
@@ -126,7 +126,7 @@ public class StyleService {
         }
     }
 
-    // 2. ½ºÅ¸ÀÏ ÀÌ¹ÌÁö ¸®½ºÆ® Á¶È¸
+    // 2. ìŠ¤íƒ€ì¼ ì´ë¯¸ì§€ ë¦¬ìŠ¤íŠ¸ ì¡°íšŒ
     public List<StyleImageDTO> getStyleImages(int styleId) {
         try (Connection conn = ConnectionProvider.getConnection()) {
             return styleDAO.selectStyleImages(conn, styleId);
@@ -136,10 +136,10 @@ public class StyleService {
         }
     }
 
-    // 3. ÇöÀç ¸ÅÄªµÈ »óÇ° IDµé¸¸ Á¶È¸ (¼öÁ¤ Æû Ã¼Å©¹Ú½º¿ë)
+    // 3. í˜„ì¬ ë§¤ì¹­ëœ ìƒí’ˆ IDë“¤ë§Œ ì¡°íšŒ (ìˆ˜ì • í¼ ì²´í¬ë°•ìŠ¤ìš©)
     public List<String> getMatchedProductIds(int styleId) {
         try (Connection conn = ConnectionProvider.getConnection()) {
-            // StyleDAO¿¡ ÀÌ ¸Ş¼­µåµµ Ãß°¡µÇ¾î¾ß ÇÕ´Ï´Ù (¾Æ·¡ Âü°í)
+            // StyleDAOì— ì´ ë©”ì„œë“œë„ ì¶”ê°€ë˜ì–´ì•¼ í•©ë‹ˆë‹¤ (ì•„ë˜ ì°¸ê³ )
             return styleDAO.selectMatchedProductIds(conn, styleId);
         } catch (Exception e) {
             e.printStackTrace();
@@ -147,27 +147,27 @@ public class StyleService {
         }
     }
 
-    // 4. ½ºÅ¸ÀÏ ¼öÁ¤ ÅëÇÕ Ã³¸® (ÇÙ½É ·ÎÁ÷)
+    // 4. ìŠ¤íƒ€ì¼ ìˆ˜ì • í†µí•© ì²˜ë¦¬ (í•µì‹¬ ë¡œì§)
     public void updateStyleComplete(StyleDTO styleDto, List<StyleImageDTO> newImages, String[] productIds, boolean hasNewImages) {
         Connection conn = null;
         try {
             conn = ConnectionProvider.getConnection();
-            conn.setAutoCommit(false); // Æ®·£Àè¼Ç ½ÃÀÛ
+            conn.setAutoCommit(false); // íŠ¸ëœì­ì…˜ ì‹œì‘
 
-            // (1) ¸¶½ºÅÍ Á¤º¸ ¼öÁ¤ (ÀÌ¸§, ¼³¸í, »ç¿ë¿©ºÎ)
+            // (1) ë§ˆìŠ¤í„° ì •ë³´ ìˆ˜ì • (ì´ë¦„, ì„¤ëª…, ì‚¬ìš©ì—¬ë¶€)
             styleDAO.updateStyle(conn, styleDto);
 
-            // (2) ÀÌ¹ÌÁö ¾÷µ¥ÀÌÆ® (»õ ÆÄÀÏÀÌ µé¾î¿Â °æ¿ì¸¸)
+            // (2) ì´ë¯¸ì§€ ì—…ë°ì´íŠ¸ (ìƒˆ íŒŒì¼ì´ ë“¤ì–´ì˜¨ ê²½ìš°ë§Œ)
             if (hasNewImages) {
-                // ±âÁ¸ DB ÀÌ¹ÌÁö Á¤º¸ »èÁ¦
+                // ê¸°ì¡´ DB ì´ë¯¸ì§€ ì •ë³´ ì‚­ì œ
                 styleDAO.deleteStyleImages(conn, styleDto.getStyle_id());
-                // »õ ÀÌ¹ÌÁö Á¤º¸ ÀúÀå
+                // ìƒˆ ì´ë¯¸ì§€ ì •ë³´ ì €ì¥
                 for (StyleImageDTO img : newImages) {
                     styleDAO.insertStyleImage(conn, img);
                 }
             }
 
-            // (3) »óÇ° ¸ÅÄª ¾÷µ¥ÀÌÆ® (±âÁ¸ »èÁ¦ ÈÄ Àçµî·Ï)
+            // (3) ìƒí’ˆ ë§¤ì¹­ ì—…ë°ì´íŠ¸ (ê¸°ì¡´ ì‚­ì œ í›„ ì¬ë“±ë¡)
             styleDAO.deleteStyleProducts(conn, styleDto.getStyle_id());
             if (productIds != null && productIds.length > 0) {
                 for (int i = 0; i < productIds.length; i++) {
@@ -179,31 +179,31 @@ public class StyleService {
                 }
             }
 
-            conn.commit(); // ¸ğµç °úÁ¤ ¼º°ø ½Ã Ä¿¹Ô
+            conn.commit(); // ëª¨ë“  ê³¼ì • ì„±ê³µ ì‹œ ì»¤ë°‹
         } catch (Exception e) {
-            JdbcUtil.rollback(conn); // ÇÏ³ª¶óµµ ½ÇÆĞ ½Ã ÀüÃ¼ ·Ñ¹é
+            JdbcUtil.rollback(conn); // í•˜ë‚˜ë¼ë„ ì‹¤íŒ¨ ì‹œ ì „ì²´ ë¡¤ë°±
             e.printStackTrace();
         } finally {
             JdbcUtil.close(conn);
         }
     }
- // StyleService.java ³»ºÎ ¿¹½Ã
+ // StyleService.java ë‚´ë¶€ ì˜ˆì‹œ
     public StyleDTO getStyleFullDetail(int styleId) throws Exception {
-        // StyleDAO ÀÎ½ºÅÏ½º °¡Á®¿À±â (½Ì±ÛÅæ ¹æ½Ä)
+        // StyleDAO ì¸ìŠ¤í„´ìŠ¤ ê°€ì ¸ì˜¤ê¸° (ì‹±ê¸€í†¤ ë°©ì‹)
         StyleDAO styleDAO = StyleDAO.getInstance();
         
         try (Connection conn = ConnectionProvider.getConnection()) {
-            // 1. ±âº» ½ºÅ¸ÀÏ Á¤º¸ ·Îµå (¸Ş¼­µå¸í: selectStyleDetail)
+            // 1. ê¸°ë³¸ ìŠ¤íƒ€ì¼ ì •ë³´ ë¡œë“œ (ë©”ì„œë“œëª…: selectStyleDetail)
             StyleDTO style = styleDAO.selectStyleDetail(conn, styleId); 
             
             if (style != null) {
-                // 2. ½ºÅ¸ÀÏ ÀÌ¹ÌÁö ¸®½ºÆ® ·Îµå (¸Ş¼­µå¸í: selectStyleImages)
+                // 2. ìŠ¤íƒ€ì¼ ì´ë¯¸ì§€ ë¦¬ìŠ¤íŠ¸ ë¡œë“œ (ë©”ì„œë“œëª…: selectStyleImages)
                 style.setImages(styleDAO.selectStyleImages(conn, styleId));
                 
-                // 3. ½ºÅ¸ÀÏ¿¡ Æ÷ÇÔµÈ »óÇ° »ó¼¼ ¸®½ºÆ® ·Îµå (¸Ş¼­µå¸í: selectStyleProductDetails)
+                // 3. ìŠ¤íƒ€ì¼ì— í¬í•¨ëœ ìƒí’ˆ ìƒì„¸ ë¦¬ìŠ¤íŠ¸ ë¡œë“œ (ë©”ì„œë“œëª…: selectStyleProductDetails)
                 List<StyleProductDTO> products = styleDAO.selectStyleProductDetails(conn, styleId);
                 
-                // 4. °¢ »óÇ°º°·Î ¼±ÅÃ °¡´ÉÇÑ »çÀÌÁî ¸ñ·Ï Ã¤¿ì±â
+                // 4. ê° ìƒí’ˆë³„ë¡œ ì„ íƒ ê°€ëŠ¥í•œ ì‚¬ì´ì¦ˆ ëª©ë¡ ì±„ìš°ê¸°
                 for (StyleProductDTO product : products) {
                     List<String> sizes = styleDAO.getProductSizes(conn, product.getProduct_id());
                     product.setSizeOptions(sizes); 
@@ -219,7 +219,7 @@ public class StyleService {
         Connection conn = null;
         try {
             conn = ConnectionProvider.getConnection();
-            // ¾Æ±î ¸¸µç DAOÀÇ selectStyleList È£Ãâ (WHERE Á¶°Ç ¾ø´Â Äõ¸®)
+            // ì•„ê¹Œ ë§Œë“  DAOì˜ selectStyleList í˜¸ì¶œ (WHERE ì¡°ê±´ ì—†ëŠ” ì¿¼ë¦¬)
             return styleDAO.selectStyleList(conn);
         } catch (Exception e) {
             e.printStackTrace();
@@ -229,12 +229,12 @@ public class StyleService {
         }
     }
 
-    // 2. »óÅÂ º¯°æ (Toggle) Ã³¸®
+    // 2. ìƒíƒœ ë³€ê²½ (Toggle) ì²˜ë¦¬
     public boolean updateStyleStatus(int id, int status) {
         Connection conn = null;
         try {
             conn = ConnectionProvider.getConnection();
-            // ¼­ºñ½º¿¡¼­´Â DAO¿¡ Ä¿³Ø¼Ç°ú µ¥ÀÌÅÍ¸¦ ³Ñ°ÜÁİ´Ï´Ù.
+            // ì„œë¹„ìŠ¤ì—ì„œëŠ” DAOì— ì»¤ë„¥ì…˜ê³¼ ë°ì´í„°ë¥¼ ë„˜ê²¨ì¤ë‹ˆë‹¤.
             int result = styleDAO.updateStyleStatus(conn, id, status);
             return result > 0;
         } catch (Exception e) {

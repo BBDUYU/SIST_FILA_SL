@@ -3,9 +3,9 @@ package admin.command;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import command.CommandHandler;
-import productsqna.QnaDAO;
-import productsqna.QnaDAOImpl;
-import productsqna.QnaDTO;
+import qna.QnaDAO;
+import qna.QnaDAOImpl;
+import qna.QnaDTO;
 
 public class ProductQnaDetailHandler implements CommandHandler {
 
@@ -19,12 +19,12 @@ public class ProductQnaDetailHandler implements CommandHandler {
         int qnaId = Integer.parseInt(qnaIdStr);
         request.setAttribute("pageName", "productQna");
 
-        // [¼öÁ¤] Impl¿¡¼­ ÀÎ½ºÅÏ½º¸¦ °¡Á®¿É´Ï´Ù.
+        // [ìˆ˜ì •] Implì—ì„œ ì¸ìŠ¤í„´ìŠ¤ë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
         QnaDAO dao = QnaDAOImpl.getInstance();
         QnaDTO dto = dao.selectQnaDetail(qnaId); 
         request.setAttribute("qna", dto); 
 
-        // [¼öÁ¤] ¸®ÅÏ °æ·Î È®ÀÎ (view Æú´õ Æ÷ÇÔ)
+        // [ìˆ˜ì •] ë¦¬í„´ ê²½ë¡œ í™•ì¸ (view í´ë” í¬í•¨)
         return "/view/admin/product_qna_detail.jsp";
     }
 }

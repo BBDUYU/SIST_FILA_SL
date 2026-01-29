@@ -8,16 +8,16 @@ import search.SearchService;
 public class SearchHandler implements CommandHandler {
 
 	public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-	    String keyword = request.getParameter("keyword"); // JSP¿Í ÀÌ¸§ ÅëÀÏ!
+	    String keyword = request.getParameter("keyword"); // JSPì™€ ì´ë¦„ í†µì¼!
 	    
 	    if (keyword != null && !keyword.trim().isEmpty()) {
 	        SearchService.getInstance().recordSearchKeyword(keyword);
 	        
-	        // AJAX¿¡°Ô ¼º°øÇß´Ù´Â ½ÅÈ£¸¦ ¸íÈ®È÷ º¸³¿
+	        // AJAXì—ê²Œ ì„±ê³µí–ˆë‹¤ëŠ” ì‹ í˜¸ë¥¼ ëª…í™•íˆ ë³´ëƒ„
 	        response.setContentType("text/plain; charset=UTF-8");
 	        response.getWriter().write("success");
-	        response.getWriter().flush(); // ¹öÆÛ ºñ¿ì±â
+	        response.getWriter().flush(); // ë²„í¼ ë¹„ìš°ê¸°
 	    }
-	    return null; // ºä·Î ÀÌµ¿ÇÏÁö ¾ÊÀ½ (AJAX Àü¿ë)
+	    return null; // ë·°ë¡œ ì´ë™í•˜ì§€ ì•ŠìŒ (AJAX ì „ìš©)
 	}
 }

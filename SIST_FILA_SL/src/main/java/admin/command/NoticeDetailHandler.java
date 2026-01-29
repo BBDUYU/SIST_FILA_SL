@@ -12,30 +12,30 @@ public class NoticeDetailHandler implements CommandHandler {
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
         
-        // 1. ÆÄ¶ó¹ÌÅÍ·Î ³Ñ¾î¿Â °øÁö»çÇ× ¹øÈ£(id) ¹Ş±â
+        // 1. íŒŒë¼ë¯¸í„°ë¡œ ë„˜ì–´ì˜¨ ê³µì§€ì‚¬í•­ ë²ˆí˜¸(id) ë°›ê¸°
         String strId = request.getParameter("id");
         
-        // ¹øÈ£°¡ ¾øÀ¸¸é ¸ñ·ÏÀ¸·Î Æ¨°Ü³»±â (¹æ¾î ÄÚµå)
+        // ë²ˆí˜¸ê°€ ì—†ìœ¼ë©´ ëª©ë¡ìœ¼ë¡œ íŠ•ê²¨ë‚´ê¸° (ë°©ì–´ ì½”ë“œ)
         if (strId == null || strId.isEmpty()) {
             return "redirect:/admin/noticeManage.htm";
         }
         
         int noticeId = Integer.parseInt(strId);
 
-        // 2. DAO ½Ì±ÛÅæ °´Ã¼ °¡Á®¿Í¼­ »ó¼¼ Á¤º¸ Á¶È¸
+        // 2. DAO ì‹±ê¸€í†¤ ê°ì²´ ê°€ì ¸ì™€ì„œ ìƒì„¸ ì •ë³´ ì¡°íšŒ
         NoticeDAOImpl dao = NoticeDAOImpl.getInstance();
         NoticeDTO dto = dao.selectOne(noticeId);
 
-        // 3. Á¶È¸ °á°ú°¡ ¾øÀ¸¸é ¸ñ·ÏÀ¸·Î ÀÌµ¿
+        // 3. ì¡°íšŒ ê²°ê³¼ê°€ ì—†ìœ¼ë©´ ëª©ë¡ìœ¼ë¡œ ì´ë™
         if (dto == null) {
             return "redirect:/admin/noticeManage.htm";
         }
 
-        // 4. JSP¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖµµ·Ï request¿¡ ´ã±â
+        // 4. JSPì—ì„œ ì‚¬ìš©í•  ìˆ˜ ìˆë„ë¡ requestì— ë‹´ê¸°
         request.setAttribute("dto", dto);
-        request.setAttribute("pageName", "notice"); // »çÀÌµå¹Ù È°¼ºÈ­¿ë
+        request.setAttribute("pageName", "notice"); // ì‚¬ì´ë“œë°” í™œì„±í™”ìš©
 
-        // 5. ¾Æ±î ¸¸µç °ü¸®ÀÚ Àü¿ë »ó¼¼ ÆäÀÌÁö(JSP) ¸®ÅÏ
+        // 5. ì•„ê¹Œ ë§Œë“  ê´€ë¦¬ì ì „ìš© ìƒì„¸ í˜ì´ì§€(JSP) ë¦¬í„´
         return "/view/admin/notice_detail.jsp";
     }
 }

@@ -10,13 +10,13 @@ public class CouponDeleteHandler implements CommandHandler {
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String couponIdStr = request.getParameter("id");
-        String status = request.getParameter("status"); // Y ¶Ç´Â N ¼ö½Å
+        String status = request.getParameter("status"); // Y ë˜ëŠ” N ìˆ˜ì‹ 
         
         if (couponIdStr != null && status != null) {
             int couponId = Integer.parseInt(couponIdStr);
             CouponService service = CouponService.getInstance();
             
-            // DAOÀÇ delete ¸Ş¼­µå°¡ ÀÌÁ¦ Æ¯Á¤ »óÅÂ·Î ¾÷µ¥ÀÌÆ®ÇÏµµ·Ï µ¿ÀÛÇÔ
+            // DAOì˜ delete ë©”ì„œë“œê°€ ì´ì œ íŠ¹ì • ìƒíƒœë¡œ ì—…ë°ì´íŠ¸í•˜ë„ë¡ ë™ì‘í•¨
             service.toggleCouponStatus(couponId, status);
         }
         

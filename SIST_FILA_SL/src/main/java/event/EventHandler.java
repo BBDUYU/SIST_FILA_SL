@@ -22,12 +22,12 @@ public class EventHandler implements CommandHandler {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
 
-        // 1) ÆÄ¶ó¹ÌÅÍ ¹Ş±â
+        // 1) íŒŒë¼ë¯¸í„° ë°›ê¸°
         long eventId;
         try {
             eventId = Long.parseLong(request.getParameter("eventId"));
         } catch (Exception e) {
-            // ÆÄ¶ó¹ÌÅÍ ¾ø°Å³ª ÀÌ»óÇÏ¸é ¹Ù·Î 400 Ã³¸®(¿øÇÏ¸é ±âº»°ª 1·Î ¹Ù²ãµµ µÊ)
+            // íŒŒë¼ë¯¸í„° ì—†ê±°ë‚˜ ì´ìƒí•˜ë©´ ë°”ë¡œ 400 ì²˜ë¦¬(ì›í•˜ë©´ ê¸°ë³¸ê°’ 1ë¡œ ë°”ê¿”ë„ ë¨)
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "eventId is required");
             return null;
         }
@@ -38,7 +38,7 @@ public class EventHandler implements CommandHandler {
         try {
             con = ConnectionProvider.getConnection();
 
-            // 2) DB Á¶È¸
+            // 2) DB ì¡°íšŒ
             EventDetailDTO detail = eventDao.selectEventDetail(con, eventId);
 
             if (detail == null) {
@@ -47,14 +47,14 @@ public class EventHandler implements CommandHandler {
                 return null;
             }
 
-            // 3) JSP¿¡¼­ ¾²°Ô request¿¡ ´ã±â
+            // 3) JSPì—ì„œ ì“°ê²Œ requestì— ë‹´ê¸°
             request.setAttribute("detail", detail);
             request.setAttribute("event", detail.getEvent());
             request.setAttribute("sections", detail.getSections());
 
             System.out.println("[EventDetailHandler] sections size=" + detail.getSections().size());
 
-            // 4) view ¸®ÅÏ (DispatcherServletÀÌ forward ÇØÁÜ)
+            // 4) view ë¦¬í„´ (DispatcherServletì´ forward í•´ì¤Œ)
             return "/view/event/event.jsp";
 
         } finally {

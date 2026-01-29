@@ -17,7 +17,7 @@ import com.util.JdbcUtil;
 import admin.domain.UserInfoDTO;
 import cart.persistence.CartDAO;
 import command.CommandHandler;
-import member.domain.MemberDTO;
+import member.MemberDTO;
 import mypage.domain.AddressDTO;
 import mypage.persistence.AddressDAO;
 import net.sf.json.JSONObject;
@@ -41,7 +41,7 @@ public class OrderHandler implements CommandHandler {
                 return null; 
             } else {
                 response.setContentType("application/json; charset=UTF-8");
-                response.getWriter().print("{\"status\":\"error\", \"message\":\"·Î±×ÀÎÀÌ ÇÊ¿äÇÕ´Ï´Ù.\"}");
+                response.getWriter().print("{\"status\":\"error\", \"message\":\"ë¡œê·¸ì¸ì´ í•„ìš”í•©ë‹ˆë‹¤.\"}");
                 return null;
             }
         }
@@ -58,17 +58,17 @@ public class OrderHandler implements CommandHandler {
             try {
                 conn = ConnectionProvider.getConnection();
                 
-                // 1. ¹è¼ÛÁö ¸ñ·Ï Á¶È¸ Ãß°¡
+                // 1. ë°°ì†¡ì§€ ëª©ë¡ ì¡°íšŒ ì¶”ê°€
                 AddressDAO addressDao = new AddressDAO();
                 List<AddressDTO> addressList = addressDao.selectListByUser(conn, userNumber);
                 request.setAttribute("addressList", addressList);
                 
-                // ±âº» ¹è¼ÛÁö ¼³Á¤ (¸ñ·ÏÀÇ Ã¹ ¹øÂ°°¡ IS_DEFAULT DESC·Î ÀÎÇØ ±âº» ¹è¼ÛÁöÀÓ)
+                // ê¸°ë³¸ ë°°ì†¡ì§€ ì„¤ì • (ëª©ë¡ì˜ ì²« ë²ˆì§¸ê°€ IS_DEFAULT DESCë¡œ ì¸í•´ ê¸°ë³¸ ë°°ì†¡ì§€ì„)
                 if (addressList != null && !addressList.isEmpty()) {
                     request.setAttribute("defaultAddr", addressList.get(0));
                 }
 
-                // 2. »óÇ° Á¤º¸ Á¶È¸ (±âÁ¸ ·ÎÁ÷)
+                // 2. ìƒí’ˆ ì •ë³´ ì¡°íšŒ (ê¸°ì¡´ ë¡œì§)
                 List<OrderItemDTO> orderItems = new ArrayList<>();
                 if (productId != null && !productId.isEmpty()) {
                     ProductsDAO productsDao = ProductsDAO.getInstance();
@@ -90,7 +90,7 @@ public class OrderHandler implements CommandHandler {
 
                 if (orderItems.isEmpty()) return "/pay/cart.htm";
 
-                // 3. Æ÷ÀÎÆ®/ÄíÆù Á¤º¸ Á¶È¸ (±âÁ¸ ·ÎÁ÷)
+                // 3. í¬ì¸íŠ¸/ì¿ í° ì •ë³´ ì¡°íšŒ (ê¸°ì¡´ ë¡œì§)
                 UserInfoDTO userDetail = new UserInfoDTO();
                 int myPoint = 0;
                 String pointSql = "SELECT NVL(SUM(AMOUNT), 0) FROM USERPOINTS WHERE USER_NUMBER = ?";
@@ -141,13 +141,13 @@ public class OrderHandler implements CommandHandler {
             return "/view/order/order_pay.jsp";
         }
 
-        else { // POST Ã³¸®
+        else { // POST ì²˜ë¦¬
             response.setContentType("application/json; charset=UTF-8");
             PrintWriter out = response.getWriter();
             JSONObject jsonResponse = new JSONObject();
 
             try (Connection conn = ConnectionProvider.getConnection()) {
-                // 1. ÆÄ¶ó¹ÌÅÍ ¼öÁı
+                // 1. íŒŒë¼ë¯¸í„° ìˆ˜ì§‘
                 int addressId = Integer.parseInt(request.getParameter("address_id"));
                 int totalAmount = Integer.parseInt(request.getParameter("OrderTotalPrice"));
                 String deliveryMethod = request.getParameter("deliveryOption");
@@ -155,7 +155,7 @@ public class OrderHandler implements CommandHandler {
                 String paymentMethod = request.getParameter("gopaymethod");
                 String cartItemIds = request.getParameter("cartItemIds");
                 
-                // [Ãß°¡] ÄíÆù(ISSUE_ID) ÆÄ¶ó¹ÌÅÍ ¹Ş±â (³ªÁß¿¡ JSP¿¡¼­ name="issueId"·Î ³Ñ°ÜÁÖ¼¼¿ä)
+                // [ì¶”ê°€] ì¿ í°(ISSUE_ID) íŒŒë¼ë¯¸í„° ë°›ê¸° (ë‚˜ì¤‘ì— JSPì—ì„œ name="issueId"ë¡œ ë„˜ê²¨ì£¼ì„¸ìš”)
                 String couponIdStr = request.getParameter("userCouponId");
                 int userCouponId = (couponIdStr != null && !couponIdStr.isEmpty()) ? Integer.parseInt(couponIdStr) : 0;
                 
@@ -164,21 +164,21 @@ public class OrderHandler implements CommandHandler {
                 if(usemileStr != null && !usemileStr.isEmpty()) usedPoint = Integer.parseInt(usemileStr);
 
 
-                // 2. OrderDTO °´Ã¼ »ı¼º
-                // (OrderDTO ºô´õ¿¡ issueId¿Í trackingNumber ÇÊµå°¡ ÀÖ´Ù°í °¡Á¤ÇÕ´Ï´Ù)
+                // 2. OrderDTO ê°ì²´ ìƒì„±
+                // (OrderDTO ë¹Œë”ì— issueIdì™€ trackingNumber í•„ë“œê°€ ìˆë‹¤ê³  ê°€ì •í•©ë‹ˆë‹¤)
                 OrderDTO order = OrderDTO.builder()
                         .userNumber(userNumber) 
                         .addressId(addressId)
                         .totalAmount(totalAmount)
-                        .deliveryMethod("1".equals(deliveryMethod) ? "¿À´ÃµµÂø" : "ÀÏ¹İ¹è¼Û")
+                        .deliveryMethod("1".equals(deliveryMethod) ? "ì˜¤ëŠ˜ë„ì°©" : "ì¼ë°˜ë°°ì†¡")
                         .deliveryRequest(deliveryRequest)
                         .paymentMethod(paymentMethod)
                         .usedPoint(usedPoint)
-                        .userCouponId(userCouponId) // ¹Ì¸® Ãß°¡ (ÇÊµå ¾øÀ¸¸é DTO¿¡ Ãß°¡ ÇÊ¿ä)
-                        .orderStatus("°áÁ¦¿Ï·á") // ±âº» »óÅÂ°ª ¼³Á¤
+                        .userCouponId(userCouponId) // ë¯¸ë¦¬ ì¶”ê°€ (í•„ë“œ ì—†ìœ¼ë©´ DTOì— ì¶”ê°€ í•„ìš”)
+                        .orderStatus("ê²°ì œì™„ë£Œ") // ê¸°ë³¸ ìƒíƒœê°’ ì„¤ì •
                         .build();
 
-                // 3. »óÇ° Á¤º¸ °¡Á®¿À±â (±âÁ¸ À¯Áö)
+                // 3. ìƒí’ˆ ì •ë³´ ê°€ì ¸ì˜¤ê¸° (ê¸°ì¡´ ìœ ì§€)
                 CartDAO cartDao = CartDAO.getInstance();
                 List<OrderItemDTO> items = new ArrayList<>();
                 
@@ -193,7 +193,7 @@ public class OrderHandler implements CommandHandler {
                     	ProductsDAO productsDao = ProductsDAO.getInstance();
                         ProductsDTO product = productsDao.getProduct(conn, pId);
                         
-                        // ÇÒÀÎ°¡ °è»ê (GET ¹æ½Ä¿¡¼­ ½è´ø ·ÎÁ÷°ú µ¿ÀÏÇÏ°Ô)
+                        // í• ì¸ê°€ ê³„ì‚° (GET ë°©ì‹ì—ì„œ ì¼ë˜ ë¡œì§ê³¼ ë™ì¼í•˜ê²Œ)
                         int salePrice = product.getPrice() * (100 - product.getDiscount_rate()) / 100;
                         items.add(OrderItemDTO.builder()
                                 .productId(pId)
@@ -204,11 +204,11 @@ public class OrderHandler implements CommandHandler {
                     }
                 }
 
-                // 4. ¼­ºñ½º È£ÃâÇÏ¿© ÁÖ¹® Ã³¸® (DB INSERT)
+                // 4. ì„œë¹„ìŠ¤ í˜¸ì¶œí•˜ì—¬ ì£¼ë¬¸ ì²˜ë¦¬ (DB INSERT)
                 OrderService orderService = OrderService.getInstance();
                 String orderId = orderService.processOrder(order, items,cartItemIds);
 
-                // 5. ¼º°ø ÀÀ´ä
+                // 5. ì„±ê³µ ì‘ë‹µ
                 jsonResponse.put("status", "success");
                 jsonResponse.put("redirect", request.getContextPath() + "/order/complete.htm?orderId=" + orderId);
                 out.print(jsonResponse.toString());
@@ -216,7 +216,7 @@ public class OrderHandler implements CommandHandler {
             } catch (Exception e) {
                 e.printStackTrace();
                 jsonResponse.put("status", "error");
-                jsonResponse.put("message", "ÁÖ¹® Ã³¸® Áß ¿À·ù ¹ß»ı: " + e.getMessage());
+                jsonResponse.put("message", "ì£¼ë¬¸ ì²˜ë¦¬ ì¤‘ ì˜¤ë¥˜ ë°œìƒ: " + e.getMessage());
                 out.print(jsonResponse.toString());
             }
             return null;

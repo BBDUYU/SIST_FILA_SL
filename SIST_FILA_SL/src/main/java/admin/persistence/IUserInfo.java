@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import admin.domain.UserInfoDTO;
 
 public interface IUserInfo {
-    // ÀüÃ¼ È¸¿ø ¸ñ·Ï Á¶È¸
+    // ì „ì²´ íšŒì› ëª©ë¡ ì¡°íšŒ
     ArrayList<UserInfoDTO> selectUserList(Connection conn) throws SQLException;
     UserInfoDTO selectOne(Connection conn, int userNum) throws SQLException;
 }

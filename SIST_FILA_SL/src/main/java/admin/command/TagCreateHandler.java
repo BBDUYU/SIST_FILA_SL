@@ -1,8 +1,8 @@
-package admin.command; // ÇÁ·ÎÆÛÆ¼Áî¿¡ ÀûÀº ÆĞÅ°Áö¸í
+package admin.command; // í”„ë¡œí¼í‹°ì¦ˆì— ì ì€ íŒ¨í‚¤ì§€ëª…
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import command.CommandHandler; // ÇÁ·ÎÁ§Æ®ÀÇ ÇÚµé·¯ ÀÎÅÍÆäÀÌ½º
+import command.CommandHandler; // í”„ë¡œì íŠ¸ì˜ í•¸ë“¤ëŸ¬ ì¸í„°í˜ì´ìŠ¤
 import admin.service.TagService;
 
 public class TagCreateHandler implements CommandHandler {

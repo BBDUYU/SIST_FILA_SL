@@ -32,36 +32,36 @@ public class MainService {
         try {
             conn = ConnectionProvider.getConnection();
             
-            // DAO ÀÎ½ºÅÏ½º ÁØºñ
+            // DAO ì¸ìŠ¤í„´ìŠ¤ ì¤€ë¹„
             CategoriesDAO cDao = CategoriesDAO.getInstance();
             SearchDAO sDao = SearchDAO.getInstance();
             EventproductDAO epDao = EventproductDAO.getInstance();
             MainbannerDAO ebDao = MainbannerDAO.getInstance();
             StyleDAO styleDao = StyleDAO.getInstance();
             
-            // 1. °Ë»ö¾î ÀúÀå (°Ë»öÃ¢ ÀÔ·Â ½Ã)
+            // 1. ê²€ìƒ‰ì–´ ì €ì¥ (ê²€ìƒ‰ì°½ ì…ë ¥ ì‹œ)
             if (searchItem != null && !searchItem.trim().isEmpty()) {
                 sDao.upsertKeyword(conn, searchItem.trim());
                 conn.commit();
             }
 
-            // 2. Ä«Å×°í¸® ¸®½ºÆ® Á¶È¸
+            // 2. ì¹´í…Œê³ ë¦¬ ë¦¬ìŠ¤íŠ¸ ì¡°íšŒ
             ArrayList<CategoriesDTO> categoryList = cDao.selectCategoryList(conn);
             dataMap.put("categoryList", categoryList);
 
-            // 3. ÀÎ±â °Ë»ö¾î Á¶È¸ (TOP 8)
+            // 3. ì¸ê¸° ê²€ìƒ‰ì–´ ì¡°íšŒ (TOP 8)
             ArrayList<SearchDTO> popularKeywords = sDao.selectTopKeywords(conn, 8);
             dataMap.put("popularKeywords", popularKeywords);
 
-            // 4. ÃßÃµ Å°¿öµå (ÀÌº¥Æ®+»óÇ°) Á¶È¸
+            // 4. ì¶”ì²œ í‚¤ì›Œë“œ (ì´ë²¤íŠ¸+ìƒí’ˆ) ì¡°íšŒ
             ArrayList<EventproductDTO> recommendKeywords = epDao.selectRecommendKeywords(conn);
             dataMap.put("recommendKeywords", recommendKeywords);
 
-            // 5. ÃßÃµ »óÇ° (½½¶óÀÌ´õ¿ë 12°³) Á¶È¸
+            // 5. ì¶”ì²œ ìƒí’ˆ (ìŠ¬ë¼ì´ë”ìš© 12ê°œ) ì¡°íšŒ
             ArrayList<EventproductDTO> recommendProducts = epDao.selectRecommendProducts(conn);
             dataMap.put("recommendProducts", recommendProducts);
 
-            // 6. ¸ŞÀÎ ¹è³Ê Á¶È¸ ¹× Á¤·Ä (ºñµğ¿À¸¦ µÚ·Î)
+            // 6. ë©”ì¸ ë°°ë„ˆ ì¡°íšŒ ë° ì •ë ¬ (ë¹„ë””ì˜¤ë¥¼ ë’¤ë¡œ)
             ArrayList<MainbannerDTO> bannerList = ebDao.selectMainBannerList(conn);
             if (bannerList != null) {
                 bannerList.sort((a, b) -> {
@@ -81,7 +81,7 @@ public class MainService {
             return dataMap;
 
         } catch (Exception e) {
-            throw new RuntimeException("¸ŞÀÎ µ¥ÀÌÅÍ ·Îµå ½ÇÆĞ", e);
+            throw new RuntimeException("ë©”ì¸ ë°ì´í„° ë¡œë“œ ì‹¤íŒ¨", e);
         } finally {
             JdbcUtil.close(conn);
         }

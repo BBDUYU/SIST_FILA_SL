@@ -1,42 +1,42 @@
-package command; // ¡Ú ÆÐÅ°Áö¸í È®ÀÎ! (com.fila.qna.handler ¸é ±×°É·Î ¼öÁ¤)
+package command; // â˜… íŒ¨í‚¤ì§€ëª… í™•ì¸! (com.fila.qna.handler ë©´ ê·¸ê±¸ë¡œ ìˆ˜ì •)
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import command.CommandHandler;
-import member.domain.MemberDTO;
-import productsqna.QnaDAOImpl;
-import productsqna.QnaDTO;
+import qna.QnaDAOImpl;
+import qna.QnaDTO;
+import member.MemberDTO; // â˜… ì°¾ì€ í´ëž˜ìŠ¤ import!
 
 public class QnaWriteHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
         
-        // 1. ÀÎÄÚµù
+        // 1. ì¸ì½”ë”©
         request.setCharacterEncoding("UTF-8");
         
-        // 2. ·Î±×ÀÎ Ã¼Å© & È¸¿ø¹øÈ£ °¡Á®¿À±â
+        // 2. ë¡œê·¸ì¸ ì²´í¬ & íšŒì›ë²ˆí˜¸ ê°€ì ¸ì˜¤ê¸°
         HttpSession session = request.getSession();
         
-        // ¡Ú ¼¼¼Ç¿¡ ÀúÀåµÈ °Ç "MemberDTO" ÀÔ´Ï´Ù.
+        // â˜… ì„¸ì…˜ì— ì €ìž¥ëœ ê±´ "MemberDTO" ìž…ë‹ˆë‹¤.
         MemberDTO member = (MemberDTO) session.getAttribute("auth");
         
-        // ·Î±×ÀÎÀÌ ¾È µÇ¾î ÀÖ´Ù¸é 401 ¿¡·¯ ¸®ÅÏ
+        // ë¡œê·¸ì¸ì´ ì•ˆ ë˜ì–´ ìžˆë‹¤ë©´ 401 ì—ëŸ¬ ë¦¬í„´
         if (member == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); 
             return null;
         }
 
-        // 3. ÆÄ¶ó¹ÌÅÍ ¹Þ±â
+        // 3. íŒŒë¼ë¯¸í„° ë°›ê¸°
         String productId = request.getParameter("productId");
         String qnaType = request.getParameter("qnaType");
         String qnaContent = request.getParameter("qnaContent");
         String memberEmail = request.getParameter("memberEmail");
         String emailChk = request.getParameter("emailChk");
         
-        // 4. DTO¿¡ ´ã±â
+        // 4. DTOì— ë‹´ê¸°
         QnaDTO dto = new QnaDTO();
         dto.setProduct_id(productId); 
         dto.setType(qnaType);
@@ -44,20 +44,20 @@ public class QnaWriteHandler implements CommandHandler {
         dto.setAnswer_email(memberEmail);
         dto.setUser_number(member.getUserNumber()); 
         
-        // ÀÌ¸ÞÀÏ ¼ö½Å ¿©ºÎ
+        // ì´ë©”ì¼ ìˆ˜ì‹  ì—¬ë¶€
         if ("on".equals(emailChk)) {
             dto.setIs_email_notify(1);
         } else {
             dto.setIs_email_notify(0);
         }
 
-        dto.setIs_secret(0); // ºñ¹Ð±Û ¾Æ´Ô(°ø°³)
+        dto.setIs_secret(0); // ë¹„ë°€ê¸€ ì•„ë‹˜(ê³µê°œ)
         
-        // 5. DB ÀúÀå
+        // 5. DB ì €ìž¥
         QnaDAOImpl dao = QnaDAOImpl.getInstance();
         int result = dao.insert(dto); 
         
-        // 6. ÀÀ´ä
+        // 6. ì‘ë‹µ
         response.setContentType("text/plain; charset=UTF-8");
         if (result > 0) {
             response.getWriter().write("success");

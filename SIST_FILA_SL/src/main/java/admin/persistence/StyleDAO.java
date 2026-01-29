@@ -12,7 +12,7 @@ import admin.domain.StyleImageDTO;
 import admin.domain.StyleProductDTO;
 
 import com.util.ConnectionProvider;
-import com.util.JdbcUtil; // º»ÀÎÀÇ DB ¿¬°á Á¾·á À¯Æ¿¸®Æ¼ È®ÀÎ
+import com.util.JdbcUtil; // ë³¸ì¸ì˜ DB ì—°ê²° ì¢…ë£Œ ìœ í‹¸ë¦¬í‹° í™•ì¸
 
 public class StyleDAO {
     private static StyleDAO instance = new StyleDAO();
@@ -43,10 +43,10 @@ public class StyleDAO {
         return list;
     }
 
-    // 2. »õ·Î¿î ½ºÅ¸ÀÏ ¸¶½ºÅÍ µî·Ï (½ÃÄö½º »ç¿ë)
+    // 2. ìƒˆë¡œìš´ ìŠ¤íƒ€ì¼ ë§ˆìŠ¤í„° ë“±ë¡ (ì‹œí€€ìŠ¤ ì‚¬ìš©)
  // StyleDAO.java
     public int insertStyle(Connection conn, StyleDTO dto) throws SQLException {
-        // STYLE_ID¸¦ ¹İÈ¯¹Ş±â À§ÇØ µÎ ¹øÂ° ÀÎÀÚ·Î ÄÃ·³¸íÀ» ¸í½ÃÇÕ´Ï´Ù.
+        // STYLE_IDë¥¼ ë°˜í™˜ë°›ê¸° ìœ„í•´ ë‘ ë²ˆì§¸ ì¸ìë¡œ ì»¬ëŸ¼ëª…ì„ ëª…ì‹œí•©ë‹ˆë‹¤.
         String sql = "INSERT INTO STYLE (STYLE_ID, STYLE_NAME, DESCRIPTION, USE_YN) VALUES (SEQ_STYLE.NEXTVAL, ?, ?, ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql, new String[]{"STYLE_ID"})) {
             pstmt.setString(1, dto.getStyle_name());
@@ -55,13 +55,13 @@ public class StyleDAO {
             pstmt.executeUpdate();
             
             try (ResultSet rs = pstmt.getGeneratedKeys()) {
-                if (rs.next()) return rs.getInt(1); // »ı¼ºµÈ ½ÃÄö½º ID ¸®ÅÏ
+                if (rs.next()) return rs.getInt(1); // ìƒì„±ëœ ì‹œí€€ìŠ¤ ID ë¦¬í„´
             }
         }
         return 0;
     }
 
-    // 3. ½ºÅ¸ÀÏ È­º¸ ÀÌ¹ÌÁö µî·Ï
+    // 3. ìŠ¤íƒ€ì¼ í™”ë³´ ì´ë¯¸ì§€ ë“±ë¡
     public int insertStyleImage(Connection conn, StyleImageDTO imgDto) throws SQLException {
         String sql = "INSERT INTO STYLE_IMAGE (STYLE_IMAGE_ID, STYLE_ID, IMAGE_URL, IS_MAIN, SORT_ORDER, ALT_TEXT) " +
                      "VALUES (SEQ_STYLE_IMAGE.NEXTVAL, ?, ?, ?, ?, ?)";
@@ -75,7 +75,7 @@ public class StyleDAO {
         }
     }
 
-    // 4. ½ºÅ¸ÀÏ-»óÇ° ¸ÅÄª Á¤º¸ µî·Ï
+    // 4. ìŠ¤íƒ€ì¼-ìƒí’ˆ ë§¤ì¹­ ì •ë³´ ë“±ë¡
     public int insertStyleProduct(Connection conn, StyleProductDTO prodDto) throws SQLException {
         String sql = "INSERT INTO STYLE_PRODUCT (PRODUCT_ID, STYLE_ID, SORT_ORDER) VALUES (?, ?, ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -86,9 +86,9 @@ public class StyleDAO {
         }
     }
 
- // StyleDAO.java ¿¡ Ãß°¡
+ // StyleDAO.java ì— ì¶”ê°€
 
- // 1. Æ¯Á¤ ½ºÅ¸ÀÏ »ó¼¼ Á¤º¸ Á¶È¸
+ // 1. íŠ¹ì • ìŠ¤íƒ€ì¼ ìƒì„¸ ì •ë³´ ì¡°íšŒ
  public StyleDTO selectStyleDetail(Connection conn, int styleId) throws SQLException {
      String sql = "SELECT * FROM STYLE WHERE STYLE_ID = ?";
      StyleDTO dto = null;
@@ -108,7 +108,7 @@ public class StyleDAO {
      return dto;
  }
 
- // 2. Æ¯Á¤ ½ºÅ¸ÀÏÀÇ ¸ğµç ÀÌ¹ÌÁö Á¶È¸
+ // 2. íŠ¹ì • ìŠ¤íƒ€ì¼ì˜ ëª¨ë“  ì´ë¯¸ì§€ ì¡°íšŒ
  public List<StyleImageDTO> selectStyleImages(Connection conn, int styleId) throws SQLException {
      String sql = "SELECT * FROM STYLE_IMAGE WHERE STYLE_ID = ? ORDER BY SORT_ORDER";
      List<StyleImageDTO> list = new ArrayList<>();
@@ -128,7 +128,7 @@ public class StyleDAO {
      }
      return list;
  }
-//Æ¯Á¤ ½ºÅ¸ÀÏÀÇ ¸ÅÄªµÈ »óÇ° ID ¸ñ·Ï Á¶È¸
+//íŠ¹ì • ìŠ¤íƒ€ì¼ì˜ ë§¤ì¹­ëœ ìƒí’ˆ ID ëª©ë¡ ì¡°íšŒ
 public List<String> selectMatchedProductIds(Connection conn, int styleId) throws SQLException {
   String sql = "SELECT PRODUCT_ID FROM STYLE_PRODUCT WHERE STYLE_ID = ?";
   List<String> list = new ArrayList<>();
@@ -143,7 +143,7 @@ public List<String> selectMatchedProductIds(Connection conn, int styleId) throws
   return list;
 }
 
-//Æ¯Á¤ ½ºÅ¸ÀÏÀÇ ÀÌ¹ÌÁö µ¥ÀÌÅÍ¸¸ »èÁ¦ (¼öÁ¤ ½Ã »ç¿ë)
+//íŠ¹ì • ìŠ¤íƒ€ì¼ì˜ ì´ë¯¸ì§€ ë°ì´í„°ë§Œ ì‚­ì œ (ìˆ˜ì • ì‹œ ì‚¬ìš©)
 public void deleteStyleImages(Connection conn, int styleId) throws SQLException {
   String sql = "DELETE FROM STYLE_IMAGE WHERE STYLE_ID = ?";
   try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -152,7 +152,7 @@ public void deleteStyleImages(Connection conn, int styleId) throws SQLException 
   }
 }
 
-//Æ¯Á¤ ½ºÅ¸ÀÏÀÇ »óÇ° ¸ÅÄª µ¥ÀÌÅÍ¸¸ »èÁ¦ (¼öÁ¤ ½Ã »ç¿ë)
+//íŠ¹ì • ìŠ¤íƒ€ì¼ì˜ ìƒí’ˆ ë§¤ì¹­ ë°ì´í„°ë§Œ ì‚­ì œ (ìˆ˜ì • ì‹œ ì‚¬ìš©)
 public void deleteStyleProducts(Connection conn, int styleId) throws SQLException {
   String sql = "DELETE FROM STYLE_PRODUCT WHERE STYLE_ID = ?";
   try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -160,7 +160,7 @@ public void deleteStyleProducts(Connection conn, int styleId) throws SQLExceptio
       pstmt.executeUpdate();
   }
 }
- // 3. ½ºÅ¸ÀÏ ±âº» Á¤º¸ ¾÷µ¥ÀÌÆ®
+ // 3. ìŠ¤íƒ€ì¼ ê¸°ë³¸ ì •ë³´ ì—…ë°ì´íŠ¸
  public int updateStyle(Connection conn, StyleDTO dto) throws SQLException {
      String sql = "UPDATE STYLE SET STYLE_NAME = ?, DESCRIPTION = ?, USE_YN = ? WHERE STYLE_ID = ?";
      try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -183,12 +183,12 @@ public void deleteStyleProducts(Connection conn, int styleId) throws SQLExceptio
 	        JdbcUtil.close(pstmt);
 	    }
 	}
-//5. ¸ŞÀÎ È­¸é¿ë È°¼º ½ºÅ¸ÀÏ ¸®½ºÆ® Á¶È¸
+//5. ë©”ì¸ í™”ë©´ìš© í™œì„± ìŠ¤íƒ€ì¼ ë¦¬ìŠ¤íŠ¸ ì¡°íšŒ
 public List<StyleDTO> selectActiveStyleList(Connection conn) throws SQLException {
   String sql = "SELECT s.STYLE_ID, s.STYLE_NAME, si.IMAGE_URL AS main_image_url " +
                "FROM STYLE s " +
                "LEFT JOIN STYLE_IMAGE si ON s.STYLE_ID = si.STYLE_ID AND si.IS_MAIN = 1 " +
-               "WHERE s.USE_YN = 1 " + // È°¼ºÈ­µÈ °Í¸¸!
+               "WHERE s.USE_YN = 1 " + // í™œì„±í™”ëœ ê²ƒë§Œ!
                "ORDER BY s.STYLE_ID DESC";
   
   List<StyleDTO> list = new ArrayList<>();
@@ -206,8 +206,8 @@ public List<StyleDTO> selectActiveStyleList(Connection conn) throws SQLException
   return list;
 }
 public List<StyleProductDTO> selectStyleProductDetails(Connection conn, int styleId) throws SQLException {
-    // PRODUCTS(p)¿Í PRODUCT_IMAGE(pi)¸¦ Á¶ÀÎÇÕ´Ï´Ù.
-    // IS_MAIN = 1ÀÎ ÀÌ¹ÌÁö¸¸ °¡Á®¿Í¼­ Áßº¹À» ¹æÁöÇÕ´Ï´Ù.
+    // PRODUCTS(p)ì™€ PRODUCT_IMAGE(pi)ë¥¼ ì¡°ì¸í•©ë‹ˆë‹¤.
+    // IS_MAIN = 1ì¸ ì´ë¯¸ì§€ë§Œ ê°€ì ¸ì™€ì„œ ì¤‘ë³µì„ ë°©ì§€í•©ë‹ˆë‹¤.
     String sql = "SELECT sp.PRODUCT_ID, sp.STYLE_ID, sp.SORT_ORDER, " +
                  "       p.NAME AS product_name, p.PRICE, " +
                  "       pi.IMAGE_URL AS product_image " + 
@@ -229,7 +229,7 @@ public List<StyleProductDTO> selectStyleProductDetails(Connection conn, int styl
                 dto.setProduct_name(rs.getString("product_name"));
                 dto.setPrice(rs.getInt("PRICE"));
                 
-                // Á¶È¸µÈ ÀÌ¹ÌÁö °æ·Î ¼¼ÆÃ
+                // ì¡°íšŒëœ ì´ë¯¸ì§€ ê²½ë¡œ ì„¸íŒ…
                 dto.setProduct_image(rs.getString("product_image"));
                 
                 list.add(dto);
@@ -238,12 +238,12 @@ public List<StyleProductDTO> selectStyleProductDetails(Connection conn, int styl
     }
     return list;
 }
-//StyleDAO ³»ºÎ¿¡ »óÇ°º° »çÀÌÁî¸¦ °¡Á®¿À´Â ¸Ş¼­µå ¿¹½Ã
+//StyleDAO ë‚´ë¶€ì— ìƒí’ˆë³„ ì‚¬ì´ì¦ˆë¥¼ ê°€ì ¸ì˜¤ëŠ” ë©”ì„œë“œ ì˜ˆì‹œ
 public List<String> getProductSizes(Connection conn, String productId) throws SQLException {
  List<String> sizes = new ArrayList<>();
  String sql = "SELECT VALUE_NAME FROM PRODUCT_OPTION_VALUES v " +
               "JOIN PRODUCT_OPTION_GROUPS g ON v.OPTION_GROUP_ID = g.OPTION_GROUP_ID " +
-              "WHERE g.PRODUCT_ID = ? AND g.MASTER_ID IN (4,5,6,7,8)"; // »çÀÌÁî ¸¶½ºÅÍ IDµé
+              "WHERE g.PRODUCT_ID = ? AND g.MASTER_ID IN (4,5,6,7,8)"; // ì‚¬ì´ì¦ˆ ë§ˆìŠ¤í„° IDë“¤
 
  try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
      pstmt.setString(1, productId);

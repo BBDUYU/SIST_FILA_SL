@@ -5,7 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.util.ConnectionProvider;
-import products.TagProductsDAO; // »õ·Î ¸¸µç DAO
+import products.TagProductsDAO; // ìƒˆë¡œ ë§Œë“  DAO
 import products.ProductsDTO;
 import net.sf.json.JSONArray;
 
@@ -18,16 +18,16 @@ public class MainGroupAjaxHandler implements CommandHandler {
 	        TagProductsDAO dao = TagProductsDAO.getInstance();
 	        List<ProductsDTO> list = dao.selectProductsByTag(conn, tagId);
 	        
-	        // [Áß¿ä] JSON º¯È¯ Àü, ¸ğµç »óÇ°ÀÇ ÀÌ¹ÌÁö °æ·Î¸¦ ºê¶ó¿ìÀú¿ëÀ¸·Î °­Á¦ ¼¼ÆÃ
+	        // [ì¤‘ìš”] JSON ë³€í™˜ ì „, ëª¨ë“  ìƒí’ˆì˜ ì´ë¯¸ì§€ ê²½ë¡œë¥¼ ë¸Œë¼ìš°ì €ìš©ìœ¼ë¡œ ê°•ì œ ì„¸íŒ…
 	        for (ProductsDTO dto : list) {
-	            String rawPath = dto.getProduct_id(); // È¤Àº ¿ø·¡ image_url ÇÊµå°ª
-	            // DTOÀÇ getImage_url() ·ÎÁ÷À» ¿©±â¼­ ¹Ì¸® ½ÇÇàÇØ¼­ ÇÊµå¿¡ µ¤¾î¾º¿ó´Ï´Ù.
+	            String rawPath = dto.getProduct_id(); // í˜¹ì€ ì›ë˜ image_url í•„ë“œê°’
+	            // DTOì˜ getImage_url() ë¡œì§ì„ ì—¬ê¸°ì„œ ë¯¸ë¦¬ ì‹¤í–‰í•´ì„œ í•„ë“œì— ë®ì–´ì”Œì›ë‹ˆë‹¤.
 	            String webPath = dto.getImage_url(); 
 	            dto.setImage_url(webPath); 
 	        }
 
 	        response.setContentType("application/json; charset=utf-8");
-	        // ÀÌÁ¦ ÇÊµå°ª ÀÚÃ¼°¡ °¡°øµÇ¾úÀ¸¹Ç·Î JSON¿¡ Á¤»óÀûÀ¸·Î ´ã±é´Ï´Ù.
+	        // ì´ì œ í•„ë“œê°’ ìì²´ê°€ ê°€ê³µë˜ì—ˆìœ¼ë¯€ë¡œ JSONì— ì •ìƒì ìœ¼ë¡œ ë‹´ê¹ë‹ˆë‹¤.
 	        JSONArray jsonArray = JSONArray.fromObject(list);
 	        response.getWriter().print(jsonArray);
 	        

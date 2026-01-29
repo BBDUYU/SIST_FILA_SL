@@ -12,42 +12,42 @@ public class ImageDisplayHandler implements CommandHandler {
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
         
-        // ºê¶ó¿ìÀú¿¡¼­ º¸³½ ÆÄÀÏ °æ·Î ÆÄ¶ó¹ÌÅÍ ¹Ş±â
+        // ë¸Œë¼ìš°ì €ì—ì„œ ë³´ë‚¸ íŒŒì¼ ê²½ë¡œ íŒŒë¼ë¯¸í„° ë°›ê¸°
         String fileName = request.getParameter("fileName");
 
-        // [Console Ãâ·Â 1] ÇÚµé·¯ ÁøÀÔ È®ÀÎ
+        // [Console ì¶œë ¥ 1] í•¸ë“¤ëŸ¬ ì§„ì… í™•ì¸
         System.out.println("--------------------------------------------");
-        System.out.println("[ImageHandler] ¿äÃ» ¹ŞÀ½! ÆÄ¶ó¹ÌÅÍ: " + fileName);
+        System.out.println("[ImageHandler] ìš”ì²­ ë°›ìŒ! íŒŒë¼ë¯¸í„°: " + fileName);
 
         if (fileName == null || fileName.isEmpty()) {
-            System.out.println("[ImageHandler] °á°ú: fileNameÀÌ ¾ø½À´Ï´Ù.");
+            System.out.println("[ImageHandler] ê²°ê³¼: fileNameì´ ì—†ìŠµë‹ˆë‹¤.");
             return null;
         }
 
-        // ÇÑ±Û ÆÄÀÏ¸í µğÄÚµù (±â¿ä¹Ì.png µî Ã³¸®)
+        // í•œê¸€ íŒŒì¼ëª… ë””ì½”ë”© (ê¸°ìš”ë¯¸.png ë“± ì²˜ë¦¬)
         fileName = URLDecoder.decode(fileName, "UTF-8");
         
-        // [Console Ãâ·Â 2] µğÄÚµù ÈÄ °æ·Î
-        System.out.println("[ImageHandler] µğÄÚµù ÈÄ: " + fileName);
+        // [Console ì¶œë ¥ 2] ë””ì½”ë”© í›„ ê²½ë¡œ
+        System.out.println("[ImageHandler] ë””ì½”ë”© í›„: " + fileName);
 
-        // ½ÇÁ¦ ¹°¸® °æ·Î º¯È¯ (DBÀÇ /upload -> C:\fila_upload)
+        // ì‹¤ì œ ë¬¼ë¦¬ ê²½ë¡œ ë³€í™˜ (DBì˜ /upload -> C:\fila_upload)
         String realPath = fileName.replace("/upload", "C:\\fila_upload");
         
-        // [Console Ãâ·Â 3] ÃÖÁ¾ º¯È¯ °æ·Î
-        System.out.println("[ImageHandler] ½ÇÁ¦ °æ·Î º¯È¯: " + realPath);
+        // [Console ì¶œë ¥ 3] ìµœì¢… ë³€í™˜ ê²½ë¡œ
+        System.out.println("[ImageHandler] ì‹¤ì œ ê²½ë¡œ ë³€í™˜: " + realPath);
 
         File file = new File(realPath);
 
-        // [Console Ãâ·Â 4] ÆÄÀÏ Á¸Àç ¿©ºÎ
+        // [Console ì¶œë ¥ 4] íŒŒì¼ ì¡´ì¬ ì—¬ë¶€
         if (!file.exists()) {
-            System.err.println("[ImageHandler] ¿¡·¯: ÆÄÀÏÀ» Ã£À» ¼ö ¾ø½À´Ï´Ù! (°æ·Î ¿ÀÅ¸ È®ÀÎ ÇÊ¿ä)");
+            System.err.println("[ImageHandler] ì—ëŸ¬: íŒŒì¼ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤! (ê²½ë¡œ ì˜¤íƒ€ í™•ì¸ í•„ìš”)");
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         } else {
-            System.out.println("[ImageHandler] ¼º°ø: ÆÄÀÏÀ» Ã£¾Ò½À´Ï´Ù. Å©±â: " + file.length() + " bytes");
+            System.out.println("[ImageHandler] ì„±ê³µ: íŒŒì¼ì„ ì°¾ì•˜ìŠµë‹ˆë‹¤. í¬ê¸°: " + file.length() + " bytes");
         }
 
-        // ÀÌ¹ÌÁö ÆÄÀÏ Àü¼Û ·ÎÁ÷
+        // ì´ë¯¸ì§€ íŒŒì¼ ì „ì†¡ ë¡œì§
         String mimeType = request.getServletContext().getMimeType(file.getName());
         response.setContentType(mimeType != null ? mimeType : "image/jpeg");
 
@@ -59,9 +59,9 @@ public class ImageDisplayHandler implements CommandHandler {
                 os.write(buffer, 0, read);
             }
             os.flush();
-            System.out.println("[ImageHandler] °á°ú: ÀÌ¹ÌÁö ¹ÙÀÌÆ® Àü¼Û ¿Ï·á");
+            System.out.println("[ImageHandler] ê²°ê³¼: ì´ë¯¸ì§€ ë°”ì´íŠ¸ ì „ì†¡ ì™„ë£Œ");
         } catch (Exception e) {
-            System.err.println("[ImageHandler] ¿¹¿Ü ¹ß»ı: " + e.getMessage());
+            System.err.println("[ImageHandler] ì˜ˆì™¸ ë°œìƒ: " + e.getMessage());
         }
         
         System.out.println("--------------------------------------------");

@@ -4,22 +4,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import com.util.DBConn;
-
-import member.domain.MemberDTO;
 import review.ReviewDAO;
 import review.ReviewDAOImpl;
+import member.MemberDTO; // [í•„ìˆ˜] ì´ê±° ì—†ìœ¼ë©´ 500 ì—ëŸ¬ ë‚©ë‹ˆë‹¤!
 
 public class ReviewLikeHandler implements CommandHandler {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // 1. JSON ¸»°í ÀÏ¹İ ÅØ½ºÆ®·Î º¸³½´Ù°í ¼±¾ğ
+        // 1. JSON ë§ê³  ì¼ë°˜ í…ìŠ¤íŠ¸ë¡œ ë³´ë‚¸ë‹¤ê³  ì„ ì–¸
         response.setContentType("text/plain; charset=utf-8"); 
         
         HttpSession session = request.getSession();
         MemberDTO auth = (MemberDTO) session.getAttribute("auth");
         
-        // 2. ·Î±×ÀÎ ¾È ÇßÀ¸¸é "login" ±ÛÀÚ ¸®ÅÏ
+        // 2. ë¡œê·¸ì¸ ì•ˆ í–ˆìœ¼ë©´ "login" ê¸€ì ë¦¬í„´
         if (auth == null) {
             response.getWriter().print("login");
             return null;
@@ -32,11 +31,11 @@ public class ReviewLikeHandler implements CommandHandler {
         java.sql.Connection conn = DBConn.getConnection();
         ReviewDAO dao = new ReviewDAOImpl(conn);
         
-        // 3. DAO °á°ú ¹Ş±â
+        // 3. DAO ê²°ê³¼ ë°›ê¸°
         int result = dao.insertReviewLike(reviewId, userNumber, type);
         DBConn.close();
 
-        // 4. °á°ú°ª ¼ıÀÚ ±×´ë·Î º¸³»±â (1, -1, 0)
+        // 4. ê²°ê³¼ê°’ ìˆ«ì ê·¸ëŒ€ë¡œ ë³´ë‚´ê¸° (1, -1, 0)
         response.getWriter().print(result);
         return null;
     }

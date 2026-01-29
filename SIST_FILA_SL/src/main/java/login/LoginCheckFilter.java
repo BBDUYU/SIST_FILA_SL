@@ -11,9 +11,9 @@ import javax.servlet.http.HttpSession;
 	    urlPatterns = {
 	        "/mypage/*",
 	        "/admin/*",
-	        "/mypage.htm",      // Ãß°¡
-	        "/inquiry/*",       // Ãß°¡
-	        "/pay/cart.htm"		// ·Î±×ÀÎÀ» ¾È ÇßÀ» ¶§ product_detail¿¡¼­ cart·Î ¹Ù·Î ÀÌµ¿ÇÏÁö ¾Ê°Ô ÇÏ±â À§ÇØ¼­ Ãß°¡
+	        "/mypage.htm",      // ì¶”ê°€
+	        "/inquiry/*",       // ì¶”ê°€
+	        "/pay/cart.htm"		// ë¡œê·¸ì¸ì„ ì•ˆ í–ˆì„ ë•Œ product_detailì—ì„œ cartë¡œ ë°”ë¡œ ì´ë™í•˜ì§€ ì•Šê²Œ í•˜ê¸° ìœ„í•´ì„œ ì¶”ê°€
 	    }
 	)
 	public class LoginCheckFilter implements Filter {

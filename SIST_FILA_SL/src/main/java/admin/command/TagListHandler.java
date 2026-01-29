@@ -16,9 +16,9 @@ public class TagListHandler implements CommandHandler {
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) throws Exception {
     	String command = request.getRequestURI();
-        // ½Ì±ÛÅæ ÀÎ½ºÅÏ½º °¡Á®¿À±â
+        // ì‹±ê¸€í†¤ ì¸ìŠ¤í„´ìŠ¤ ê°€ì ¸ì˜¤ê¸°
     	TagService tagService = TagService.getInstance();
-    	// ¼öÁ¤ ½Ã (POST ¹æ½Ä)
+    	// ìˆ˜ì • ì‹œ (POST ë°©ì‹)
     	if (command.contains("editTag.htm")) {
     	    int id = Integer.parseInt(request.getParameter("categoryId"));
     	    String name = request.getParameter("tagName");
@@ -30,14 +30,14 @@ public class TagListHandler implements CommandHandler {
     	    return null;
     	}
 
-    	// »èÁ¦ ½Ã (GET ¹æ½Ä)
+    	// ì‚­ì œ ì‹œ (GET ë°©ì‹)
     	else if (command.contains("toggleTag.htm")) {
     	    int id = Integer.parseInt(request.getParameter("id"));
-    	    int status = Integer.parseInt(request.getParameter("status")); // 0 ¶Ç´Â 1
+    	    int status = Integer.parseInt(request.getParameter("status")); // 0 ë˜ëŠ” 1
     	    
     	    try (Connection conn = ConnectionProvider.getConnection()) {
-    	        // ±âÁ¸¿¡ ¸¸µç deleteTag ¸Ş¼­µå¸íÀ» updateStatus µîÀ¸·Î ¹Ù²Ù°Å³ª ±×´ë·Î »ç¿ë
-    	        // ¿©±â¼­´Â Àü´Ş¹ŞÀº status °ªÀ¸·Î USE_YNÀ» ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù.
+    	        // ê¸°ì¡´ì— ë§Œë“  deleteTag ë©”ì„œë“œëª…ì„ updateStatus ë“±ìœ¼ë¡œ ë°”ê¾¸ê±°ë‚˜ ê·¸ëŒ€ë¡œ ì‚¬ìš©
+    	        // ì—¬ê¸°ì„œëŠ” ì „ë‹¬ë°›ì€ status ê°’ìœ¼ë¡œ USE_YNì„ ì—…ë°ì´íŠ¸í•©ë‹ˆë‹¤.
     	        CategoriesDAO.getInstance().updateTagStatus(conn, id, status);
     	    } catch (Exception e) {
     	        e.printStackTrace();
@@ -46,13 +46,13 @@ public class TagListHandler implements CommandHandler {
     	    response.sendRedirect(request.getContextPath() + "/admin/tagList.htm");
     	    return null; 
     	}
-        // ÅÂ±× ¸ñ·Ï °¡Á®¿À±â
+        // íƒœê·¸ ëª©ë¡ ê°€ì ¸ì˜¤ê¸°
         ArrayList<CategoriesDTO> tagList = tagService.getTagList();
         
-        // JSP·Î µ¥ÀÌÅÍ Àü´Ş
+        // JSPë¡œ ë°ì´í„° ì „ë‹¬
         request.setAttribute("tagList", tagList);
         
-        // ºä °æ·Î (È¯°æ¿¡ ¸Â°Ô ¼öÁ¤)
+        // ë·° ê²½ë¡œ (í™˜ê²½ì— ë§ê²Œ ìˆ˜ì •)
         return "/view/admin/tag_list.jsp";
     }
 }

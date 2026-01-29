@@ -9,9 +9,9 @@ import javax.servlet.http.HttpSession;
 import com.util.ConnectionProvider;
 import com.util.JdbcUtil;
 import command.CommandHandler;
-import member.domain.ChildDTO;
-import member.domain.MemberDTO;
-import member.persistence.MemberDAO;
+import member.MemberDAO;
+import member.MemberDTO;
+import member.ChildDTO; // ChildDTO 임포트 확인
 
 public class MemberModifyInfoHandler implements CommandHandler {
     @Override

@@ -39,7 +39,7 @@ public class CategoriesDAO implements ICategories {
         return list;
     }
     
-    // Æ¯Á¤ Ä«Å×°í¸® Á¤º¸ Á¶È¸ (ID·Î °Ë»ö)
+    // íŠ¹ì • ì¹´í…Œê³ ë¦¬ ì •ë³´ ì¡°íšŒ (IDë¡œ ê²€ìƒ‰)
     @Override
     public CategoriesDTO selectCategory(Connection conn, int categoryId) throws SQLException {
         String sql = "SELECT * FROM categories WHERE category_id = ?";
@@ -66,7 +66,7 @@ public class CategoriesDAO implements ICategories {
         return dto;
     }
     
-    // ÇÏÀ§/ÇüÁ¦ Ä«Å×°í¸® ¸ñ·Ï Á¶È¸ (»çÀÌµå¹Ù Ãâ·Â¿ë)
+    // í•˜ìœ„/í˜•ì œ ì¹´í…Œê³ ë¦¬ ëª©ë¡ ì¡°íšŒ (ì‚¬ì´ë“œë°” ì¶œë ¥ìš©)
     @Override
     public ArrayList<CategoriesDTO> selectChildCategories(Connection conn, int parentId) throws SQLException {
         String sql = "SELECT * FROM categories WHERE parent_id = ? AND use_yn = 1 ORDER BY category_id ASC";
@@ -94,7 +94,7 @@ public class CategoriesDAO implements ICategories {
         return list;
     }
     public ArrayList<CategoriesDTO> selectMainCategories(Connection conn) throws SQLException {
-        // depth°¡ 1ÀÎ °Í¸¸ °¡Á®¿É´Ï´Ù (FEMALE, MALE, KIDS)
+        // depthê°€ 1ì¸ ê²ƒë§Œ ê°€ì ¸ì˜µë‹ˆë‹¤ (FEMALE, MALE, KIDS)
         String sql = "SELECT * FROM categories WHERE depth = 1 AND use_yn = 1 ORDER BY category_id ASC";
 
         ArrayList<CategoriesDTO> list = new ArrayList<>();
@@ -180,7 +180,7 @@ public class CategoriesDAO implements ICategories {
             JdbcUtil.close(pstmt);
         }
     }
- // ÅÂ±× ¼öÁ¤ (ÀÌ¸§ º¯°æ ¹× ¼öÁ¤ÀÏ ¾÷µ¥ÀÌÆ®)
+ // íƒœê·¸ ìˆ˜ì • (ì´ë¦„ ë³€ê²½ ë° ìˆ˜ì •ì¼ ì—…ë°ì´íŠ¸)
     public int updateTag(Connection conn, int categoryId, String tagName) throws SQLException {
         PreparedStatement pstmt = null;
         String sql = "UPDATE CATEGORIES SET NAME = ?, UPDATED_AT = SYSDATE WHERE CATEGORY_ID = ?";
@@ -195,7 +195,7 @@ public class CategoriesDAO implements ICategories {
     }
 
 
- // ÅÂ±× »óÅÂ º¯°æ (È°¼ºÈ­/ºñÈ°¼ºÈ­ ÅëÇÕ)
+ // íƒœê·¸ ìƒíƒœ ë³€ê²½ (í™œì„±í™”/ë¹„í™œì„±í™” í†µí•©)
     public int updateTagStatus(Connection conn, int categoryId, int status) throws SQLException {
         PreparedStatement pstmt = null;
         String sql = "UPDATE CATEGORIES SET USE_YN = ?, UPDATED_at = SYSDATE WHERE CATEGORY_ID = ?";
@@ -208,7 +208,7 @@ public class CategoriesDAO implements ICategories {
             JdbcUtil.close(pstmt);
         }
     }
- // È°¼ºÈ­µÈ ÅÂ±×¸¸ Á¶È¸ÇÏ´Â ¸Ş¼­µå Ãß°¡
+ // í™œì„±í™”ëœ íƒœê·¸ë§Œ ì¡°íšŒí•˜ëŠ” ë©”ì„œë“œ ì¶”ê°€
     public ArrayList<CategoriesDTO> selectActiveTagList(Connection conn) throws SQLException {
         PreparedStatement pstmt = null;
         ResultSet rs = null;

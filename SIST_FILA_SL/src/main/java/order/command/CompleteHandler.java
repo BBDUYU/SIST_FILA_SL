@@ -18,6 +18,6 @@ public class CompleteHandler implements CommandHandler {
 
         request.setAttribute("orderId", orderId);
         
-        return "/view/order/complete.jsp"; // ¿Ï·á ÆäÀÌÁö °æ·Î
+        return "/view/order/complete.jsp"; // ì™„ë£Œ í˜ì´ì§€ ê²½ë¡œ
     }
 }

@@ -15,22 +15,22 @@ import lombok.ToString;
 @Data
 public class WishListDTO {
 
-    // 1) WISHLIST Å×ÀÌºí ÄÃ·³
-    private int wishlist_id;        // À§½Ã¸®½ºÆ® PK
-    private int user_number;        // È¸¿ø ¹øÈ£ FK
-    private String product_id;      // »óÇ° ID FK
-    private Date created_at;        // ÂòÇÑ ³¯Â¥
-    private String size_text;		// »çÀÌÁî
+    // 1) WISHLIST í…Œì´ë¸” ì»¬ëŸ¼
+    private int wishlist_id;        // ìœ„ì‹œë¦¬ìŠ¤íŠ¸ PK
+    private int user_number;        // íšŒì› ë²ˆí˜¸ FK
+    private String product_id;      // ìƒí’ˆ ID FK
+    private Date created_at;        // ì°œí•œ ë‚ ì§œ
+    private String size_text;		// ì‚¬ì´ì¦ˆ
 
-    // 2) È­¸é Ãâ·Â¿ë(Á¶ÀÎÀ¸·Î Ã¤¿ï °ª)
+    // 2) í™”ë©´ ì¶œë ¥ìš©(ì¡°ì¸ìœ¼ë¡œ ì±„ìš¸ ê°’)
     private String product_name;    // PRODUCTS.NAME
     private int price;              // PRODUCTS.PRICE
-    private int discount_rate;      // PRODUCTS.DISCOUNT_RATE (ÇÊ¿ä ¾øÀ¸¸é ³ªÁß¿¡ »©µµ µÊ)
-    private String image_url;       // PRODUCT_IMAGE.IMAGE_URL (´ëÇ¥ÀÌ¹ÌÁö)
+    private int discount_rate;      // PRODUCTS.DISCOUNT_RATE (í•„ìš” ì—†ìœ¼ë©´ ë‚˜ì¤‘ì— ë¹¼ë„ ë¨)
+    private String image_url;       // PRODUCT_IMAGE.IMAGE_URL (ëŒ€í‘œì´ë¯¸ì§€)
 
 
 
-    // ProductsDTO¶û µ¿ÀÏÇÑ ¹æ½ÄÀ¸·Î ÀÌ¹ÌÁö URL °¡°ø
+    // ProductsDTOë‘ ë™ì¼í•œ ë°©ì‹ìœ¼ë¡œ ì´ë¯¸ì§€ URL ê°€ê³µ
     public String getImage_url() {
         if (this.image_url == null || this.image_url.isEmpty()) return "";
 
@@ -38,7 +38,7 @@ public class WishListDTO {
         return "/SIST_FILA/displayImage.do?path=" + webPath;
     }
 
-    // (¼±ÅÃ) ÇÒÀÎ Àû¿ë ÃÖÁ¾°¡°¡ ÇÊ¿äÇÏ¸é »ç¿ë
+    // (ì„ íƒ) í• ì¸ ì ìš© ìµœì¢…ê°€ê°€ í•„ìš”í•˜ë©´ ì‚¬ìš©
     public int getFinal_price() {
         int rate = this.discount_rate;
         if (rate <= 0) return this.price;
