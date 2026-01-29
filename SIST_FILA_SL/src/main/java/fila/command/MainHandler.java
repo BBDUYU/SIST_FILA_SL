@@ -20,7 +20,7 @@ public class MainHandler implements CommandHandler {
         // 1. 검색 파라미터 받기
         String searchItem = request.getParameter("searchItem");
         if (searchItem != null && !searchItem.trim().isEmpty()) {
-            fila.search.SearchService.getInstance().recordSearchKeyword(searchItem);
+            fila.search.service.SearchService.getInstance().recordSearchKeyword(searchItem);
         }
         
         // 2. 서비스를 통해 데이터 뭉치 가져오기

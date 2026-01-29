@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fila.categories.mapper.CategoryMapper">
+
+    <select id="selectCategoryList" resultType="fila.categories.CategoriesDTO">
+        SELECT * FROM categories WHERE use_yn = 1 ORDER BY depth, category_id
+    </select>
+
+    <select id="selectCategory" resultType="fila.categories.CategoriesDTO">
+        SELECT * FROM categories WHERE category_id = #{categoryId}
+    </select>
+
+    <select id="selectChildCategories" resultType="fila.categories.CategoriesDTO">
+        SELECT * FROM categories WHERE parent_id = #{parentId} AND use_yn = 1 ORDER BY category_id ASC
+    </select>
+
+    <select id="selectMainCategories" resultType="fila.categories.CategoriesDTO">
+        SELECT * FROM categories WHERE depth = 1 AND use_yn = 1 ORDER BY category_id ASC
+    </select>
+
+    <select id="selectTagList" resultType="fila.categories.CategoriesDTO">
+        SELECT * FROM CATEGORIES WHERE CATEGORY_ID >= 4000 AND DEPTH = 4 ORDER BY CATEGORY_ID DESC
+    </select>
+
+    <select id="getMaxTagId" resultType="int">
+        SELECT NVL(MAX(CATEGORY_ID), 4000) FROM CATEGORIES WHERE CATEGORY_ID >= 4000 AND CATEGORY_ID &lt; 5000
+    </select>
+
+    <insert id="insertTag">
+        INSERT INTO CATEGORIES (CATEGORY_ID, NAME, DEPTH, CREATED_AT, UPDATED_AT, USE_YN)
+        VALUES (#{category_id}, #{name}, 4, SYSDATE, SYSDATE, 1)
+    </insert>
+
+    <update id="updateTag">
+        UPDATE CATEGORIES SET NAME = #{tagName}, UPDATED_AT = SYSDATE WHERE CATEGORY_ID = #{categoryId}
+    </update>
+
+    <update id="updateTagStatus">
+        UPDATE CATEGORIES SET USE_YN = #{status}, UPDATED_AT = SYSDATE WHERE CATEGORY_ID = #{categoryId}
+    </update>
+
+    <select id="selectActiveTagList" resultType="fila.categories.CategoriesDTO">
+        SELECT * FROM CATEGORIES WHERE CATEGORY_ID >= 4000 AND DEPTH = 4 AND USE_YN = 1 ORDER BY CATEGORY_ID DESC
+    </select>
+
+</mapper>
