@@ -5,6 +5,8 @@ import java.sql.Connection;
 import com.util.ConnectionProvider;
 import com.util.JdbcUtil;
 
+import mypage.persistence.WishAddDAO;
+
 public class WishAddService {
 
     private static WishAddService instance = new WishAddService();

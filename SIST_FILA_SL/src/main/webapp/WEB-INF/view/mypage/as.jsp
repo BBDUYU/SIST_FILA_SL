@@ -56,7 +56,7 @@
 
 <body>
 
-<jsp:include page="/view/common/header.jsp"/>
+<jsp:include page="/view/common/header.jsp"/>  
 <jsp:include page="/view/mypage/mypage.jsp"/>
 
 <section class="my-con" style="user-select: auto !important;">

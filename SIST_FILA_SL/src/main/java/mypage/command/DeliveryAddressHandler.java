@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import command.CommandHandler;
 import member.MemberDTO;
+import mypage.domain.AddressDTO;
 import mypage.persistence.AddressDAO;
 
 import com.util.ConnectionProvider;

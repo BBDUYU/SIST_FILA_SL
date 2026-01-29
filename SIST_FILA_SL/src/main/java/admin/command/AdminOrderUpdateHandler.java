@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.util.ConnectionProvider;
 import com.util.JdbcUtil;
 import command.CommandHandler;
+import net.sf.json.JSONObject;
 import order.domain.OrderItemDTO;
 import order.persistence.OrderDAO;
 
@@ -19,7 +20,7 @@ public class AdminOrderUpdateHandler implements CommandHandler {
         String orderId = request.getParameter("orderId");
         String newStatus = request.getParameter("status");
 
-        Map<String, Object> json = new HashMap<>();
+        JSONObject json = new JSONObject();  
         Connection conn = null;
         
         try {
