@@ -3,7 +3,7 @@ package fila.mypage.service;
 import java.sql.Connection;
 import java.util.List;
 
-import fila.categories.CategoriesDTO;
+import fila.categories.domain.CategoriesDTO;
 import fila.com.util.ConnectionProvider;
 import fila.com.util.JdbcUtil;
 import fila.member.MemberDTO;

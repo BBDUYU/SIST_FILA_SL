@@ -8,8 +8,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import fila.categories.CategoriesDAO;
-import fila.categories.CategoriesDTO;
+import fila.categories.domain.CategoriesDAO;
+import fila.categories.domain.CategoriesDTO;
 import fila.com.util.DBConn;
 import fila.products.ProductsDAO;
 import fila.products.ProductsDTO;

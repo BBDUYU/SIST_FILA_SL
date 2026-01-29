@@ -1,4 +1,4 @@
-package fila.categories;
+package fila.categories.domain;
 
 
 import java.util.Date;

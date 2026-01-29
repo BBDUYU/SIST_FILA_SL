@@ -6,8 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import fila.admin.service.TagService;
-import fila.categories.CategoriesDAO;
-import fila.categories.CategoriesDTO;
+import fila.categories.domain.CategoriesDAO;
+import fila.categories.domain.CategoriesDTO;
 import fila.com.util.ConnectionProvider;
 import fila.command.CommandHandler;
 

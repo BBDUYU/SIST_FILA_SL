@@ -3,8 +3,9 @@ package fila.search.service;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import fila.mapper.SearchMapper;
 import fila.search.domain.SearchDTO;
-import fila.search.mapper.SearchMapper; // 인터페이스 주입
 import lombok.extern.log4j.Log4j;
 
 @Service
