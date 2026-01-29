@@ -8,7 +8,6 @@ import com.util.ConnectionProvider;
 import command.CommandHandler;
 import order.domain.OrderItemDTO;
 import order.persistence.OrderDAO;
-import net.sf.json.JSONArray; // 또는 사용 중인 JSON 라이브러리
 
 public class AdminOrderDetailHandler implements CommandHandler {
     @Override
