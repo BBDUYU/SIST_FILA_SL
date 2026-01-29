@@ -3,9 +3,10 @@ package command;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import member.MemberDTO;
+
 import login.ILogin;
 import login.LoginService;
+import member.domain.MemberDTO;
 
 public class LoginHandler implements CommandHandler {
     

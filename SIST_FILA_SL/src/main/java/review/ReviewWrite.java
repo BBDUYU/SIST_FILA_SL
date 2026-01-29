@@ -12,7 +12,7 @@ import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 import com.util.DBConn;
 
 import command.CommandHandler;
-import member.MemberDTO;
+import member.domain.MemberDTO;
 
 public class ReviewWrite implements CommandHandler {
 

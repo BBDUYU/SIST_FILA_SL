@@ -3,8 +3,8 @@ package admin.command;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import command.CommandHandler;
-import qna.QnaDAO;
-import qna.QnaDAOImpl;
+import productsqna.QnaDAO;
+import productsqna.QnaDAOImpl;
 
 public class ProductQnaAnswerHandler implements CommandHandler {
 

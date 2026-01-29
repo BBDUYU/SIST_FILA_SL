@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import event_product.EventproductDTO;
-import member.MemberDTO; // 세션 auth 꺼내서 유저번호 쓰려고
-import mypage.WishListService; // 유저별 위시목록 조회 서비스 
+import member.domain.MemberDTO;
+import mypage.service.WishListService;
 import service.MainService;
 
 public class MainHandler implements CommandHandler {

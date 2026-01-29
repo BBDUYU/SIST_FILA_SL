@@ -1,8 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.sql.Connection" %>
-<%@ page import="mypage.AddressDAO, mypage.AddressDTO" %>
+<%@ page import="mypage.persistence.AddressDAO,mypage.domain.AddressDTO" %>
 <%@ page import="com.util.ConnectionProvider" %>
-<%@ page import="member.MemberDTO" %>
+<%@ page import="member.domain.MemberDTO" %>
 
 <%
   MemberDTO loginUser = (MemberDTO) session.getAttribute("auth");

@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import com.util.ConnectionProvider;
 import command.CommandHandler;
-import member.MemberDTO;
+import member.domain.MemberDTO;
 import order.domain.OrderDTO;
 import order.persistence.OrderDAO;
 

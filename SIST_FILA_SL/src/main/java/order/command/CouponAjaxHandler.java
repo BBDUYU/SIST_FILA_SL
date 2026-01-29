@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import command.CommandHandler;
-import member.MemberDTO;       
+import member.domain.MemberDTO;
 import admin.domain.UserInfoDTO; 
 import admin.service.CouponService;
 import net.sf.json.JSONArray;

@@ -4,9 +4,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import qna.QnaDAO;
-import qna.QnaDAOImpl;
-import qna.QnaDTO;
+import productsqna.QnaDAO;
+import productsqna.QnaDAOImpl;
+import productsqna.QnaDTO;
 
 public class QnaListHandler implements CommandHandler {
 

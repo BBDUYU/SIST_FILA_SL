@@ -6,8 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import command.CommandHandler;
-import mypage.qna.QnaDTO;
-import mypage.qna.QnaService;
+import mypage.domain.QnaDTO;
+import mypage.service.QnaService;
 
 public class AdminInquiryListHandler implements CommandHandler {
     @Override

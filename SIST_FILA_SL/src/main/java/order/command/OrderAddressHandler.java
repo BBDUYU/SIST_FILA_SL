@@ -9,9 +9,9 @@ import javax.servlet.http.HttpSession;
 import com.util.ConnectionProvider;
 import com.util.JdbcUtil;
 import command.CommandHandler;
-import member.MemberDTO;
-import mypage.AddressDAO;
-import mypage.AddressDTO;
+import member.domain.MemberDTO;
+import mypage.domain.AddressDTO;
+import mypage.persistence.AddressDAO;
 
 public class OrderAddressHandler implements CommandHandler {
 

@@ -17,9 +17,9 @@ import com.util.JdbcUtil;
 import admin.domain.UserInfoDTO;
 import cart.persistence.CartDAO;
 import command.CommandHandler;
-import member.MemberDTO;
-import mypage.AddressDAO; // 배송지 DAO 추가
-import mypage.AddressDTO; // 배송지 DTO 추가
+import member.domain.MemberDTO;
+import mypage.domain.AddressDTO;
+import mypage.persistence.AddressDAO;
 import net.sf.json.JSONObject;
 import order.domain.OrderDTO;
 import order.domain.OrderItemDTO;

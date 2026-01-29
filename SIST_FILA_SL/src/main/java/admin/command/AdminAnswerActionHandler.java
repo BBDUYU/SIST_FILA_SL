@@ -3,7 +3,7 @@ package admin.command;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import command.CommandHandler;
-import mypage.qna.QnaService;
+import mypage.service.QnaService;
 
 public class AdminAnswerActionHandler implements CommandHandler {
 

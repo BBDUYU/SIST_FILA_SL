@@ -1,7 +1,7 @@
 package login;
 
-import member.MemberDAO;
-import member.MemberDTO;
+import member.domain.MemberDTO;
+import member.persistence.MemberDAO;
 
 public class LoginService implements ILogin{
 	private MemberDAO dao = MemberDAO.getInstance();

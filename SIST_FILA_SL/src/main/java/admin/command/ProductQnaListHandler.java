@@ -5,9 +5,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import command.CommandHandler;
-import qna.QnaDAO;
-import qna.QnaDAOImpl; // [추가] 이게 있어야 QnaDAOImpl.getInstance()를 쓸 수 있습니다!
-import qna.QnaDTO; 
+import productsqna.QnaDAO;
+import productsqna.QnaDAOImpl;
+import productsqna.QnaDTO; 
 
 public class ProductQnaListHandler implements CommandHandler {
 

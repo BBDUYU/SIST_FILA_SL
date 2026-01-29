@@ -6,7 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.util.DBConn;
-import member.MemberDTO;
+
+import member.domain.MemberDTO;
 import review.ReviewDAO;
 import review.ReviewDAOImpl;
 import review.ReviewDTO;

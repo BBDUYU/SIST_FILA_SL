@@ -5,9 +5,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import command.CommandHandler;
-import qna.QnaDAOImpl;
-import qna.QnaDTO;
-import member.MemberDTO; // ★ 찾은 클래스 import!
+import member.domain.MemberDTO;
+import productsqna.QnaDAOImpl;
+import productsqna.QnaDTO;
 
 public class QnaWriteHandler implements CommandHandler {
 

@@ -3,9 +3,9 @@ package admin.command;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import command.CommandHandler;
-import qna.QnaDAO;
-import qna.QnaDAOImpl;
-import qna.QnaDTO;
+import productsqna.QnaDAO;
+import productsqna.QnaDAOImpl;
+import productsqna.QnaDTO;
 
 public class ProductQnaDetailHandler implements CommandHandler {
 

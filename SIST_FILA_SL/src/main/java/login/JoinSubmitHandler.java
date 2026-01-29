@@ -4,8 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import command.CommandHandler;
-import member.MemberDAO;
-import member.MemberDTO;
+import member.domain.MemberDTO;
+import member.persistence.MemberDAO;
 
 public class JoinSubmitHandler implements CommandHandler {
 

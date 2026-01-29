@@ -7,8 +7,8 @@ import java.util.Set; // wishedSet(Set<String>)
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import member.MemberDTO; // 세션 auth에서 로그인 유저 꺼내려고
-import mypage.WishListService; // 유저별 찜 목록 조회 서비스
+import member.domain.MemberDTO;
+import mypage.service.WishListService;
 import products.ProductsDTO;
 import products.service.ProductService;
 import service.MainService;

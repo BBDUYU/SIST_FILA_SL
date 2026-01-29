@@ -4,9 +4,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import com.util.DBConn;
+
+import member.domain.MemberDTO;
 import review.ReviewDAO;
 import review.ReviewDAOImpl;
-import member.MemberDTO; // [필수] 이거 없으면 500 에러 납니다!
 
 public class ReviewLikeHandler implements CommandHandler {
 

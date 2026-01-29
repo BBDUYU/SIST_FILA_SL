@@ -244,7 +244,7 @@ public class ProductService {
                 // 세션 가져오기
                 javax.servlet.http.HttpSession session = request.getSession();
                 // MemberDTO는 패키지명 포함해서 명시 (혹시 import 안 되어 있을까봐)
-                member.MemberDTO auth = (member.MemberDTO) session.getAttribute("auth");
+                member.domain.MemberDTO auth = (member.domain.MemberDTO) session.getAttribute("auth");
                 
                 if (auth != null) {
                     userNumber = auth.getUserNumber(); // 로그인했으면 번호 추출
@@ -253,8 +253,8 @@ public class ProductService {
                 // [수정] userNumber를 파라미터로 같이 넘김 (내 좋아요 상태 확인용)
                 List<review.ReviewDTO> reviewList = reviewDao.selectListByFilter(productId, null, userNumber, null, null);
                 java.util.Map<String, Object> reviewSummary = reviewDao.getReviewSummary(productId);
-                qna.QnaDAO qnaDao = qna.QnaDAOImpl.getInstance(); 
-                java.util.List<qna.QnaDTO> qnaList = qnaDao.selectList(productId);
+                productsqna.QnaDAO qnaDao = productsqna.QnaDAOImpl.getInstance(); 
+                java.util.List<productsqna.QnaDTO> qnaList = qnaDao.selectList(productId);
                 
                 // -----------------------------------------------------------
                 // 4. JSP 전송 (Attribute 설정)
