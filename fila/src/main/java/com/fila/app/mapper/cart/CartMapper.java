@@ -33,5 +33,7 @@ public interface CartMapper {
             @Param("cartItemIds") String cartItemIds,
             @Param("userNumber") int userNumber
     ) throws SQLException;
+
+	
     
 }
