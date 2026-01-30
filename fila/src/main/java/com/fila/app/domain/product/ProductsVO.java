@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductsVO {
     
-    // 1. PRODUCTS Å×ÀÌºí ÄÃ·³
-    // (MyBatis ¼³Á¤¿¡ µû¶ó CamelCase·Î ¹Ù²ã¾ß ÇÒ ¼öµµ ÀÖÁö¸¸, ÀÏ´Ü ±âÁ¸ º¯¼ö¸í À¯Áö)
+	// 1. PRODUCTS í…Œì´ë¸” ì»¬ëŸ¼
+    // (MyBatis ì„¤ì •ì— ë”°ë¼ CamelCaseë¡œ ë°”ê¿”ì•¼ í•  ìˆ˜ë„ ìˆì§€ë§Œ, ì¼ë‹¨ ê¸°ì¡´ ë³€ìˆ˜ëª… ìœ ì§€)
     private String product_id;
     private int category_id;
     private String name;
@@ -24,9 +24,9 @@ public class ProductsVO {
     private Date updated_at;
     private String status;
     private int discount_rate;
-    private String image_url;       // ¿øº» °æ·Î¸¸ ÀúÀå (·ÎÁ÷ Á¦°Å)
+    private String image_url;       // ì›ë³¸ ê²½ë¡œë§Œ ì €ì¥ (ë¡œì§ ì œê±°)
     
-    // 2. [Ãß°¡ ÇÊµå] - È­¸é Ç¥½Ã¿ë
+    // 2. [ì¶”ê°€ í•„ë“œ] - í™”ë©´ í‘œì‹œìš©
     private int product_count;
     private String depth1_name;
     private String tag_name;

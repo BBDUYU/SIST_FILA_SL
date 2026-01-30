@@ -9,12 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductsOptionVO {
     
-    // DB ÄÃ·³°ú ¸ÅÇÎµÇ´Â ÇÊµåµé (CamelCase ±ÇÀå)
+	// DB ì»¬ëŸ¼ê³¼ ë§¤í•‘ë˜ëŠ” í•„ë“œë“¤ (CamelCase ê¶Œì¥)
     private int combinationId;   // PK
-    private String groupName;    // ¿É¼Ç Á¾·ù (»ö»ó, »çÀÌÁî)
-    private String optionValue;  // ¿É¼Ç °ª (90, 100 µî)
-    private int stock;           // Àç°í·®
-    
-    private String productId;    
+    private String groupName;    // ì˜µì…˜ ì¢…ë¥˜ (ìƒ‰ìƒ, ì‚¬ì´ì¦ˆ)
+    private String optionValue;  // ì˜µì…˜ ê°’ (90, 100 ë“±)
+    private int stock;           // ì¬ê³ ëŸ‰
+    private String productId;  
 
 }

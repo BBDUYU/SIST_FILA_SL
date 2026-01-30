@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.doit.ik.mapper.ReviewMapper">
+
+  <insert id="insert">
+    INSERT INTO review (
+        review_id, product_id, user_number, content, rating, review_img, created_at
+    ) VALUES (
+        seq_review.nextval, #{product_id}, #{user_number}, #{content}, #{rating}, #{review_img, jdbcType=VARCHAR}, SYSDATE
+    )
+  </insert>
+
+  <select id="selectListByFilter" resultType="org.doit.ik.domain.ReviewVO">
+    SELECT 
+        r.review_id, r.product_id, r.user_number, r.content, r.rating, r.review_img, r.created_at as regdate,
+        u.id as user_id,
+        (SELECT COUNT(*) FROM review_like l WHERE l.review_id = r.review_id AND l.type = 1) as like_cnt,
+        (SELECT COUNT(*) FROM review_like l WHERE l.review_id = r.review_id AND l.type = 0) as dislike_cnt,
+        (SELECT type FROM review_like l WHERE l.review_id = r.review_id AND l.user_number = #{userNumber}) as myLike
+    FROM review r
+    JOIN users u ON r.user_number = u.user_number
+    WHERE r.product_id = #{productId}
+    
+    <if test="ratingArr != null and ratingArr.length > 0">
+        AND r.rating IN
+        <foreach item="rate" collection="ratingArr" open="(" separator="," close=")">
+            #{rate}
+        </foreach>
+    </if>
+    
+    <if test="keyword != null and keyword != ''">
+        AND r.content LIKE '%' || #{keyword} || '%'
+    </if>
+
+    ORDER BY
+    <choose>
+        <when test="sort == 'photo'">
+            (CASE WHEN r.review_img IS NOT NULL THEN 0 ELSE 1 END) ASC, r.created_at DESC
+        </when>
+        <when test="sort == 'rate'">
+            r.rating DESC, r.created_at DESC
+        </when>
+        <otherwise>
+            r.created_at DESC
+        </otherwise>
+    </choose>
+  </select>
+
+  <select id="getReviewSummary" resultType="map">
+    SELECT 
+        COUNT(*) as "total_cnt",
+        NVL(AVG(rating), 0) as "avg_score",
+        COUNT(CASE WHEN rating = 5 THEN 1 END) as "best_cnt"
+    FROM review 
+    WHERE product_id = #{productId}
+  </select>
+  
+  <select id="checkReviewLike" resultType="int">
+    SELECT COUNT(*) FROM review_like WHERE review_id = #{reviewId} AND user_number = #{userNumber}
+  </select>
+
+  <insert id="insertReviewLike">
+    INSERT INTO review_like (like_id, review_id, user_number, type) 
+    VALUES (seq_review_like.NEXTVAL, #{reviewId}, #{userNumber}, #{type})
+  </insert>
+  
+  <select id="getDeliveryCount" resultType="int">
+    SELECT COUNT(*) 
+    FROM ORDERS o 
+    JOIN ORDER_ITEMS oi ON o.ORDER_ID = oi.ORDER_ID 
+    WHERE o.USER_NUMBER = #{userNumber}
+      AND oi.PRODUCT_ID = #{productId}
+      AND o.ORDER_STATUS = '배송완료'
+  </select>
+  
+  <select id="getMyReviewCount" resultType="int">
+    SELECT COUNT(*) FROM REVIEW 
+    WHERE USER_NUMBER = #{userNumber} AND PRODUCT_ID = #{productId}
+  </select>
+
+</mapper>
