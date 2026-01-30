@@ -1,4 +1,4 @@
-package com.fila.app.member.service;
+package com.fila.app.service.member;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
