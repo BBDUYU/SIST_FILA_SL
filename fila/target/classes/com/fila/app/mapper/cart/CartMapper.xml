@@ -4,82 +4,183 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fila.app.mapper.cart.CartMapper">
 
-	<!-- ========================================================= 
-	[1] 전체 조회 (CartItemDTO)
-	========================================================= -->
-	<select id="selectAll" resultType="com.fila.app.domain.order.CartItemVO">
-		SELECT
-		ci.cart_item_id AS cartItemId,
-		ci.user_number AS userNumber,
-		ci.product_id AS productId,
-		p.name AS productName,
-		p.price AS originUnitPrice,
-		NVL(p.discount_rate, 0) AS discountRate,
-		ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) AS saleUnitPrice,
-		ci.quantity AS quantity,
-		(ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) * ci.quantity) AS lineAmount,
-		NULL AS mainImageUrl,
-		NULL AS size
-		FROM cart_items ci
-		JOIN products p ON ci.product_id = p.product_id
-	</select>
+	<!-- =========================================
+    CartItemVO 매핑 (alias 없는 SELECT용)
+    ========================================= -->
+  <resultMap id="cartItemMap" type="com.fila.app.domain.cart.CartItemVO">
+    <id property="cartItemId" column="cart_item_id"/>
+    <result property="userNumber" column="user_number"/>
+    <result property="productId" column="product_id"/>
 
-	<!-- ========================================================= 
-	[2] 주문 전환용 조회 (OrderItemDTO) 
-	========================================================= -->
-	<select id="selectCartForOrder"
-		resultType="com.fila.app.domain.order.OrderItemVO">
-		SELECT
-		ci.PRODUCT_ID AS productId,
-		p.NAME AS productName,
-		ci.COMBINATION_ID AS combinationId,
-		ci.QUANTITY AS quantity,
-		ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) AS price
-		FROM CART_ITEMS ci
-		JOIN PRODUCTS p ON ci.PRODUCT_ID = p.PRODUCT_ID
-		WHERE ci.USER_NUMBER = #{userNumber}
-	</select>
+    <result property="productName" column="product_name"/>
 
-	<!-- ========================================================= 
-	[3] 장바구니 비우기 
-	========================================================= -->
-	<delete id="deleteCartAfterOrder">
-		DELETE FROM CART_ITEMS
-		WHERE USER_NUMBER = #{userNumber}
-	</delete>
+    <result property="originUnitPrice" column="origin_unit_price"/>
+    <result property="discountRate" column="discount_rate"/>
+    <result property="saleUnitPrice" column="sale_unit_price"/>
 
-	<!-- ========================================================= 
-	[4] 수량 변경 
-	========================================================= -->
-	<update id="updateQuantity">
-		UPDATE cart_items
-		SET quantity = #{quantity}
-		WHERE cart_item_id = #{cartItemId}
-	</update>
+    <result property="quantity" column="quantity"/>
+    <result property="lineAmount" column="line_amount"/>
 
-	<!-- ========================================================= 
-	[5] 선택 구매용 조회 (ids 문자열 그대로 IN에 넣음) - 주의: ids는 "1,2,3" 형태로만 들어와야 함 
-	========================================================= -->
-	<select id="selectSelectedCartItems" resultType="com.fila.app.domain.order.OrderItemVO">
-		SELECT
-		ci.PRODUCT_ID AS productId,
-		p.NAME AS productName,
-		ci.COMBINATION_ID AS combinationId,
-		ci.QUANTITY AS quantity,
-		p.PRICE AS originalPrice,
-		ROUND(p.PRICE * (100 - NVL(p.DISCOUNT_RATE, 0)) / 100) AS price
-		FROM CART_ITEMS ci
-		JOIN PRODUCTS p ON ci.PRODUCT_ID = p.PRODUCT_ID
-		WHERE ci.CART_ITEM_ID IN (${ids})
-	</select>
+    <result property="mainImageUrl" column="main_image_url"/>
+    <result property="size" column="option_size"/>
+  </resultMap>
 
-	<!-- ========================================================= 
-	[6] 선택 삭제 - cartItemIds는 "1,2,3" 형태 
-	========================================================= -->
-	<delete id="deleteCartItems">
-		DELETE FROM CART_ITEMS
-		WHERE USER_NUMBER = #{userNumber}
-		AND CART_ITEM_ID IN (${cartItemIds})
-	</delete>
+
+  <!-- =========================================================
+  [1] 전체 조회 (너가 올린 SELECT 그대로)
+  ========================================================= -->
+  <select id="selectAll" resultType="com.fila.app.domain.cart.CartItemVO">
+    SELECT
+      ci.cart_item_id AS cartItemId,
+      ci.user_number AS userNumber,
+      ci.product_id AS productId,
+      p.name AS productName,
+      p.price AS originUnitPrice,
+      NVL(p.discount_rate, 0) AS discountRate,
+      ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) AS saleUnitPrice,
+      ci.quantity AS quantity,
+      (ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) * ci.quantity) AS lineAmount,
+      NULL AS mainImageUrl,
+      NULL AS size
+    FROM cart_items ci
+    JOIN products p ON ci.product_id = p.product_id
+  </select>
+
+
+  <!-- =========================================================
+  [2] 주문 전환용 조회 (너가 올린 SELECT 그대로)
+  ========================================================= -->
+  <select id="selectCartForOrder" resultType="com.fila.app.domain.order.OrderItemVO">
+    SELECT
+      ci.PRODUCT_ID, p.NAME, ci.COMBINATION_ID, ci.QUANTITY,
+      ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) AS PRICE
+    FROM CART_ITEMS ci
+    JOIN PRODUCTS p ON ci.PRODUCT_ID = p.PRODUCT_ID
+    WHERE ci.USER_NUMBER = #{userNumber}
+  </select>
+
+
+  <!-- =========================================================
+  [3] 장바구니 비우기 (주문 후)
+  ========================================================= -->
+  <delete id="deleteCartAfterOrder">
+    DELETE FROM CART_ITEMS WHERE USER_NUMBER = #{userNumber}
+  </delete>
+
+
+  <!-- =========================================================
+  [4] 수량 변경
+  ========================================================= -->
+  <update id="updateQuantity">
+    UPDATE cart_items
+    SET quantity = #{quantity}
+    WHERE cart_item_id = #{cartItemId}
+  </update>
+
+
+  <!-- =========================================================
+  [5] 선택 구매용 조회 (너가 올린 SELECT 그대로)
+  ========================================================= -->
+  <select id="selectSelectedCartItems" resultType="com.fila.app.domain.order.OrderItemVO">
+    SELECT ci.PRODUCT_ID, p.NAME, ci.COMBINATION_ID, ci.QUANTITY,
+           p.PRICE AS ORIGINAL_PRICE,
+           ROUND(p.PRICE * (100 - NVL(p.DISCOUNT_RATE, 0)) / 100) AS SALE_PRICE
+    FROM CART_ITEMS ci
+    JOIN PRODUCTS p ON ci.PRODUCT_ID = p.PRODUCT_ID
+    WHERE ci.CART_ITEM_ID IN (${ids})
+  </select>
+
+
+  <!-- =========================================================
+  [6] 선택 삭제 (너가 올린 형태 유지)
+  ========================================================= -->
+  <delete id="deleteCartItems">
+    DELETE FROM CART_ITEMS
+    WHERE USER_NUMBER = #{userNumber}
+      AND CART_ITEM_ID IN (${cartItemIds})
+  </delete>
+
+
+  <!-- =========================================================
+  [7] 장바구니 담기
+  ========================================================= -->
+  <insert id="insertCart">
+    INSERT INTO CART_ITEMS (CART_ITEM_ID, USER_NUMBER, PRODUCT_ID, COMBINATION_ID, QUANTITY, ADDED_AT)
+    VALUES (
+      (SELECT NVL(MAX(CART_ITEM_ID), 0) + 1 FROM CART_ITEMS),
+      #{userNumber},
+      #{productId},
+      <choose>
+        <when test="combinationId != null and combinationId &gt; 0">#{combinationId}</when>
+        <otherwise>NULL</otherwise>
+      </choose>,
+      #{quantity},
+      SYSDATE
+    )
+  </insert>
+
+
+  <!-- =========================================================
+  [8] 유저 장바구니 조회(화면용) - 너 서비스에서 쓰던 SELECT 그대로
+      (SELECT 안 바꾸고 resultMap으로만 맞춤)
+  ========================================================= -->
+  <select id="selectAllByUser" resultMap="cartItemMap">
+    SELECT 
+      ci.cart_item_id, ci.user_number, ci.product_id, p.name AS product_name, 
+      p.price AS origin_unit_price, NVL(p.discount_rate, 0) AS discount_rate, 
+      ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) AS sale_unit_price, 
+      ci.quantity, 
+      (ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) * ci.quantity) AS line_amount, 
+      (SELECT MAX(pi.image_url) FROM product_image pi WHERE pi.product_id = p.product_id AND pi.is_main = 1) AS main_image_url, 
+      ovm.value_name AS option_size 
+    FROM cart_items ci 
+    JOIN products p ON p.product_id = ci.product_id 
+    LEFT JOIN product_option_combinations poc ON ci.combination_id = poc.combination_id 
+    LEFT JOIN product_option_combi_values pocv ON poc.combination_id = pocv.combination_id 
+    LEFT JOIN product_option_values pov ON pocv.value_id = pov.value_id 
+    LEFT JOIN option_value_masters ovm ON pov.v_master_id = ovm.v_master_id 
+    WHERE ci.user_number = #{userNumber}
+    ORDER BY ci.added_at DESC
+  </select>
+
+
+  <!-- =========================================================
+  [9] 전체 삭제
+  ========================================================= -->
+  <delete id="deleteAllItems">
+    DELETE FROM cart_items WHERE user_number = #{userNumber}
+  </delete>
+
+
+  <!-- =========================================================
+  [10] 옵션변경: cartItemId -> productId
+  ========================================================= -->
+  <select id="getProductIdByCartItemId" resultType="string">
+    SELECT product_id FROM cart_items WHERE cart_item_id = #{cartItemId}
+  </select>
+
+
+  <!-- =========================================================
+  [11] 옵션변경: productId + size -> combinationId (너 서비스에서 쓰던 SQL 그대로)
+  ========================================================= -->
+  <select id="findCombinationIdBySize" resultType="int">
+    SELECT poc.combination_id
+    FROM product_option_combinations poc
+    JOIN product_option_combi_values pocv ON poc.combination_id = pocv.combination_id
+    JOIN product_option_values pov ON pocv.value_id = pov.value_id
+    WHERE poc.product_id = #{productId}
+      AND TRIM(pov.value_name) = #{size}
+  </select>
+
+
+  <!-- =========================================================
+  [12] 옵션 + 수량 업데이트
+  ========================================================= -->
+  <update id="updateItemOption">
+    UPDATE cart_items
+    SET combination_id = #{combinationId},
+        quantity = #{quantity}
+    WHERE cart_item_id = #{cartItemId}
+  </update>
 
 </mapper>
