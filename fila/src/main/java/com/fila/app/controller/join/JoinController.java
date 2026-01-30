@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fila.app.domain.MemberDTO;
+import com.fila.app.domain.MemberVO;
 import com.fila.app.member.service.MemberService;
 
 @Controller
@@ -31,7 +31,7 @@ public class JoinController {
      * 회원가입 처리
      */
     @PostMapping("/join.do")
-    public String joinProcess(MemberDTO dto) {
+    public String joinProcess(MemberVO dto) {
 
         // 핵심: Service → Mapper → DB
         memberService.join(dto);

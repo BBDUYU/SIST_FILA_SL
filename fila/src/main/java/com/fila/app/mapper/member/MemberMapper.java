@@ -1,18 +1,18 @@
 package com.fila.app.mapper.member;
 
 import org.apache.ibatis.annotations.Param;
-import com.fila.app.domain.MemberDTO;
+import com.fila.app.domain.MemberVO;
 
 public interface MemberMapper {
 
     // 로그인
-    MemberDTO login(
+    MemberVO login(
         @Param("id") String id,
         @Param("pw") String pw
     );
 
     // 회원가입
-    int insert(MemberDTO dto);
+    int insert(MemberVO dto);
 
     // 아이디 중복 체크
     int isDuplicateId(String id);

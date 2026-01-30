@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.fila.app.domain.MemberDTO;
+import com.fila.app.domain.MemberVO;
 import com.fila.app.member.service.MemberService;
 
 @Controller
@@ -46,7 +46,7 @@ public class LoginController {
             @RequestParam("pw") String pw,
             HttpSession session) {
 
-        MemberDTO member = memberService.login(id, pw);
+        MemberVO member = memberService.login(id, pw);
 
         // 로그인 실패
         if (member == null) {

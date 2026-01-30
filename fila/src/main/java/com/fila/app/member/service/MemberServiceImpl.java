@@ -3,7 +3,7 @@ package com.fila.app.member.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fila.app.domain.MemberDTO;
+import com.fila.app.domain.MemberVO;
 import com.fila.app.mapper.member.MemberMapper;
 
 @Service
@@ -13,7 +13,7 @@ public class MemberServiceImpl implements MemberService {
     private MemberMapper memberMapper;
 
     @Override
-    public MemberDTO login(String id, String pw) {
+    public MemberVO login(String id, String pw) {
         return memberMapper.login(id, pw);
     }
 
@@ -23,7 +23,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void join(MemberDTO dto) {
+    public void join(MemberVO dto) {
         dto.setRole("USER");
         dto.setStatus("ACTIVE");
         dto.setGrade("BASIC");

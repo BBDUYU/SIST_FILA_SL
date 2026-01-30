@@ -1,6 +1,6 @@
 package com.fila.app.domain;
 
-public class MemberDTO {
+public class MemberVO {
 
     private int userNumber;
     private String id;
