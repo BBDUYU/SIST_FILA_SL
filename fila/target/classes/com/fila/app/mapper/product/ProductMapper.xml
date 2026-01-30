@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fila.app.mapper.product.ProductMapper">
+
+  <select id="selectAllProducts" resultType="com.fila.app.domain.product.ProductsVO">
+    SELECT 
+        P.*,
+        NVL(I.IMAGE_URL, '//filacdn.styleship.com/filaproduct2/data/productimages/a/1/FS261FT01X001_234.jpg') AS IMAGE_URL,
+        (SELECT NAME FROM (
+            SELECT NAME, LEVEL as LVL
+            FROM CATEGORIES
+            START WITH CATEGORY_ID = P.CATEGORY_ID
+            CONNECT BY PRIOR PARENT_ID = CATEGORY_ID
+            ORDER BY LVL DESC
+        ) WHERE ROWNUM = 1) AS depth1_name,
+        (SELECT M.VALUE_NAME 
+         FROM OPTION_VALUE_MASTERS M
+         JOIN PRODUCT_OPTION_VALUES V ON M.V_MASTER_ID = V.V_MASTER_ID
+         JOIN PRODUCT_OPTION_GROUPS G ON V.OPTION_GROUP_ID = G.OPTION_GROUP_ID
+         WHERE G.PRODUCT_ID = P.PRODUCT_ID AND G.MASTER_ID = 2 AND ROWNUM = 1) AS tag_name,
+        NVL(R.REVIEW_COUNT, 0) AS review_count,
+        NVL(R.AVG_RATING, 0.0) AS review_score,
+        NVL(W.WISH_COUNT, 0) AS like_count
+    FROM PRODUCTS P
+    LEFT JOIN PRODUCT_IMAGE I ON P.PRODUCT_ID = I.PRODUCT_ID AND I.IS_MAIN = 1
+    LEFT JOIN (
+        SELECT PRODUCT_ID, COUNT(*) as REVIEW_COUNT, ROUND(AVG(RATING), 1) as AVG_RATING
+        FROM REVIEW GROUP BY PRODUCT_ID
+    ) R ON P.PRODUCT_ID = R.PRODUCT_ID
+    LEFT JOIN (
+        SELECT PRODUCT_ID, COUNT(*) as WISH_COUNT
+        FROM WISHLIST GROUP BY PRODUCT_ID
+    ) W ON P.PRODUCT_ID = W.PRODUCT_ID
+    ORDER BY P.CREATED_AT DESC
+  </select>
+
+  <select id="selectProductsByCategory" resultType="com.fila.app.domain.product.ProductsVO">
+    SELECT 
+        P.*, 
+        NVL(I.IMAGE_URL, '//filacdn.styleship.com/filaproduct2/data/productimages/a/1/FS261FT01X001_234.jpg') AS IMAGE_URL,
+        (SELECT NAME FROM CATEGORIES 
+         WHERE CATEGORY_ID = (SELECT PARENT_ID FROM CATEGORIES WHERE CATEGORY_ID = P.CATEGORY_ID)) AS depth1_name,
+        (SELECT M.VALUE_NAME 
+         FROM OPTION_VALUE_MASTERS M
+         JOIN PRODUCT_OPTION_VALUES V ON M.V_MASTER_ID = V.V_MASTER_ID
+         JOIN PRODUCT_OPTION_GROUPS G ON V.OPTION_GROUP_ID = G.OPTION_GROUP_ID
+         WHERE G.PRODUCT_ID = P.PRODUCT_ID AND G.MASTER_ID = 2 AND ROWNUM = 1) AS tag_name,
+        NVL(R.REVIEW_COUNT, 0) AS review_count,
+        NVL(R.AVG_RATING, 0.0) AS review_score,
+        NVL(W.WISH_COUNT, 0) AS like_count
+    FROM PRODUCTS P
+    LEFT JOIN PRODUCT_IMAGE I ON P.PRODUCT_ID = I.PRODUCT_ID AND I.IS_MAIN = 1
+    LEFT JOIN (
+        SELECT PRODUCT_ID, COUNT(*) as REVIEW_COUNT, ROUND(AVG(RATING), 1) as AVG_RATING
+        FROM REVIEW GROUP BY PRODUCT_ID
+    ) R ON P.PRODUCT_ID = R.PRODUCT_ID
+    LEFT JOIN (
+        SELECT PRODUCT_ID, COUNT(*) as WISH_COUNT
+        FROM WISHLIST GROUP BY PRODUCT_ID
+    ) W ON P.PRODUCT_ID = W.PRODUCT_ID
+    WHERE P.CATEGORY_ID IN (
+        SELECT CATEGORY_ID FROM CATEGORIES
+        START WITH CATEGORY_ID = #{cateId} 
+        CONNECT BY PRIOR CATEGORY_ID = PARENT_ID
+    )
+    ORDER BY P.CREATED_AT DESC
+  </select>
+
+  <select id="getRootCategoryName" resultType="string">
+    SELECT NAME 
+    FROM CATEGORIES 
+    WHERE DEPTH = 1
+    START WITH CATEGORY_ID = #{categoryId} 
+    CONNECT BY PRIOR PARENT_ID = CATEGORY_ID
+  </select>
+
+  <select id="getCategoryName" resultType="string">
+    SELECT NAME FROM CATEGORIES WHERE CATEGORY_ID = #{categoryId}
+  </select>
+
+  <select id="getProduct" resultType="com.fila.app.domain.product.ProductsVO">
+    SELECT 
+        P.PRODUCT_ID, P.NAME, P.PRICE, P.DISCOUNT_RATE, P.STATUS, P.DESCRIPTION, P.CREATED_AT, P.CATEGORY_ID, 
+        NVL(I.IMAGE_URL, '//filacdn.styleship.com/filaproduct2/data/productimages/a/1/FS261FT01X001_234.jpg') AS IMAGE_URL
+    FROM PRODUCTS P 
+    LEFT JOIN PRODUCT_IMAGE I ON P.PRODUCT_ID = I.PRODUCT_ID AND I.IS_MAIN = 1
+    WHERE P.PRODUCT_ID = #{productId}
+  </select>
+
+  <select id="getProductOptions" resultType="com.fila.app.domain.product.ProductsOptionVO">
+    SELECT DISTINCT 
+        POC.COMBINATION_ID AS combinationId, 
+        OVM.VALUE_NAME AS optionValue,     NVL(POS.STOCK, 0) AS stock
+    FROM PRODUCT_OPTION_COMBINATIONS POC
+    JOIN PRODUCT_OPTION_COMBI_VALUES POCV ON POC.COMBINATION_ID = POCV.COMBINATION_ID
+    JOIN PRODUCT_OPTION_VALUES POV ON POCV.VALUE_ID = POV.VALUE_ID
+    JOIN OPTION_VALUE_MASTERS OVM ON POV.V_MASTER_ID = OVM.V_MASTER_ID
+    LEFT JOIN PRODUCT_OPTION_STOCK POS ON POC.COMBINATION_ID = POS.COMBINATION_ID
+    WHERE POC.PRODUCT_ID = #{productId}
+    AND OVM.MASTER_ID NOT IN (1, 2, 3)
+    ORDER BY OVM.VALUE_NAME ASC
+  </select>
+
+  <select id="getProductCount" resultType="int">
+    SELECT COUNT(*) 
+    FROM PRODUCTS 
+    WHERE CATEGORY_ID IN (
+        SELECT CATEGORY_ID FROM CATEGORIES
+        START WITH CATEGORY_ID = #{categoryId} 
+        CONNECT BY PRIOR CATEGORY_ID = PARENT_ID
+    )
+  </select>
+
+  <select id="getProductTag" resultType="string">
+    SELECT M.VALUE_NAME
+    FROM OPTION_VALUE_MASTERS M
+    JOIN PRODUCT_OPTION_VALUES V ON M.V_MASTER_ID = V.V_MASTER_ID
+    JOIN PRODUCT_OPTION_GROUPS G ON V.OPTION_GROUP_ID = G.OPTION_GROUP_ID
+    WHERE G.PRODUCT_ID = #{productId} AND G.MASTER_ID = #{masterId}
+  </select>
+
+  <select id="selectProductsBySearch" resultType="com.fila.app.domain.product.ProductsVO">
+    SELECT 
+        P.*, 
+        NVL(I.IMAGE_URL, '//filacdn.styleship.com/filaproduct2/data/productimages/a/1/FS261FT01X001_234.jpg') AS IMAGE_URL,
+        NVL(R.REVIEW_COUNT, 0) AS review_count,
+        NVL(R.AVG_RATING, 0.0) AS review_score
+    FROM PRODUCTS P
+    LEFT JOIN PRODUCT_IMAGE I ON P.PRODUCT_ID = I.PRODUCT_ID AND I.IS_MAIN = 1
+    LEFT JOIN (
+        SELECT PRODUCT_ID, COUNT(*) as REVIEW_COUNT, ROUND(AVG(RATING), 1) as AVG_RATING
+        FROM REVIEW GROUP BY PRODUCT_ID
+    ) R ON P.PRODUCT_ID = R.PRODUCT_ID
+    WHERE P.NAME LIKE '%' || #{searchItem} || '%'  ORDER BY P.CREATED_AT DESC
+  </select>
+
+</mapper>

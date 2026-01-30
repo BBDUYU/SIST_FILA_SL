@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.doit.ik.mapper.QnaMapper">
+
+  <insert id="insert">
+    INSERT INTO qna (
+        qna_id, product_id, user_number, type, 
+        question, is_secret, status, created_at,
+        answer_email, is_email_notify
+    ) VALUES (
+        seq_qna.nextval, #{product_id}, #{user_number}, #{type}, 
+        #{question}, #{is_secret}, 'WAITING', SYSDATE,
+        #{answer_email, jdbcType=VARCHAR}, #{is_email_notify}
+    )
+  </insert>
+
+  <select id="selectList" resultType="org.doit.ik.domain.QnaVO">
+    SELECT 
+        q.qna_id, q.product_id, q.user_number, q.type, q.question, q.answer, 
+        q.status, q.is_secret, q.created_at, q.answered_at,
+        u.id AS user_id
+    FROM qna q
+    LEFT JOIN users u ON q.user_number = u.user_number
+    WHERE q.product_id = #{productId}
+    ORDER BY q.qna_id DESC
+  </select>
+
+  <select id="selectAdminQnaList" resultType="org.doit.ik.domain.QnaVO">
+    SELECT 
+        q.qna_id, q.product_id, q.user_number, q.type, q.question, 
+        q.answer, q.status, q.is_secret, q.created_at,
+        u.name AS name
+    FROM qna q
+    JOIN users u ON q.user_number = u.user_number
+    ORDER BY q.qna_id DESC
+  </select>
+
+  <select id="selectQnaDetail" resultType="org.doit.ik.domain.QnaVO">
+    SELECT 
+        q.*, u.name 
+    FROM qna q
+    JOIN users u ON q.user_number = u.user_number
+    WHERE q.qna_id = #{qnaId}
+  </select>
+  
+  <update id="updateAnswer">
+    UPDATE qna 
+    SET answer = #{answer}, 
+        status = 'COMPLETE', 
+        answered_at = SYSDATE 
+    WHERE qna_id = #{qnaId}
+  </update>
+
+</mapper>

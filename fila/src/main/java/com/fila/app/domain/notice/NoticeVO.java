@@ -17,8 +17,8 @@ public class NoticeVO {
 	private String title;
 	private String created_id;
 	
-	// [3] EmpVOÃ³·³ JSONÀ¸·Î ³ª°¥ ¶§ ³¯Â¥ Æ÷¸ËÀ» ¸ÂÃß°í ½Í´Ù¸é Ãß°¡ (¼±ÅÃ»çÇ×)
-	// È­¸é¿¡ 2026-01-30 15:00:00 Ã³·³ ¿¹»Ú°Ô ÂïÈû
+	// [3] EmpVOì²˜ëŸ¼ JSONìœ¼ë¡œ ë‚˜ê°ˆ ë•Œ ë‚ ì§œ í¬ë§·ì„ ë§ì¶”ê³  ì‹¶ë‹¤ë©´ ì¶”ê°€ (ì„ íƒì‚¬í•­)
+	// í™”ë©´ì— 2026-01-30 15:00:00 ì²˜ëŸ¼ ì˜ˆì˜ê²Œ ì°í˜
 	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	private Date created_at;
 	private String updated_id;
