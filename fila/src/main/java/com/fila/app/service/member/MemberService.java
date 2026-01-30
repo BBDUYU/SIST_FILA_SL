@@ -1,4 +1,4 @@
-package com.fila.app.member.service;
+package com.fila.app.service.member;
 
 import com.fila.app.domain.MemberVO;
 

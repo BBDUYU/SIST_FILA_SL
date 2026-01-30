@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fila.app.member.service.MemberService;
+import com.fila.app.service.member.MemberService;
 
 @Controller
 @RequestMapping("/member")
