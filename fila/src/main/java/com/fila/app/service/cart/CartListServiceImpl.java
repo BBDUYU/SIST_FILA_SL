@@ -31,19 +31,13 @@ public class CartListServiceImpl implements CartListService {
     @Transactional
     public void deleteItems(String ids, int userNumber) throws Exception {
         if (ids == null || ids.trim().isEmpty()) return;
-        cartMapper.deleteItems(ids, userNumber);
+        cartMapper.deleteCartItems(ids, userNumber);
     }
 
     @Override
     @Transactional
     public void deleteAllItems(int userNumber) throws Exception {
         cartMapper.deleteAllItems(userNumber);
-    }
-
-    @Override
-    @Transactional
-    public void updateItem(int cartItemId, int quantity) throws Exception {
-        cartMapper.updateQuantity(cartItemId, quantity);
     }
 
     @Override
@@ -57,4 +51,10 @@ public class CartListServiceImpl implements CartListService {
 
         cartMapper.updateItemOption(cartItemId, combiId, qty);
     }
+
+	@Override
+	@Transactional
+	public void updateItem(int cartItemId, int quantity) throws Exception {
+		cartMapper.updateQuantity(cartItemId, quantity);
+	}
 }

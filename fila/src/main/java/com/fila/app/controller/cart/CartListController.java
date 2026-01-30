@@ -1,0 +1,107 @@
+package com.fila.app.controller.cart;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.fila.app.domain.MemberVO;
+import com.fila.app.domain.cart.CartItemVO;
+import com.fila.app.service.cart.CartListService;
+
+import lombok.RequiredArgsConstructor;
+
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("/pay")
+public class CartListController {
+	
+	private final CartListService cartService;
+
+    @GetMapping("/cart.htm")
+    public String cartPage(HttpSession session, HttpServletRequest request) throws Exception {
+
+        Object auth = (session == null) ? null : session.getAttribute("auth");
+        if (auth == null) return "redirect:/login.htm";
+
+        int userNumber = ((MemberVO) auth).getUserNumber();
+
+        List<CartItemVO> cartList = cartService.selectAll(userNumber);
+        request.setAttribute("cartList", cartList);
+
+        return "/view/pay/cart.jsp";
+    }
+
+    @PostMapping("/cart/add")
+    public String addCart(HttpSession session, HttpServletRequest request) throws Exception {
+
+        Object auth = (session == null) ? null : session.getAttribute("auth");
+        if (auth == null) {
+            String returnUrl = request.getRequestURI();
+            if (request.getQueryString() != null) returnUrl += "?" + request.getQueryString();
+            String encoded = URLEncoder.encode(returnUrl, StandardCharsets.UTF_8.name());
+            return "redirect:/login.htm?returnUrl=" + encoded;
+        }
+
+        int userNumber = ((MemberVO) auth).getUserNumber();
+
+        String productId = request.getParameter("productId");
+        String qtyStr = request.getParameter("quantity");
+        String combiIdStr = request.getParameter("combinationId");
+
+        int qty = (qtyStr != null) ? Integer.parseInt(qtyStr) : 1;
+        Integer combinationId = (combiIdStr != null && !combiIdStr.isBlank())
+                ? Integer.parseInt(combiIdStr)
+                : null;
+
+        try {
+            cartService.insertCart(productId, qty, userNumber, combinationId);
+            return "redirect:/pay/cart.htm";
+        } catch (Exception e) {
+            e.printStackTrace();
+            String pidEnc = URLEncoder.encode(productId, StandardCharsets.UTF_8.name());
+            return "redirect:/product/product_detail.htm?product_id=" + pidEnc;
+        }
+    }
+
+    @PostMapping("/cart/delete")
+    public String deleteSelected(HttpSession session, String ids) throws Exception {
+
+        Object auth = (session == null) ? null : session.getAttribute("auth");
+        if (auth == null) return "redirect:/login.htm";
+
+        int userNumber = ((MemberVO) auth).getUserNumber();
+
+        cartService.deleteItems(ids, userNumber);
+        return "redirect:/pay/cart.htm";
+    }
+
+    @PostMapping("/cart/clear")
+    public String clearAll(HttpSession session) throws Exception {
+
+        Object auth = (session == null) ? null	 : session.getAttribute("auth");
+        if (auth == null) return "redirect:/login.htm";
+
+        int userNumber = ((MemberVO) auth).getUserNumber();
+
+        cartService.deleteAllItems(userNumber);
+        return "redirect:/pay/cart.htm";
+    }
+
+    @PostMapping("/cart/update")
+    public String updateOption(HttpSession session, int cartItemId, int qty, String size) throws Exception {
+
+        Object auth = (session == null) ? null : session.getAttribute("auth");
+        if (auth == null) return "redirect:/login.htm";
+
+        cartService.updateItemOption(cartItemId, size, qty);
+        return "redirect:/pay/cart.htm";
+    }
+}

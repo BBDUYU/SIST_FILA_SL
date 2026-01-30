@@ -3,37 +3,61 @@ package com.fila.app.mapper.cart;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.fila.app.domain.cart.CartItemVO;
 import com.fila.app.domain.order.OrderItemVO;
 
+@Mapper
 public interface CartMapper {
 
-	// [1] ÀüÃ¼ Á¶È¸
-    public List<CartItemVO> selectAll() throws SQLException;
+	// [1] ì „ì²´ ì¡°íšŒ(ì›ë˜ DAOì— ìˆë˜ SELECT)
+    List<CartItemVO> selectAll() throws SQLException;
 
-    // [2] ÁÖ¹® ÀüÈ¯¿ë Á¶È¸ (À¯Àú Àå¹Ù±¸´Ï -> ÁÖ¹®¾ÆÀÌÅÛ)
-    public List<OrderItemVO> selectCartForOrder(@Param("userNumber") int userNumber) throws SQLException;
+    // [2] ì£¼ë¬¸ ì „í™˜ìš© ì¡°íšŒ
+    List<OrderItemVO> selectCartForOrder(@Param("userNumber") int userNumber) throws SQLException;
 
-    // [3] Àå¹Ù±¸´Ï ºñ¿ì±â
-    public int deleteCartAfterOrder(@Param("userNumber") int userNumber) throws SQLException;
+    // [3] ì£¼ë¬¸ í›„ ì¥ë°”êµ¬ë‹ˆ ë¹„ìš°ê¸°
+    int deleteCartAfterOrder(@Param("userNumber") int userNumber) throws SQLException;
 
-    // [4] ¼ö·® º¯°æ
-    public int updateQuantity(
-            @Param("cartItemId") int cartItemId,
-            @Param("quantity") int quantity
-    ) throws SQLException;
+    // [4] ìˆ˜ëŸ‰ ë³€ê²½
+    int updateQuantity(@Param("cartItemId") int cartItemId,
+                       @Param("quantity") int quantity) throws SQLException;
 
-    // [5] ¼±ÅÃ ±¸¸Å¿ë Á¶È¸ (ids: "1,2,3" ÇüÅÂ)
-    public List<OrderItemVO> selectSelectedCartItems(@Param("ids") String ids) throws SQLException;
+    // [5] ì„ íƒ êµ¬ë§¤ìš© ì¡°íšŒ(ids: "1,2,3")
+    List<OrderItemVO> selectSelectedCartItems(@Param("ids") String ids) throws SQLException;
 
-    // [6] ¼±ÅÃ »èÁ¦ (cartItemIds: "1,2,3" ÇüÅÂ)
-    public int deleteCartItems(
-            @Param("cartItemIds") String cartItemIds,
-            @Param("userNumber") int userNumber
-    ) throws SQLException;
+    // [6] ì„ íƒ ì‚­ì œ(ids: "1,2,3")
+    int deleteCartItems(@Param("cartItemIds") String cartItemIds,
+                        @Param("userNumber") int userNumber) throws SQLException;
 
-	
-    
+    // ============================
+    // CartListService ê¸°ëŠ¥(ì¶”ê°€)
+    // ============================
+
+    // [7] ì¥ë°”êµ¬ë‹ˆ ë‹´ê¸°
+    int insertCart(@Param("productId") String productId,
+                   @Param("quantity") int quantity,
+                   @Param("userNumber") int userNumber,
+                   @Param("combinationId") Integer combinationId) throws SQLException;
+
+    // [8] ìœ ì € ì¥ë°”êµ¬ë‹ˆ ì¡°íšŒ(í™”ë©´ìš©) - ë„ˆê°€ ì“°ë˜ SELECT ê·¸ëŒ€ë¡œ
+    List<CartItemVO> selectAllByUser(@Param("userNumber") int userNumber) throws SQLException;
+
+    // [9] ì „ì²´ ì‚­ì œ
+    int deleteAllItems(@Param("userNumber") int userNumber) throws SQLException;
+
+    // [10] ì˜µì…˜ ë³€ê²½ìš©: cartItemId -> productId
+    String getProductIdByCartItemId(@Param("cartItemId") int cartItemId) throws SQLException;
+
+    // [11] ì˜µì…˜ ë³€ê²½ìš©: productId + size -> combinationId
+    Integer findCombinationIdBySize(@Param("productId") String productId,
+                                    @Param("size") String size) throws SQLException;
+
+    // [12] ì˜µì…˜ + ìˆ˜ëŸ‰ ì—…ë°ì´íŠ¸
+    int updateItemOption(@Param("cartItemId") int cartItemId,
+                         @Param("combinationId") int combinationId,
+                         @Param("quantity") int quantity) throws SQLException;
+
 }
