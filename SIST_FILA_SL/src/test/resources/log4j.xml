@@ -11,7 +11,7 @@
 	</appender>
 	
 	<!-- Application Loggers -->
-	<logger name="org.doit.ik">
+	<logger name="fila">
 		<level value="info" />
 	</logger>
 	
