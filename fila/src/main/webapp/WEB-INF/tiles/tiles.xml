@@ -3,8 +3,91 @@
    "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" 
    "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
    
-<tiles-definitions> 
-  <definition></definition>
+<tiles-definitions>
+
+    <definition name="base-layout" template="/WEB-INF/views/layout.jsp">
+        <put-attribute name="header" value="/WEB-INF/views/common/header.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/views/common/footer.jsp" />
+    </definition>
+
+    <definition name="main" extends="base-layout">
+        <put-attribute name="title" value="FILA 메인" />
+        <put-attribute name="content" value="/WEB-INF/views/main.jsp" />
+    </definition>
+    
+	<definition name="wishlist" extends="base-layout">
+	    <put-attribute name="title" value="위시리스트 | FILA" />
+	    <put-attribute name="content" value="/WEB-INF/views/mypage/wishlist.jsp" />
+	    <put-attribute name="script" value="/WEB-INF/views/mypage/wishlist_script.jsp" />
+	</definition>
+	
+	<definition name="admin-layout" template="/WEB-INF/views/admin_layout.jsp">
+        <put-attribute name="sidebar" value="/WEB-INF/views/common/sidebar.jsp" />
+    </definition>
+    
+    <definition name="admin_user" extends="admin-layout">
+        <put-attribute name="title" value="FILA 관리자 - 회원관리" />
+        <put-attribute name="style" value="/WEB-INF/views/admin_user_style.jsp" />
+        <put-attribute name="content" value="/WEB-INF/views/admin_user.jsp" />
+    </definition>
+    
+	<definition name="admin_user_info" extends="admin-layout">
+        <put-attribute name="title" value="FILA 관리자 - 상세정보" />
+        <put-attribute name="style" value="/WEB-INF/views/admin_user_info_style.jsp" />
+        <put-attribute name="content" value="/WEB-INF/views/admin_user_info.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/admin_user_info_script.jsp" />
+    </definition>
+    
+    <definition name="coupon_list" extends="admin-layout">
+        <put-attribute name="title" value="FILA 관리자 - 쿠폰리스트" />
+        <put-attribute name="style" value="/WEB-INF/views/coupon_list_style.jsp" />
+        <put-attribute name="content" value="/WEB-INF/views/coupon_list.jsp" />
+    </definition>
+    
+    <definition name="create_coupon" extends="admin-layout">
+        <put-attribute name="title" value="FILA 관리자 - 쿠폰생성" />
+        <put-attribute name="style" value="/WEB-INF/views/create_coupon_style.jsp" />
+        <put-attribute name="content" value="/WEB-INF/views/create_coupon.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/create_coupon_script.jsp" />
+    </definition>
+    
+    <definition name="inquiryList" extends="admin-layout">
+        <put-attribute name="title" value="FILA 관리자 - 1:1문의" />
+        <put-attribute name="style" value="/WEB-INF/views/inquiryList_style.jsp" />
+        <put-attribute name="content" value="/WEB-INF/views/inquiryList.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/inquiryList_script.jsp" />
+    </definition>
+    
+    <definition name="message" extends="admin-layout">
+        <put-attribute name="script" value="/WEB-INF/views/message.jsp" />
+    </definition>
+    
+    <definition name="notice_admin_list" extends="admin-layout">
+        <put-attribute name="title" value="FILA 관리자 - 공지사항" />
+        <put-attribute name="style" value="/WEB-INF/views/notice_admin_list_style.jsp" />
+        <put-attribute name="content" value="/WEB-INF/views/notice_admin_list.jsp" />
+    </definition>
+    
+    <definition name="notice_admin_write" extends="admin-layout">
+        <put-attribute name="title" value="FILA 관리자 - 공지사항 작성" />
+        <put-attribute name="style" value="/WEB-INF/views/notice_admin_write_style.jsp" />
+        <put-attribute name="content" value="/WEB-INF/views/notice_admin_write.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/notice_admin_write_script.jsp" />
+    </definition>
+    
+    <definition name="notice_detail" extends="admin-layout">
+        <put-attribute name="title" value="FILA 관리자 - 공지사항 작성" />
+        <put-attribute name="style" value="/WEB-INF/views/notice_detail_style.jsp" />
+        <put-attribute name="content" value="/WEB-INF/views/notice_detail.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/notice_detail_script.jsp" />
+    </definition>
+    
+    <definition name="product_create" extends="admin-layout">
+        <put-attribute name="title" value="FILA 관리자 - 공지사항 작성" />
+        <put-attribute name="style" value="/WEB-INF/views/notice_detail_style.jsp" />
+        <put-attribute name="content" value="/WEB-INF/views/notice_detail.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/notice_detail_script.jsp" />
+    </definition>
 </tiles-definitions>
 
 
