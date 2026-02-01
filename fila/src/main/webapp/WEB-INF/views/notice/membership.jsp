@@ -1,14 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>멤버십 | FILA</title>
-</head>
-<body>
-<jsp:include page="../common/header.jsp" />
-
 <div id="contents" class="cs__contents">
     <div class="cs__area">
         <section class="cs-con">
@@ -223,7 +214,3 @@
             </div> </section>
     </div>
 </div>
-
-<jsp:include page="../common/footer.jsp" />
-</body>
-</html>

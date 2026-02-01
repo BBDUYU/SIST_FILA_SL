@@ -4,6 +4,9 @@
    "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
    
 <tiles-definitions>
+
+	
+
 	<!-- 메인 -->
     <definition name="base-layout" template="/WEB-INF/views/layout.jsp">
         <put-attribute name="header" value="/WEB-INF/views/common/header.jsp" />
@@ -15,14 +18,106 @@
         <put-attribute name="content" value="/WEB-INF/views/main.jsp" />
     </definition>
     
+    <!-- notice -->
     <definition name="notice_list" extends="base-layout">
-        <put-attribute name="title" value="FILA 메인" />
-        <put-attribute name="style" value="/WEB-INF/views/notice_list_style.jsp" />
-        <put-attribute name="content" value="/WEB-INF/views/notice_list.jsp" />
-        <put-attribute name="script" value="/WEB-INF/views/notice_list_script.jsp" />
+        <put-attribute name="title" value="공지사항" />
+        <put-attribute name="style" value="/WEB-INF/views/notice/notice_list_style.jsp" />
+        <put-attribute name="content" value="/WEB-INF/views/notice/notice_list.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/notice/notice_list_script.jsp" />
     </definition>
-
-	 <!-- 관리자 -->
+    
+	<definition name="membership" extends="base-layout">
+        <put-attribute name="title" value="멤버십" />
+        <put-attribute name="content" value="/WEB-INF/views/notice/membership.jsp" />
+    </definition>
+    
+    <!-- order -->
+    <definition name="complete" extends="base-layout">
+        <put-attribute name="title" value="주문" />
+        <put-attribute name="style" value="/WEB-INF/views/order/complete_style.jsp" />
+        <put-attribute name="content" value="/WEB-INF/views/order/complete.jsp" />
+    </definition>
+    
+    <definition name="order_pay" extends="base-layout">
+        <put-attribute name="title" value="주문" />
+        <put-attribute name="add" value="/WEB-INF/views/order/order_pay_add.jsp" />
+        <put-attribute name="style" value="/WEB-INF/views/order/order_pay_style.jsp" />
+        <put-attribute name="content" value="/WEB-INF/views/order/order_pay.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/order/order_pay_script.jsp" />
+    </definition>
+    
+    <!-- pay -->
+    <definition name="pay" extends="base-layout">
+        <put-attribute name="title" value="주문" />
+        <put-attribute name="add" value="/WEB-INF/views/pay/cart_add.jsp" />
+        <put-attribute name="content" value="/WEB-INF/views/pay/cart.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/order/cart_script.jsp" />
+    </definition>
+    
+    <definition name="pay2" extends="base-layout">
+        <put-attribute name="title" value="주문" />
+        <put-attribute name="content" value="/WEB-INF/views/pay/cart2.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/order/cart2_script.jsp" />
+    </definition>
+    
+    <!-- product -->
+    <definition name="list" extends="base-layout">
+        <put-attribute name="title" value="상품리스트" />
+        <put-attribute name="content" value="/WEB-INF/views/product/list.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/product/list_script.jsp" />
+    </definition>
+    
+    <definition name="product_detail" extends="base-layout">
+        <put-attribute name="title" value="상품상세" />        
+        <put-attribute name="c" value="/WEB-INF/views/product/product_detail_c.jsp" />
+        <put-attribute name="add" value="/WEB-INF/views/product/product_detail_add.jsp" />
+        <put-attribute name="content" value="/WEB-INF/views/product/product_detail.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/product/product_detail_script.jsp" />
+        <put-attribute name="modal1" value="/WEB-INF/views/review/review_modal.jsp" />
+        <put-attribute name="modal2" value="/WEB-INF/views/qna/qna_modal.jsp" />
+        <put-attribute name="c_end" value="/WEB-INF/views/product/product_detail_c_end.jsp" />
+    </definition>
+    
+    <definition name="style_detail" extends="base-layout">
+        <put-attribute name="title" value="스타일 상세" />
+        <put-attribute name="add" value="/WEB-INF/views/product/style_detail_add.jsp" />
+        <put-attribute name="style" value="/WEB-INF/views/product/style_detail_style.jsp" />
+        <put-attribute name="content" value="/WEB-INF/views/product/style_detail.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/product/style_detail_script.jsp" />
+    </definition>
+    
+    <!-- user -->
+    <definition name="join" extends="base-layout">
+        <put-attribute name="title" value="회원가입" />
+        <put-attribute name="content" value="/WEB-INF/views/user/join.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/user/join_script.jsp" />
+    </definition>
+    
+    <definition name="joinend" extends="base-layout">
+        <put-attribute name="title" value="회원가입" />
+        <put-attribute name="add" value="/WEB-INF/views/user/joinend_add.jsp" />
+        <put-attribute name="style" value="/WEB-INF/views/user/joinend_style.jsp" />
+        <put-attribute name="content" value="/WEB-INF/views/user/joinend.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/user/joinend_script.jsp" />
+    </definition>
+    
+    <definition name="joinMain" extends="base-layout">
+        <put-attribute name="title" value="회원가입" />
+        <put-attribute name="content" value="/WEB-INF/views/user/joinMain.jsp" />
+    </definition>
+    
+    <definition name="login" extends="base-layout">
+        <put-attribute name="title" value="로그인" />
+        <put-attribute name="content" value="/WEB-INF/views/user/login.jsp" />
+    </definition>
+    
+    <definition name="SearchIdPw" extends="base-layout">
+        <put-attribute name="title" value="Id|Pw" />
+        <put-attribute name="content" value="/WEB-INF/views/user/SearchIdPw.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/user/SearchIdPw_script.jsp" />
+    </definition>
+    
+	<!-- 관리자 -->
 	<definition name="admin-layout" template="/WEB-INF/views/admin_layout.jsp">
         <put-attribute name="sidebar" value="/WEB-INF/views/common/sidebar.jsp" />
     </definition>

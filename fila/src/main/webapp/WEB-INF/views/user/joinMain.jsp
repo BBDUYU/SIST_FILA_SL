@@ -1,24 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<title>회원가입</title>
-<link rel="stylesheet" href="<%=request.getContextPath()%>/resource/css/common.css">
-<link rel="stylesheet" href="<%=request.getContextPath()%>/resource/css/layout.css">
-<link rel="stylesheet" href="<%=request.getContextPath()%>/resource/css/sub.css">
-<link rel="stylesheet" href="<%=request.getContextPath()%>/resource/css/opt-default.css">
-<link rel="stylesheet" href="<%=request.getContextPath()%>/resource/css/product.css">
-<link rel="stylesheet" href="<%=request.getContextPath()%>/resource/css/normalize.css">
-
-<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-</head>
-
-<body>
-
-<!-- ✅ 헤더 -->
-<jsp:include page="../common/header.jsp" />
-
 <div id="contents" class="mbr__contents">
 			<h2 class="tit__style1">회원가입</h2>
 
@@ -124,10 +104,3 @@ frm.submit();
 
 </div>
 </div>
-
-
-
-</body>
-<!-- ✅ 푸터 -->
-<jsp:include page="../common/footer.jsp" />	
-</html>
