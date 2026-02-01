@@ -244,27 +244,14 @@
         <put-attribute name="aside" value="/WEB-INF/views/mypage/mypage.jsp" /> 
         <put-attribute name="footer" value="/WEB-INF/views/common/footer.jsp" />
     </definition>
-    
-    <definition name="add_address" extends="mypage-layout">
-	    <put-attribute name="title" value="배송지 관리 | FILA" />
-	    <put-attribute name="content" value="/WEB-INF/views/mypage/add_address.jsp" />
-	    <put-attribute name="script" value="/WEB-INF/views/mypage/add_address_script.jsp" />
-	</definition>
-	
+
 	<definition name="delivery_address" extends="mypage-layout">
 	    <put-attribute name="title" value="배송지 관리 | FILA" />
 	    <put-attribute name="add" value="/WEB-INF/views/mypage/delivery_address_add.jsp" />
 	    <put-attribute name="content" value="/WEB-INF/views/mypage/delivery_address.jsp" />
 	    <put-attribute name="script" value="/WEB-INF/views/mypage/delivery_address_script.jsp" />
 	</definition>
-	<!--  !! 수정 필요 !!
-	<definition name="edit_address" extends="mypage-layout">
-	    <put-attribute name="title" value="배송지 관리 | FILA" />
-	    <put-attribute name="content" value="/WEB-INF/views/mypage/edit_address.jsp" />
-	    <put-attribute name="script" value="/WEB-INF/views/mypage/edit_address_script.jsp" />
-	</definition>
-	 -->
-	 
+
 	<definition name="inquiry" extends="mypage-layout">
 	    <put-attribute name="title" value="1:1문의 | FILA" />
 	    <put-attribute name="style" value="/WEB-INF/views/mypage/inquiry_style.jsp" />
@@ -277,12 +264,6 @@
 	    <put-attribute name="style" value="/WEB-INF/views/mypage/lgmanage_style.jsp" />
 	    <put-attribute name="content" value="/WEB-INF/views/mypage/lgmanage.jsp" />
 	    <put-attribute name="script" value="/WEB-INF/views/mypage/lgmanage_script.jsp" />
-	</definition> 
-	
-	<definition name="map" extends="mypage-layout">
-	    <put-attribute name="title" value="주소 | FILA" />
-	    <put-attribute name="content" value="/WEB-INF/views/mypage/map.jsp" />
-	    <put-attribute name="script" value="/WEB-INF/views/mypage/map_script.jsp" />
 	</definition> 
 	 
 	<definition name="modify_success" extends="mypage-layout">
@@ -297,11 +278,6 @@
 	    <put-attribute name="style" value="/WEB-INF/views/mypage/modifyInfo_style.jsp" />
 	</definition>  
 	 
-	<definition name="modifyPwd" extends="mypage-layout">
-	    <put-attribute name="title" value="내 정보 | FILA" />
-	    <put-attribute name="script" value="/WEB-INF/views/mypage/modifyPwd_script.jsp" />
-	    <put-attribute name="content" value="/WEB-INF/views/mypage/modifyPwd.jsp" />
-	</definition> 
 	
 	<definition name="mycoupon" extends="mypage-layout">
 	    <put-attribute name="title" value="쿠폰 | FILA" />
@@ -319,18 +295,6 @@
 	    <put-attribute name="style" value="/WEB-INF/views/mypage/orders_style.jsp" />
 	    <put-attribute name="content" value="/WEB-INF/views/mypage/orders.jsp" />
 	    <put-attribute name="script" value="/WEB-INF/views/mypage/orders_script.jsp" />
-	</definition> 
-	
-	<definition name="pwd_chk" extends="mypage-layout">
-	    <put-attribute name="title" value="주문 | FILA" />
-	    <put-attribute name="content" value="/WEB-INF/views/mypage/pwd_chk.jsp" />
-	    <put-attribute name="script" value="/WEB-INF/views/mypage/pwd_chk_script.jsp" />
-	</definition> 
-	
-	<definition name="qna_modal" extends="mypage-layout">
-	    <put-attribute name="title" value="1:1 | FILA" />
-	    <put-attribute name="content" value="/WEB-INF/views/mypage/qna_modal.jsp" />
-	    <put-attribute name="script" value="/WEB-INF/views/mypage/qna_modal_script.jsp" />
 	</definition> 
 	
 	<definition name="qna" extends="mypage-layout">

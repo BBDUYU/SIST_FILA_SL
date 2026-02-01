@@ -2,7 +2,7 @@
 <%@ page import="java.sql.Connection" %>
 <%@ page import="mypage.AddressDAO, mypage.AddressDTO" %>
 <%@ page import="com.util.ConnectionProvider" %>
-<%@ page import="member.MemberDTO" %> 
+<%@ page import="member.MemberDTO" %>
 
 <%
   MemberDTO loginUser = (MemberDTO) session.getAttribute("auth");
