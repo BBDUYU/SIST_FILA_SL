@@ -8,7 +8,7 @@
 	
 
 	<!-- 메인 -->
-    <definition name="base-layout" template="/WEB-INF/views/layout.jsp">
+    <definition name="base-layout" template="/WEB-INF/views/layout.jsp" preparer="com.fila.app.controller.main.HeaderPreparer">
         <put-attribute name="header" value="/WEB-INF/views/common/header.jsp" />
         <put-attribute name="footer" value="/WEB-INF/views/common/footer.jsp" />
     </definition>

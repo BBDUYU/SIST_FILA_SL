@@ -13,13 +13,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CategoriesVO {
-   private int category_id;
-   private String name;
-   private int parent_id;
-   private int depth;
-   private Date created_at;
-   private Date updated_at;
-   private int use_yn;
+	private int categoryId;
+	   private String name;
+	   private Integer parentId;
+	   private int depth;
+	   private Date createdAt;
+	   private Date updatedAt;
+	   private int useYn;
    
-   private int product_count;
+	   private int productCount;
 }

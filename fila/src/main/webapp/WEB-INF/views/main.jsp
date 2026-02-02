@@ -146,8 +146,8 @@
 			        <%-- 활성화된 태그 목록을 순회하며 버튼 생성 --%>
 			        <c:forEach var="tag" items="${activeTags}" varStatus="status">
 			            <button type="button" 
-			                    class="groupBtn q${tag.category_id}p ${status.first ? 'on' : ''}"
-			                    onclick="mainGroup(${tag.category_id}, this);">
+			                    class="groupBtn q${tag.categoryId}p ${status.first ? 'on' : ''}"
+			                    onclick="mainGroup(${tag.categoryId}, this);">
 			                # ${tag.name}
 			            </button>
 			        </c:forEach>
@@ -157,7 +157,7 @@
 			        <%-- 페이지 로드 시 첫 번째 태그의 상품을 자동으로 불러옴 --%>
 			        <c:if test="${not empty activeTags}">
 			            window.onload = function() {
-			                mainGroup(${activeTags[0].category_id}, document.querySelector('.groupBtn.on'));
+			                mainGroup(${activeTags[0].categoryId}, document.querySelector('.groupBtn.on'));
 			            };
 			        </c:if>
 			    </script>

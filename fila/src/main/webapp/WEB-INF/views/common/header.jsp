@@ -113,20 +113,20 @@
             <c:forEach items="${list}" var="d1">
                 <c:if test="${d1.depth eq 1}">
                     <li>
-                        <a href="${pageContext.request.contextPath}/product/list.htm?category=${d1.category_id}">${d1.name}</a>
+                        <a href="${pageContext.request.contextPath}/product/list.htm?category=${d1.categoryId}">${d1.name}</a>
                         <div class="depth2-box">
                             <div class="inner">
                                 <div class="category-menu-box">
                                     <c:forEach items="${list}" var="d2">
-                                        <c:if test="${d2.depth eq 2 && d2.parent_id eq d1.category_id}">
+                                        <c:if test="${d2.depth eq 2 && d2.parentId eq d1.categoryId}">
                                             <div class="category-group">
-                                                <a href="${pageContext.request.contextPath}/product/list.htm?category=${d2.category_id}" class="link-tit">${d2.name}</a>
+                                                <a href="${pageContext.request.contextPath}/product/list.htm?category=${d2.categoryId}" class="link-tit">${d2.name}</a>
                                                 <div>
                                                     <ul>
-                                                        <li><a href="${pageContext.request.contextPath}/product/list.htm?category=${d2.category_id}">전체보기</a></li>
+                                                        <li><a href="${pageContext.request.contextPath}/product/list.htm?category=${d2.categoryId}">전체보기</a></li>
                                                         <c:forEach items="${list}" var="d3">
-                                                            <c:if test="${d3.depth eq 3 && d3.parent_id eq d2.category_id}">
-                                                                <li><a href="${pageContext.request.contextPath}/product/list.htm?category=${d3.category_id}">${d3.name}</a></li>
+                                                            <c:if test="${d3.depth eq 3 && d3.parentId eq d2.categoryId}">
+                                                                <li><a href="${pageContext.request.contextPath}/product/list.htm?category=${d3.categoryId}">${d3.name}</a></li>
                                                             </c:if>
                                                         </c:forEach>
                                                     </ul>

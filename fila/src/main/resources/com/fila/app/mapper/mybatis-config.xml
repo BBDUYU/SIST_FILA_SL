@@ -11,6 +11,9 @@
     <typeAliases>
         <typeAlias alias="MemberVO"
                    type="com.fila.app.domain.member.MemberVO"/>
-    </typeAliases>
+    
 
+        <typeAlias alias="CategoriesVO"
+                   type="com.fila.app.domain.categories.CategoriesVO"/>
+    </typeAliases>
 </configuration>
