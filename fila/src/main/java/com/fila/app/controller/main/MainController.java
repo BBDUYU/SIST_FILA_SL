@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fila.app.service.main.MainService;
-import com.fila.app.service.mypage.WishListService;
 import com.fila.app.domain.member.MemberVO;
-import com.fila.app.domain.event.EventproductDTO;
 import com.fila.app.domain.eventProduct.EventproductVO;
 
 @Controller

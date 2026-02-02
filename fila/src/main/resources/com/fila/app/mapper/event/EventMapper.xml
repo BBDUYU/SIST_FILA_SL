@@ -1,0 +1,53 @@
+<mapper namespace="com.fila.app.mapper.event.EventMapper">
+
+    <resultMap id="EventDetailMap" type="com.fila.app.domain.event.EventDetailVO">
+        <association property="event" javaType="com.fila.app.domain.event.EventVO">
+            <id property="eventId" column="EVENT_ID"/>
+            <result property="eventName" column="EVENT_NAME"/>
+            <result property="eventCategory" column="EVENT_CATEGORY"/>
+            <result property="slug" column="SLUG"/>
+            <result property="description" column="DESCRIPTION"/>
+            <result property="startAt" column="START_AT"/>
+            <result property="endAt" column="END_AT"/>
+            <result property="isActive" column="IS_ACTIVE"/>
+        </association>
+        
+        <collection property="sections" ofType="com.fila.app.domain.event.SectionVO">
+            <id property="sectionId" column="SECTION_ID"/>
+            <result property="sortOrder" column="SECTION_SORT"/>
+            
+            <collection property="images" ofType="com.fila.app.domain.event.SectionImageVO">
+                <id property="sectionImageId" column="SECTION_IMAGE_ID"/>
+                <result property="imageUrl" column="IMAGE_URL"/>
+                <result property="altText" column="ALT_TEXT"/>
+                <result property="linkUrl" column="LINK_URL"/>
+                <result property="sortOrder" column="IMAGE_SORT"/>
+            </collection>
+            
+            <collection property="products" ofType="com.fila.app.domain.event.ProductsVO">
+                <id property="product_id" column="PRODUCT_ID"/>
+                <result property="name" column="NAME"/>
+                <result property="price" column="PRICE"/>
+                <result property="view_count" column="VIEW_COUNT"/>
+                <result property="status" column="STATUS"/>
+                <result property="discount_rate" column="DISCOUNT_RATE"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="selectEventDetail" resultMap="EventDetailMap">
+        SELECT 
+            E.*, 
+            ES.SECTION_ID, ES.SORT_ORDER AS SECTION_SORT,
+            ESI.SECTION_IMAGE_ID, ESI.IMAGE_URL, ESI.ALT_TEXT, ESI.LINK_URL, ESI.SORT_ORDER AS IMAGE_SORT,
+            P.PRODUCT_ID, P.NAME, P.PRICE, P.VIEW_COUNT, P.STATUS, P.DISCOUNT_RATE
+        FROM EVENT E
+        LEFT JOIN EVENT_SECTION ES ON E.EVENT_ID = ES.EVENT_ID
+        LEFT JOIN EVENT_SECTION_IMAGE ESI ON ES.SECTION_ID = ESI.SECTION_ID
+        LEFT JOIN EVENT_PRODUCT EP ON ES.SECTION_ID = EP.SECTION_ID
+        LEFT JOIN PRODUCTS P ON EP.PRODUCT_ID = P.PRODUCT_ID
+        WHERE E.EVENT_ID = #{eventId}
+        ORDER BY ES.SORT_ORDER, ESI.SORT_ORDER
+    </select>
+
+</mapper>
