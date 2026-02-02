@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fila.app.mapper.cart.AddressMapper">
+
+  <resultMap id="addressMap" type="com.fila.app.domain.mypage.AddressVO">
+    <id property="addressId" column="ADDRESS_ID"/>
+    <result property="userNumber" column="USER_NUMBER"/>
+    <result property="addressName" column="ADDRESS_NAME"/>
+    <result property="recipientName" column="RECIPIENT_NAME"/>
+    <result property="recipientPhone" column="RECIPIENT_PHONE"/>
+    <result property="zipcode" column="ZIPCODE"/>
+    <result property="mainAddr" column="MAIN_ADDR"/>
+    <result property="detailAddr" column="DETAIL_ADDR"/>
+    <result property="isDefault" column="IS_DEFAULT"/>
+  </resultMap>
+
+  <!-- 기본배송지 해제 -->
+  <update id="clearDefault">
+    UPDATE DELIVERY_ADDRESS SET IS_DEFAULT = 0 WHERE USER_NUMBER = #{userNumber}
+  </update>
+
+  <!-- INSERT -->
+  <insert id="insert">
+    INSERT INTO DELIVERY_ADDRESS
+    (ADDRESS_ID, USER_NUMBER, ADDRESS_NAME, RECIPIENT_NAME, RECIPIENT_PHONE, ZIPCODE, MAIN_ADDR, DETAIL_ADDR, IS_DEFAULT)
+    VALUES (DELIVERY_ADDRESS_SEQ.NEXTVAL, #{userNumber}, #{addressName}, #{recipientName}, #{recipientPhone}, #{zipcode}, #{mainAddr}, #{detailAddr}, #{isDefault})
+  </insert>
+
+  <!-- UPDATE (본인 주소만) -->
+  <update id="update">
+    UPDATE DELIVERY_ADDRESS
+    SET ADDRESS_NAME=#{addressName}, RECIPIENT_NAME=#{recipientName}, RECIPIENT_PHONE=#{recipientPhone}, ZIPCODE=#{zipcode}, MAIN_ADDR=#{mainAddr}, DETAIL_ADDR=#{detailAddr}, IS_DEFAULT=#{isDefault}
+    WHERE ADDRESS_ID=#{addressId} AND USER_NUMBER=#{userNumber}
+  </update>
+
+  <!-- 내 배송지 전체 조회 (기본배송지 먼저) -->
+  <select id="selectListByUser" resultMap="addressMap">
+    SELECT ADDRESS_ID, USER_NUMBER, ADDRESS_NAME, RECIPIENT_NAME, RECIPIENT_PHONE,
+           ZIPCODE, MAIN_ADDR, DETAIL_ADDR, IS_DEFAULT
+    FROM DELIVERY_ADDRESS
+    WHERE USER_NUMBER = #{userNumber}
+    ORDER BY IS_DEFAULT DESC, ADDRESS_ID DESC
+  </select>
+
+  <!-- 기본 배송지 -->
+  <update id="setDefault">
+    UPDATE DELIVERY_ADDRESS
+    SET IS_DEFAULT = 1
+    WHERE ADDRESS_ID = #{addressId} AND USER_NUMBER = #{userNumber}
+  </update>
+
+  <!-- 해당 주소가 기본배송지인지 확인 (본인 것만) -->
+  <select id="isDefault" resultType="int">
+    SELECT NVL(IS_DEFAULT,0) FROM DELIVERY_ADDRESS WHERE ADDRESS_ID=#{addressId} AND USER_NUMBER=#{userNumber}
+  </select>
+
+  <!-- DELETE (본인 주소만) -->
+  <delete id="delete">
+    DELETE FROM DELIVERY_ADDRESS WHERE ADDRESS_ID=#{addressId} AND USER_NUMBER=#{userNumber}
+  </delete>
+
+  <!-- 주문 참조 여부 -->
+  <select id="hasOrderReference" resultType="boolean">
+    SELECT 1
+    FROM ORDERS
+    WHERE USER_NUMBER = #{userNumber} AND ADDRESS_ID = #{addressId} AND ROWNUM = 1
+  </select>
+
+  <!-- 단건 조회 (본인 주소만) -->
+  <select id="selectOneById" resultMap="addressMap">
+    SELECT ADDRESS_ID, USER_NUMBER, ADDRESS_NAME, RECIPIENT_NAME, RECIPIENT_PHONE,
+           ZIPCODE, MAIN_ADDR, DETAIL_ADDR, IS_DEFAULT
+    FROM DELIVERY_ADDRESS
+    WHERE ADDRESS_ID = #{addressId} AND USER_NUMBER = #{userNumber}
+  </select>
+
+</mapper>
