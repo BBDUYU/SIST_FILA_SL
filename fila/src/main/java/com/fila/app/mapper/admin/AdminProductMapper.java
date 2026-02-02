@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.fila.app.domain.admin.ProductVO;
 
 @Mapper
-public interface ProductMapper {
+public interface AdminProductMapper {
     /**
      * 관리자용 상품 리스트 조회 (재고 및 메인 이미지 포함)
      */

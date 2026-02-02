@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.doit.ik.mapper.ReviewMapper">
+<mapper namespace="com.fila.app.mapper.review.ReviewMapper">
 
   <insert id="insert">
     INSERT INTO review (
@@ -13,7 +13,7 @@
     )
   </insert>
 
-  <select id="selectListByFilter" resultType="org.doit.ik.domain.ReviewVO">
+  <select id="selectListByFilter" resultType="com.fila.app.domain.review.ReviewVO">
     SELECT 
         r.review_id, r.product_id, r.user_number, r.content, r.rating, r.review_img, r.created_at as regdate,
         u.id as user_id,

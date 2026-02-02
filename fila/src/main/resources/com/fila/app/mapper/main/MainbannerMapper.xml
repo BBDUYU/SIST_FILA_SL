@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.fila.app.persistence.main.MainbannerMapper">
+<mapper namespace="com.fila.app.mapper.main.MainbannerMapper">
 
     <select id="selectMainBannerList" resultType="com.fila.app.domain.main.MainbannerVO">
         SELECT 

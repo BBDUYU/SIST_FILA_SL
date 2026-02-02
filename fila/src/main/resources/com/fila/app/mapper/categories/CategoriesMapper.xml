@@ -2,40 +2,40 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.fila.app.mapper.main.CategoriesMapper">
+<mapper namespace="com.fila.app.mapper.categories.CategoriesMapper">
 
     <sql id="categoryColumns">
         category_id, name, parent_id, depth, created_at, updated_at, use_yn
     </sql>
 
-    <select id="selectCategoryList" resultType="com.fila.app.domain.main.CategoriesVO">
+    <select id="selectCategoryList" resultType="com.fila.app.domain.categories.CategoriesVO">
         SELECT <include refid="categoryColumns" />
         FROM categories 
         WHERE use_yn = 1 
         ORDER BY depth, category_id
     </select>
 
-    <select id="selectCategory" resultType="com.fila.app.domain.main.CategoriesVO">
+    <select id="selectCategory" resultType="com.fila.app.domain.categories.CategoriesVO">
         SELECT <include refid="categoryColumns" />
         FROM categories 
         WHERE category_id = #{categoryId}
     </select>
 
-    <select id="selectChildCategories" resultType="com.fila.app.domain.main.CategoriesVO">
+    <select id="selectChildCategories" resultType="com.fila.app.domain.categories.CategoriesVO">
         SELECT <include refid="categoryColumns" />
         FROM categories 
         WHERE parent_id = #{parentId} AND use_yn = 1 
         ORDER BY category_id ASC
     </select>
 
-    <select id="selectMainCategories" resultType="com.fila.app.domain.main.CategoriesVO">
+    <select id="selectMainCategories" resultType="com.fila.app.domain.categories.CategoriesVO">
         SELECT <include refid="categoryColumns" />
         FROM categories 
         WHERE depth = 1 AND use_yn = 1 
         ORDER BY category_id ASC
     </select>
 
-    <select id="selectActiveTagList" resultType="com.fila.app.domain.main.CategoriesVO">
+    <select id="selectActiveTagList" resultType="com.fila.app.domain.categories.CategoriesVO">
         SELECT <include refid="categoryColumns" />
         FROM categories 
         WHERE category_id >= 4000 AND depth = 4 AND use_yn = 1 

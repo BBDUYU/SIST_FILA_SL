@@ -9,7 +9,7 @@ import com.fila.app.domain.product.ProductsOptionVO;
 import com.fila.app.domain.product.ProductsVO;
 
 @Mapper // 스프링이 이 인터페이스를 보고 "아, 이게 DAO구나" 하고 인식해서 객체를 만들어줍니다.
-public interface ProductMapper {
+public interface UserProductMapper {
 
     // 1. 상품 전체 목록 조회
     // (기존 메서드에서 Connection 파라미터가 다 사라집니다!)

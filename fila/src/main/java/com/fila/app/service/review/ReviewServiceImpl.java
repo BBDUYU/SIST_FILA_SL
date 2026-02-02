@@ -9,12 +9,11 @@ import org.springframework.stereotype.Service;
 import com.fila.app.domain.review.ReviewVO;
 import com.fila.app.mapper.review.ReviewMapper;
 
-import lombok.Setter;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
 
-    @Setter(onMethod_ = @Autowired)
+    @Autowired 
     private ReviewMapper reviewMapper;
 
     @Override

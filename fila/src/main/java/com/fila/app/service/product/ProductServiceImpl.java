@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.fila.app.domain.product.ProductsOptionVO;
 import com.fila.app.domain.product.ProductsVO;
-import com.fila.app.mapper.product.ProductMapper;
+import com.fila.app.mapper.product.UserProductMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor // ★ final 붙은 애들(Mapper) 자동 주입 (Autowired 대신 이거 씀)
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductMapper productMapper;
+    private final UserProductMapper productMapper;
 
     // 1. 상세 페이지 로직 (아까 짠 거랑 동일)
     @Override

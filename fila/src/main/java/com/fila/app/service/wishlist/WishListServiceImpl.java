@@ -10,7 +10,7 @@ import com.fila.app.domain.wishlist.WishListVO;
 import com.fila.app.mapper.wishlist.WishListMapper;
 
 @Service
-public class WishListServiceImpl {
+public class WishListServiceImpl implements WishListService{
 
 	private final WishListMapper wishListMapper;
 

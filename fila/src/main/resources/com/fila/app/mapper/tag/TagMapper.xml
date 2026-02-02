@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fila.app.mapper.tag.TagMapper">
 
-    <select id="selectTagList" resultType="com.fila.app.domain.admin.CategoriesVO">
+    <select id="selectTagList" resultType="com.fila.app.domain.categories.CategoriesVO">
         SELECT category_id, name 
         FROM CATEGORIES 
         WHERE CATEGORY_ID >= 9000 

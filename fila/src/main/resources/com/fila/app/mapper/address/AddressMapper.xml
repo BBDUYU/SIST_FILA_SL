@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.fila.app.mapper.cart.AddressMapper">
+<mapper namespace="com.fila.app.mapper.address.AddressMapper">
 
   <resultMap id="addressMap" type="com.fila.app.domain.mypage.AddressVO">
     <id property="addressId" column="ADDRESS_ID"/>

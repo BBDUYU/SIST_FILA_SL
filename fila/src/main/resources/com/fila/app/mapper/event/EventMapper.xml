@@ -1,3 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.fila.app.mapper.event.EventMapper">
 
     <resultMap id="EventDetailMap" type="com.fila.app.domain.event.EventDetailVO">
@@ -11,11 +16,11 @@
             <result property="endAt" column="END_AT"/>
             <result property="isActive" column="IS_ACTIVE"/>
         </association>
-        
+
         <collection property="sections" ofType="com.fila.app.domain.event.SectionVO">
             <id property="sectionId" column="SECTION_ID"/>
             <result property="sortOrder" column="SECTION_SORT"/>
-            
+
             <collection property="images" ofType="com.fila.app.domain.event.SectionImageVO">
                 <id property="sectionImageId" column="SECTION_IMAGE_ID"/>
                 <result property="imageUrl" column="IMAGE_URL"/>
@@ -23,8 +28,8 @@
                 <result property="linkUrl" column="LINK_URL"/>
                 <result property="sortOrder" column="IMAGE_SORT"/>
             </collection>
-            
-            <collection property="products" ofType="com.fila.app.domain.event.ProductsVO">
+
+            <collection property="products" ofType="com.fila.app.domain.product.ProductsVO">
                 <id property="product_id" column="PRODUCT_ID"/>
                 <result property="name" column="NAME"/>
                 <result property="price" column="PRICE"/>

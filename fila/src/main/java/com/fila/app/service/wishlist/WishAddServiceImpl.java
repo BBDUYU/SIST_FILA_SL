@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import com.fila.app.mapper.wishlist.WishAddMapper;
 
 @Service
-public class WishAddServiceImpl {
+public class WishAddServiceImpl implements WishAddService{
 
 	private final WishAddMapper wishAddMapper;
 

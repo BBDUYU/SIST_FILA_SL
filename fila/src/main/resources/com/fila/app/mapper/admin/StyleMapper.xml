@@ -41,4 +41,17 @@
         UPDATE STYLE SET USE_YN = #{status} WHERE STYLE_ID = #{id}
     </update>
 
+	<select id="selectActiveStyleList"
+	        resultType="com.fila.app.domain.admin.StyleVO">
+	    SELECT s.STYLE_ID,
+	           s.STYLE_NAME,
+	           si.IMAGE_URL AS main_image_url
+	    FROM STYLE s
+	    LEFT JOIN STYLE_IMAGE si
+	           ON s.STYLE_ID = si.STYLE_ID
+	          AND si.IS_MAIN = 1
+	    WHERE s.USE_YN = 1
+	    ORDER BY s.STYLE_ID DESC
+	</select>
+
     </mapper>

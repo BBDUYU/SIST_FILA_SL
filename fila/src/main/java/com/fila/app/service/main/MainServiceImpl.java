@@ -3,78 +3,90 @@ package com.fila.app.service.main;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-// 기존 DTO들을 VO로 이름 변경하여 사용한다고 가정합니다.
+// VO 경로들을 프로젝트 구조에 맞게 import 하세요.
+import com.fila.app.domain.categories.CategoriesVO;
+import com.fila.app.domain.eventProduct.EventproductVO;
+import com.fila.app.domain.main.MainbannerVO;
+import com.fila.app.mapper.admin.StyleMapper;
+import com.fila.app.mapper.categories.CategoriesMapper;
+import com.fila.app.mapper.eventProduct.EventProductMapper;
+import com.fila.app.mapper.main.MainbannerMapper;
+import com.fila.app.mapper.search.SearchMapper;
+import com.fila.app.mapper.tag.TagMapper;
+import com.fila.app.domain.admin.StyleVO;
+
 
 
 @Service
 public class MainServiceImpl implements MainService {
 
-    @Autowired
-    private CategoriesDAO cDao;
-    @Autowired
-    private SearchDAO sDao;
-    @Autowired
-    private EventproductDAO epDao;
-    @Autowired
-    private MainbannerDAO ebDao;
-    @Autowired
-    private StyleDAO styleDao;
+    @Autowired private CategoriesMapper categoriesMapper; // CategoriesDAO 대체 (카테고리 & 활성태그)
+    @Autowired private SearchMapper searchMapper;         // SearchDAO 대체
+    @Autowired private EventProductMapper epMapper;       // EventproductDAO 대체
+    @Autowired private MainbannerMapper bannerMapper;     // MainbannerDAO 대체
+    @Autowired private StyleMapper styleMapper;           // StyleDAO 대체
 
     @Override
-    @Transactional(readOnly = true) // 읽기 전용 트랜잭션 최적화
+    @Transactional
     public Map<String, Object> getMainData(String searchItem) {
         Map<String, Object> dataMap = new HashMap<>();
 
-        try {
-            // 1. 검색어 저장 (검색창 입력 시)
-            if (searchItem != null && !searchItem.trim().isEmpty()) {
-                sDao.upsertKeyword(searchItem.trim());
-            }
-
-            // 2. 기본 데이터 로드 (Spring MyBatis 구조이므로 Connection 전달 불필요)
-            dataMap.put("categoryList", cDao.selectCategoryList());
-            dataMap.put("popularKeywords", sDao.selectTopKeywords(8));
-            dataMap.put("recommendKeywords", epDao.selectRecommendKeywords());
-            dataMap.put("activeTags", cDao.selectActiveTagList());
-            dataMap.put("activeStyles", styleDao.selectActiveStyleList());
-
-            // 3. 메인 배너 조회 및 비디오 정렬 로직
-            List<MainbannerVO> bannerList = ebDao.selectMainBannerList();
-            if (bannerList != null) {
-                bannerList.sort((a, b) -> {
-                    boolean aIsVideo = a.getImageUrl().toLowerCase().endsWith(".mp4");
-                    boolean bIsVideo = b.getImageUrl().toLowerCase().endsWith(".mp4");
-                    return (aIsVideo && !bIsVideo) ? 1 : (!aIsVideo && bIsVideo) ? -1 : 0;
-                });
-            }
-            dataMap.put("bannerList", bannerList);
-
-            // 4. [비즈니스 로직 고도화] 추천 상품 이미지 경로 가공
-            // 자소서에 쓴 '결합도를 낮추는 경험'의 핵심 부분입니다.
-            List<EventproductVO> recommendProducts = epDao.selectRecommendProducts();
-            if (recommendProducts != null) {
-                for (EventproductVO p : recommendProducts) {
-                    processProductImage(p);
-                }
-            }
-            dataMap.put("recommendProducts", recommendProducts);
-
-            return dataMap;
-
-        } catch (Exception e) {
-            throw new RuntimeException("메인 데이터 가공 중 오류 발생", e);
+        // 1. 검색어 저장
+        if (searchItem != null && !searchItem.trim().isEmpty()) {
+            searchMapper.upsertKeyword(searchItem.trim());
         }
+
+        // 2. 카테고리 리스트 (categoriesMapper 사용)
+        dataMap.put("categoryList", categoriesMapper.selectCategoryList());
+
+        // 3. 활성 태그 리스트 (categoriesMapper 사용)
+        dataMap.put("activeTags", categoriesMapper.selectActiveTagList());
+
+        // 4. 인기 검색어 / 추천 키워드
+        dataMap.put("popularKeywords", searchMapper.selectTopKeywords(8));
+        dataMap.put("recommendKeywords", epMapper.selectActiveEventKeywords());
+
+        // 5. 추천 상품 & 이미지 가공
+        List<EventproductVO> recommendProducts = epMapper.selectRecommendProducts();
+        if (recommendProducts != null) {
+            recommendProducts.forEach(this::processImagePath);
+        }
+        dataMap.put("recommendProducts", recommendProducts);
+
+        // 6. 메인 배너 & 정렬
+        List<MainbannerVO> bannerList = bannerMapper.selectMainBannerList();
+        if (bannerList != null) {
+            bannerList.sort((a, b) -> {
+                boolean aIsVideo = a.getImageUrl().toLowerCase().endsWith(".mp4");
+                boolean bIsVideo = b.getImageUrl().toLowerCase().endsWith(".mp4");
+                return Boolean.compare(aIsVideo, bIsVideo);
+            });
+        }
+        dataMap.put("bannerList", bannerList);
+
+        // 7. 활성 스타일
+        dataMap.put("activeStyles", styleMapper.selectActiveStyleList());
+
+        return dataMap;
     }
 
-    // 이미지 경로 가공 공통 메서드 (내부 로직)
-    private void processProductImage(EventproductVO p) {
+    // 이미지 경로 가공 공통 메서드
+    private void processImagePath(EventproductVO p) {
         String img = p.getMainImageUrl();
         if (img != null && img.contains("path=")) {
-            p.setMainImageUrl(img.split("path=")[1].replace("\\", "/"));
+            // 안전하게 파싱하기 위해 split 결과 체크 추가
+            String[] parts = img.split("path=");
+            if(parts.length > 1) {
+                p.setMainImageUrl(parts[1].replace("\\", "/"));
+            }
+        } else if (img != null) {
+            // path= 가 없더라도 역슬래시는 슬래시로 변환해주는 것이 안전합니다.
+            p.setMainImageUrl(img.replace("\\", "/"));
         }
     }
 }

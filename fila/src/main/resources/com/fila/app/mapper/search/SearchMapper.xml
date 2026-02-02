@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fila.app.mapper.search.SearchMapper">
+
+    <update id="upsertKeyword">
+        MERGE INTO SEARCH_KEYWORDS t
+        USING (SELECT #{keyword} AS KEYWORD FROM dual) s
+        ON (t.KEYWORD = s.KEYWORD)
+        WHEN MATCHED THEN
+            UPDATE SET 
+                t.SEARCH_COUNT = t.SEARCH_COUNT + 1, 
+                t.LAST_SEARCH_DATE = SYSDATE
+        WHEN NOT MATCHED THEN
+            INSERT (KEYWORD_ID, KEYWORD, SEARCH_COUNT, LAST_SEARCH_DATE)
+            VALUES (SEARCH_KEYWORDS_SEQ.NEXTVAL, s.KEYWORD, 1, SYSDATE)
+    </update>
+
+    <select id="selectTopKeywords" resultType="com.fila.app.domain.search.SearchVO">
+        SELECT * FROM (
+            SELECT 
+                KEYWORD_ID AS keyword_id, 
+                KEYWORD AS keyword, 
+                SEARCH_COUNT AS search_count, 
+                LAST_SEARCH_DATE AS last_search_date
+            FROM SEARCH_KEYWORDS
+            ORDER BY SEARCH_COUNT DESC
+        ) 
+        <![CDATA[ WHERE ROWNUM <= #{limit} ]]>
+    </select>
+
+</mapper>

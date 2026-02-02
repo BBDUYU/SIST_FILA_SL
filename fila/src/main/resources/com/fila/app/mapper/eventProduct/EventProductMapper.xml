@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fila.app.mapper.eventProduct.EventProductMapper">
 
-    <select id="selectActiveEventKeywords" resultType="com.fila.app.domain.event.EventProductVO">
+    <select id="selectActiveEventKeywords" resultType="com.fila.app.domain.eventProduct.EventproductVO">
         SELECT EVENT_NAME, SLUG, EVENT_ID 
         FROM EVENT 
         WHERE IS_ACTIVE = 1 
         ORDER BY EVENT_ID DESC
     </select>
 
-    <select id="selectRecommendProductKeywords" resultType="com.fila.app.domain.event.EventProductVO">
+    <select id="selectRecommendProductKeywords" resultType="com.fila.app.domain.eventProduct.EventproductVO">
         SELECT NAME, PRODUCT_ID 
         FROM (
             SELECT p.NAME, p.PRODUCT_ID 
@@ -18,7 +18,7 @@
         ) WHERE ROWNUM &lt;= 5
     </select>
 
-    <select id="selectRecommendProducts" resultType="com.fila.app.domain.event.EventProductVO">
+    <select id="selectRecommendProducts" resultType="com.fila.app.domain.eventProduct.EventproductVO">
         SELECT * FROM (
             SELECT p.PRODUCT_ID, p.NAME, p.PRICE, p.DISCOUNT_RATE,
                    (SELECT IMAGE_URL FROM PRODUCT_IMAGE pi 
