@@ -17,6 +17,7 @@ import com.fila.app.service.main.MainService;
 import com.fila.app.service.mypage.WishListService;
 import com.fila.app.domain.member.MemberVO;
 import com.fila.app.domain.event.EventproductDTO;
+import com.fila.app.domain.eventProduct.EventproductVO;
 
 @Controller
 @RequestMapping("/main/*") // 호출 주소: /main/main.htm
