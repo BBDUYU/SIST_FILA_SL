@@ -13,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fila.app.service.main.MainService;
+import com.fila.app.domain.member.MemberVO;
 import com.fila.app.domain.eventProduct.EventproductVO;
 import com.fila.app.domain.member.MemberVO;
 import com.fila.app.service.main.MainService;
