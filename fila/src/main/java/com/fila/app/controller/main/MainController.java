@@ -27,7 +27,7 @@ public class MainController {
     private MainService mainService;
 
     @Autowired
-    private WishListService wishListService;
+    private com.fila.app.service.wishlist.WishListService wishListService;
 
     @RequestMapping("main.htm")
     public String mainPage(

@@ -8,14 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 // 기존 DTO들을 VO로 이름 변경하여 사용한다고 가정합니다.
-import com.fila.app.domain.main.CategoriesVO;
-import com.fila.app.domain.main.MainbannerVO;
-import com.fila.app.domain.event.EventproductVO;
-import com.fila.app.persistence.main.CategoriesDAO;
-import com.fila.app.persistence.main.MainbannerDAO;
-import com.fila.app.persistence.main.SearchDAO;
-import com.fila.app.persistence.event.EventproductDAO;
-import com.fila.app.persistence.admin.StyleDAO;
+
 
 @Service
 public class MainServiceImpl implements MainService {

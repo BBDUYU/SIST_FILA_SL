@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fila.app.mapper.tag.TagMapper">
+
+    <select id="selectTagList" resultType="com.fila.app.domain.admin.CategoriesVO">
+        SELECT category_id, name 
+        FROM CATEGORIES 
+        WHERE CATEGORY_ID >= 9000 
+        ORDER BY CATEGORY_ID ASC
+    </select>
+
+    <select id="getMaxTagId" resultType="int">
+        SELECT NVL(MAX(CATEGORY_ID), 9000) FROM CATEGORIES
+    </select>
+
+    <insert id="insertTag">
+        INSERT INTO CATEGORIES (CATEGORY_ID, NAME)
+        VALUES (#{category_id}, #{name})
+    </insert>
+
+</mapper>

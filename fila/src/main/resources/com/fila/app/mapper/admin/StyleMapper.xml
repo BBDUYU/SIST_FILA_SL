@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fila.app.mapper.admin.StyleMapper">
+
+    <select id="selectStyleList" resultType="com.fila.app.domain.admin.StyleVO">
+        SELECT s.STYLE_ID, s.STYLE_NAME, s.USE_YN, s.DESCRIPTION, si.IMAGE_URL AS main_image_url
+        FROM STYLE s
+        LEFT JOIN STYLE_IMAGE si ON s.STYLE_ID = si.STYLE_ID AND si.IS_MAIN = 1
+        ORDER BY s.STYLE_ID DESC
+    </select>
+
+    <insert id="insertStyle" useGeneratedKeys="true" keyProperty="style_id" keyColumn="STYLE_ID">
+        <selectKey keyProperty="style_id" resultType="int" order="BEFORE">
+            SELECT SEQ_STYLE.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO STYLE (STYLE_ID, STYLE_NAME, DESCRIPTION, USE_YN)
+        VALUES (#{style_id}, #{style_name}, #{description}, #{use_yn})
+    </insert>
+
+    <insert id="insertStyleImage">
+        INSERT INTO STYLE_IMAGE (STYLE_IMAGE_ID, STYLE_ID, IMAGE_URL, IS_MAIN, SORT_ORDER, ALT_TEXT)
+        VALUES (SEQ_STYLE_IMAGE.NEXTVAL, #{style_id}, #{image_url}, #{is_main}, #{sort_order}, #{alt_text})
+    </insert>
+
+    <select id="selectStyleProductDetails" resultType="com.fila.app.domain.admin.StyleProductVO">
+        SELECT sp.PRODUCT_ID, sp.STYLE_ID, sp.SORT_ORDER,
+               p.NAME AS product_name, p.PRICE,
+               pi.IMAGE_URL AS product_image
+        FROM STYLE_PRODUCT sp
+        JOIN PRODUCTS p ON sp.PRODUCT_ID = p.PRODUCT_ID
+        LEFT JOIN PRODUCT_IMAGE pi ON p.PRODUCT_ID = pi.PRODUCT_ID AND pi.IS_MAIN = 1
+        WHERE sp.STYLE_ID = #{styleId}
+        ORDER BY sp.SORT_ORDER ASC
+    </select>
+
+    <delete id="deleteStyleImages">
+        DELETE FROM STYLE_IMAGE WHERE STYLE_ID = #{styleId}
+    </delete>
+
+    <update id="updateStyleStatus">
+        UPDATE STYLE SET USE_YN = #{status} WHERE STYLE_ID = #{id}
+    </update>
+
+    </mapper>
