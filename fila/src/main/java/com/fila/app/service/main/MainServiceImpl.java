@@ -79,14 +79,8 @@ public class MainServiceImpl implements MainService {
     private void processImagePath(EventproductVO p) {
         String img = p.getMainImageUrl();
         if (img != null && img.contains("path=")) {
-            // 안전하게 파싱하기 위해 split 결과 체크 추가
-            String[] parts = img.split("path=");
-            if(parts.length > 1) {
-                p.setMainImageUrl(parts[1].replace("\\", "/"));
-            }
-        } else if (img != null) {
-            // path= 가 없더라도 역슬래시는 슬래시로 변환해주는 것이 안전합니다.
-            p.setMainImageUrl(img.replace("\\", "/"));
+            p.setMainImageUrl(img.split("path=")[1].replace("\\", "/"));
         }
     }
+
 }

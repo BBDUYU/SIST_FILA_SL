@@ -17,8 +17,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service // ★ 스프링한테 "나 서비스야!" 라고 알려줌
-@RequiredArgsConstructor // ★ final 붙은 애들(Mapper) 자동 주입 (Autowired 대신 이거 씀)
+@Service 
+@RequiredArgsConstructor 
 public class ProductServiceImpl implements ProductService {
 
     private final UserProductMapper productMapper;
