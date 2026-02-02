@@ -4,10 +4,13 @@
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
-
+<settings>
+    <!-- 컬러명이 c_name 일 경우  cName 변환 -->
+    <setting name="mapUnderscoreToCamelCase" value="true"/>
+  </settings>
     <typeAliases>
         <typeAlias alias="MemberVO"
-                   type="com.fila.app.domain.MemberVO"/>
+                   type="com.fila.app.domain.member.MemberVO"/>
     </typeAliases>
 
 </configuration>
