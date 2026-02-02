@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fila.app.mapper.admin.UserInfoMapper">
+
+    <resultMap id="UserDetailMap" type="com.fila.app.domain.admin.UserInfoVO">
+        <id property="usernumber" column="USER_NUMBER" />
+        <result property="name" column="NAME" />
+        <result property="id" column="ID" />
+        <result property="email" column="EMAIL" />
+        <result property="phone" column="PHONE" />
+        <result property="grade" column="GRADE" />
+        <result property="status" column="STATUS" />
+        <result property="createAt" column="CREATED_AT" />
+        <result property="gender" column="GENDER" />
+        <result property="birthday" column="BIRTHDAY" />
+        <result property="balance" column="CURRENT_BALANCE" />
+        <collection property="childList" column="USER_NUMBER" 
+                    javaType="java.util.List" ofType="com.fila.app.domain.admin.UserInfoVO" 
+                    select="selectChildList" />
+    </resultMap>
+
+    <select id="selectUserList" resultType="com.fila.app.domain.admin.UserInfoVO">
+        SELECT USER_NUMBER AS usernumber, ID, NAME, EMAIL, PHONE, GRADE, STATUS, CREATED_AT AS createAt
+        FROM USERS 
+        ORDER BY CREATED_AT DESC
+    </select>
+
+    <select id="selectOne" resultMap="UserDetailMap">
+        SELECT u.*, 
+               (SELECT NVL(MAX(BALANCE) KEEP (DENSE_RANK LAST ORDER BY POINT_ID), 0) 
+                FROM USERPOINTS WHERE USER_NUMBER = u.USER_NUMBER) as CURRENT_BALANCE 
+        FROM USERS u 
+        WHERE u.USER_NUMBER = #{userNum}
+    </select>
+
+    <select id="selectChildList" resultType="com.fila.app.domain.admin.UserInfoVO">
+        SELECT CHILD_NAME AS childname, CHILD_BIRTH AS childbirth, CHILD_GENDER AS childgender 
+        FROM CHILD 
+        WHERE USER_NUMBER = #{userNum} 
+        ORDER BY CHILD_BIRTH ASC
+    </select>
+
+    <select id="selectPointList" resultType="com.fila.app.domain.admin.UserInfoVO">
+        SELECT POINT_ID AS pointid, ORDER_ID AS orderid, POINT_TYPE AS type, 
+               AMOUNT AS amout, BALANCE, DESCRIPTION, CREATED_AT AS createAt
+        FROM USERPOINTS 
+        WHERE USER_NUMBER = #{userNum}
+        ORDER BY CREATED_AT DESC
+    </select>
+
+    <select id="getCouponCount" resultType="int">
+        SELECT COUNT(*) FROM USER_COUPON 
+        WHERE USER_NUMBER = #{userNum} AND IS_USED = 0 AND EXPIRE_DATE > SYSDATE
+    </select>
+
+    <select id="getWishCount" resultType="int">
+        SELECT COUNT(*) FROM WISHLIST WHERE USER_NUMBER = #{userNum}
+    </select>
+
+    <select id="getOrderCount" resultType="int">
+        SELECT COUNT(*) FROM ORDERS WHERE USER_NUMBER = #{userNum}
+    </select>
+
+</mapper>

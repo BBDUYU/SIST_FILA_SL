@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fila.app.mapper.admin.ProductMapper">
+
+    <select id="selectProductList" resultType="com.fila.app.domain.admin.ProductVO">
+        SELECT 
+            p.PRODUCT_ID    AS productid, 
+            p.NAME, 
+            c.NAME          AS categoryName, 
+            p.PRICE, 
+            p.DISCOUNT_RATE AS discountRate,
+            p.STATUS, 
+            p.CREATED_AT,
+            (SELECT SUM(STOCK) 
+             FROM PRODUCT_OPTION_STOCK pos 
+             JOIN PRODUCT_OPTION_COMBINATIONS poc ON pos.COMBINATION_ID = poc.COMBINATION_ID 
+             WHERE poc.PRODUCT_ID = p.PRODUCT_ID) AS totalStock,
+            (SELECT IMAGE_URL 
+             FROM PRODUCT_IMAGE pi 
+             WHERE pi.PRODUCT_ID = p.PRODUCT_ID AND pi.IS_MAIN = 1 AND ROWNUM = 1) AS mainImageUrl
+        FROM PRODUCTS p
+        JOIN CATEGORIES c ON p.CATEGORY_ID = c.CATEGORY_ID
+        ORDER BY p.CREATED_AT DESC
+    </select>
+
+</mapper>

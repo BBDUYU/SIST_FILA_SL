@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fila.app.mapper.admin.CouponMapper">
+
+    <select id="selectList" resultType="com.fila.app.domain.admin.CouponVO">
+        SELECT 
+            COUPON_ID      AS coupon_id,
+            NAME,
+            DISCOUNT_TYPE  AS discount_type,
+            DISCOUNT_VALUE AS discount_value,
+            EXPIRES_AT     AS expires_at,
+            CREATED_AT     AS created_at,
+            STATUS,
+            SERIAL_NUMBER  AS serial_number
+        FROM COUPON 
+        ORDER BY CREATED_AT DESC
+    </select>
+
+    <insert id="insertCoupon">
+        INSERT INTO COUPON (
+            COUPON_ID, NAME, DISCOUNT_TYPE, DISCOUNT_VALUE, 
+            SERIAL_NUMBER, EXPIRES_AT, CREATED_AT
+        ) VALUES (
+            SEQ_COUPON.NEXTVAL, #{name}, #{discount_type}, #{discount_value}, 
+            #{serial_number}, #{expires_at, jdbcType=DATE}, SYSDATE
+        )
+    </insert>
+
+    <select id="getUserCouponList" resultType="com.fila.app.domain.admin.UserInfoVO">
+        SELECT 
+            uc.USER_COUPON_ID AS usercouponid, 
+            c.NAME           AS coupon_name, 
+            c.DISCOUNT_TYPE  AS discount_type, 
+            c.DISCOUNT_VALUE AS price, 
+            uc.IS_USED       AS isused, 
+            uc.USED_AT       AS usedat, 
+            uc.EXPIRE_DATE   AS expireddate, 
+            uc.RECEIVED_AT   AS receivedat, 
+            c.STATUS
+        FROM USER_COUPON uc 
+        JOIN COUPON c ON uc.COUPON_ID = c.COUPON_ID 
+        WHERE uc.USER_NUMBER = #{userNumber} 
+        ORDER BY uc.RECEIVED_AT DESC
+    </select>
+
+    <update id="updateStatus">
+        UPDATE COUPON SET STATUS = #{status} WHERE COUPON_ID = #{couponId}
+    </update>
+
+    <update id="useUserCoupon">
+        UPDATE USER_COUPON 
+        SET IS_USED = '1', USED_AT = SYSDATE 
+        WHERE USER_COUPON_ID = #{userCouponId}
+    </update>
+
+</mapper>

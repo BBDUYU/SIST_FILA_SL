@@ -1,54 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<title>회원가입</title>
-
-<link rel="stylesheet" href="<%=request.getContextPath()%>/resource/css/common.css">
-
-
-<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<script src="/js/join.js"></script>
-
-<style>
-/* ===== join.js 필수 ===== */
-.agree-chk-wrap,
-.self-agree-wrap {
-  display: none;
-}
-.agree-chk-wrap.open,
-.self-agree-wrap.open {
-  display: block;
-}
-
-/* ===== 본인인증 이후 ===== */
-.after-cert {
-  display: none;
-}
-
-/* ===== 자녀정보 초기 숨김 ===== */
-.join-sec .children-box,
-.join-sec .children-btn {
-  display: none;
-}
-
-/* + / - 아이콘 */
-.btn_sel .pm::after {
-  content: '+';
-}
-.btn_sel.on .pm::after {
-  content: '-';
-}
-</style>
-</head>
-
-<body>
-
-<jsp:include page="../common/header.jsp" />
-
-
 
     <section class="mbr-box">
       <div class="join__step2">
@@ -92,18 +43,3 @@
   </div>
 
 </div>
-
-
-<jsp:include page="../common/footer.jsp" />
-
-<script>
-  $('#btnCert').on('click', function () {
-    $('.after-cert').slideDown();
-    $('html, body').animate({
-      scrollTop: $('.after-cert').offset().top - 80
-    }, 400);
-  });
-</script>
-
-</body>
-</html>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fila.app.mapper.admin.CreateproductMapper">
+
+    <select id="generateProductId" resultType="string">
+        SELECT 'PROD' || ${sequenceName}.NEXTVAL FROM DUAL
+    </select>
+
+    <insert id="insertProduct">
+        INSERT INTO PRODUCTS (
+            product_id, category_id, name, description, price, 
+            view_count, created_at, updated_at, status, discount_rate
+        ) VALUES (
+            #{product_id}, #{category_id}, #{name}, #{description, jdbcType=VARCHAR}, #{price}, 
+            0, SYSDATE, SYSDATE, 
+            <choose>
+                <when test="discount_rate > 0">'SALE'</when>
+                <otherwise>'NORMAL'</otherwise>
+            </choose>, 
+            #{discount_rate}
+        )
+    </insert>
+
+    <select id="selectProductById" resultType="com.fila.app.domain.admin.CreateproductVO">
+        SELECT p.*, 
+            (SELECT STYLE_ID FROM STYLE_PRODUCT WHERE PRODUCT_ID = p.PRODUCT_ID AND ROWNUM = 1) as style_id, 
+            (SELECT SECTION_ID FROM EVENT_PRODUCT WHERE PRODUCT_ID = p.PRODUCT_ID AND ROWNUM = 1) as section_id, 
+            c.NAME as gender_name, c.CATEGORY_ID as gender_option_id, 
+            (SELECT NAME FROM CATEGORIES WHERE CATEGORY_ID = (SELECT PARENT_ID FROM CATEGORIES WHERE CATEGORY_ID = p.CATEGORY_ID)) as category_type, 
+            (SELECT SUM(STOCK) FROM PRODUCT_OPTION_STOCK pos JOIN PRODUCT_OPTION_COMBINATIONS poc ON pos.COMBINATION_ID = poc.COMBINATION_ID WHERE poc.PRODUCT_ID = p.PRODUCT_ID) as stock, 
+            (SELECT POV.V_MASTER_ID FROM PRODUCT_OPTION_VALUES POV JOIN PRODUCT_OPTION_GROUPS POG ON POV.OPTION_GROUP_ID = POG.OPTION_GROUP_ID WHERE POG.PRODUCT_ID = p.PRODUCT_ID AND POG.MASTER_ID = 2 AND ROWNUM = 1) as sport_option_id 
+        FROM PRODUCTS p 
+        JOIN CATEGORIES c ON p.CATEGORY_ID = c.CATEGORY_ID 
+        WHERE p.PRODUCT_ID = #{productId}
+    </select>
+
+    <select id="selectAllOptions" resultType="map">
+        SELECT MASTER_ID, V_MASTER_ID, VALUE_NAME 
+        FROM OPTION_VALUE_MASTERS 
+        ORDER BY MASTER_ID, V_MASTER_ID
+    </select>
+
+    <select id="selectProductSizeIds" resultType="int">
+        SELECT POV.V_MASTER_ID 
+        FROM PRODUCT_OPTION_VALUES POV 
+        JOIN PRODUCT_OPTION_GROUPS POG ON POV.OPTION_GROUP_ID = POG.OPTION_GROUP_ID 
+        WHERE POG.PRODUCT_ID = #{productId} 
+        AND POG.MASTER_ID IN (4,5,6,7,8)
+    </select>
+
+    <insert id="insertProductImage">
+        INSERT INTO product_image (product_image_id, product_id, image_url, image_type, is_main, sort_order) 
+        VALUES (prod_img_seq.NEXTVAL, #{product_id}, #{image_url}, #{image_type}, #{is_main}, #{sort_order})
+    </insert>
+
+    <select id="getImagePathsByIds" resultType="string">
+        SELECT image_url FROM product_image 
+        WHERE product_image_id IN 
+        <foreach item="id" collection="imageIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <insert id="insertStyleProduct">
+        INSERT INTO STYLE_PRODUCT (PRODUCT_ID, STYLE_ID, SORT_ORDER) VALUES (#{productId}, #{styleId}, 1)
+    </insert>
+
+    <insert id="insertEventProduct">
+        INSERT INTO EVENT_PRODUCT (PRODUCT_ID, SECTION_ID) VALUES (#{productId}, #{sectionId})
+    </insert>
+
+    <delete id="deleteOptionCombiValues">
+        DELETE FROM PRODUCT_OPTION_COMBI_VALUES WHERE COMBINATION_ID IN 
+        (SELECT COMBINATION_ID FROM PRODUCT_OPTION_COMBINATIONS WHERE PRODUCT_ID = #{productId})
+    </delete>
+    
+    </mapper>

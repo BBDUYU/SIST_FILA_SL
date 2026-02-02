@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fila.app.mapper.cart.WishListMapper">
+
+	<!-- 1) 위시리스트 목록 (SELECT문 그대로) -->
+  <select id="selectWishListByUser" parameterType="int" resultType="mypage.WishListVO">
+    SELECT
+      W.WISHLIST_ID, W.USER_NUMBER, W.PRODUCT_ID, W.SIZE_TEXT, W.CREATED_AT,
+      P.NAME AS PRODUCT_NAME, P.PRICE, NVL(P.DISCOUNT_RATE,0) AS DISCOUNT_RATE,
+      I.IMAGE_URL
+    FROM WISHLIST W
+    JOIN PRODUCTS P ON W.PRODUCT_ID = P.PRODUCT_ID
+    LEFT JOIN PRODUCT_IMAGE I ON P.PRODUCT_ID = I.PRODUCT_ID AND I.IS_MAIN = 1
+    WHERE W.USER_NUMBER = #{userNumber}
+    ORDER BY W.CREATED_AT DESC, W.WISHLIST_ID DESC
+  </select>
+
+  <!-- 2) 중복 체크 (SELECT문 그대로) -->
+  <select id="existsUserProduct" resultType="int">
+    SELECT 1 FROM WISHLIST WHERE USER_NUMBER = #{userNumber} AND PRODUCT_ID = #{productId}
+  </select>
+
+  <!-- 3) INSERT -->
+  <insert id="insertWish">
+    INSERT INTO WISHLIST (WISHLIST_ID, USER_NUMBER, PRODUCT_ID, CREATED_AT, SIZE_TEXT)
+    VALUES (SEQ_WISHLIST.NEXTVAL, #{userNumber}, #{productId}, SYSDATE, #{sizeText})
+  </insert>
+
+  <!-- 4) 단건 삭제 -->
+  <delete id="deleteOne">
+    DELETE FROM WISHLIST WHERE WISHLIST_ID = #{wishlistId} AND USER_NUMBER = #{userNumber}
+  </delete>
+
+  <!-- 5) 선택 삭제 -->
+  <delete id="deleteSelected">
+    DELETE FROM WISHLIST
+    WHERE USER_NUMBER = #{userNumber}
+      AND WISHLIST_ID IN
+      <foreach collection="ids" item="id" open="(" separator="," close=")">
+        #{id}
+      </foreach>
+  </delete>
+
+  <!-- 6) product_id로 삭제 -->
+  <delete id="deleteByProduct">
+    DELETE FROM WISHLIST WHERE USER_NUMBER = #{userNumber} AND PRODUCT_ID = #{productId}
+  </delete>
+
+  <!-- 7) 찜 여부 (SELECT문 그대로) -->
+  <select id="existsByProduct" resultType="boolean">
+    SELECT 1 FROM WISHLIST WHERE USER_NUMBER = #{userNumber} AND PRODUCT_ID = #{productId}
+  </select>
+
+  <!-- 8) 찜한 상품ID 목록 (SELECT문 그대로) -->
+  <select id="selectWishedProductIds" resultType="string">
+    SELECT PRODUCT_ID FROM WISHLIST WHERE USER_NUMBER = #{userNumber}
+  </select>
+
+</mapper>

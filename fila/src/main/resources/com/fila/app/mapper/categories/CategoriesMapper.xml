@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fila.app.mapper.main.CategoriesMapper">
+
+    <sql id="categoryColumns">
+        category_id, name, parent_id, depth, created_at, updated_at, use_yn
+    </sql>
+
+    <select id="selectCategoryList" resultType="com.fila.app.domain.main.CategoriesVO">
+        SELECT <include refid="categoryColumns" />
+        FROM categories 
+        WHERE use_yn = 1 
+        ORDER BY depth, category_id
+    </select>
+
+    <select id="selectCategory" resultType="com.fila.app.domain.main.CategoriesVO">
+        SELECT <include refid="categoryColumns" />
+        FROM categories 
+        WHERE category_id = #{categoryId}
+    </select>
+
+    <select id="selectChildCategories" resultType="com.fila.app.domain.main.CategoriesVO">
+        SELECT <include refid="categoryColumns" />
+        FROM categories 
+        WHERE parent_id = #{parentId} AND use_yn = 1 
+        ORDER BY category_id ASC
+    </select>
+
+    <select id="selectMainCategories" resultType="com.fila.app.domain.main.CategoriesVO">
+        SELECT <include refid="categoryColumns" />
+        FROM categories 
+        WHERE depth = 1 AND use_yn = 1 
+        ORDER BY category_id ASC
+    </select>
+
+    <select id="selectActiveTagList" resultType="com.fila.app.domain.main.CategoriesVO">
+        SELECT <include refid="categoryColumns" />
+        FROM categories 
+        WHERE category_id >= 4000 AND depth = 4 AND use_yn = 1 
+        ORDER BY category_id DESC
+    </select>
+
+    <select id="getMaxTagId" resultType="int">
+        SELECT NVL(MAX(category_id), 4000) 
+        FROM categories 
+        WHERE category_id >= 4000 AND category_id &lt; 5000
+    </select>
+
+    <insert id="insertTag">
+        INSERT INTO categories (category_id, name, depth, created_at, updated_at, use_yn)
+        VALUES (#{category_id}, #{name}, 4, SYSDATE, SYSDATE, 1)
+    </insert>
+
+    <update id="updateTag">
+        UPDATE categories 
+        SET name = #{tagName}, updated_at = SYSDATE 
+        WHERE category_id = #{categoryId}
+    </update>
+
+    <update id="updateTagStatus">
+        UPDATE categories 
+        SET use_yn = #{status}, updated_at = SYSDATE 
+        WHERE category_id = #{categoryId}
+    </update>
+
+</mapper>

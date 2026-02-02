@@ -2,16 +2,16 @@
 <%@ page import="java.sql.Connection" %>
 <%@ page import="mypage.AddressDAO, mypage.AddressDTO" %>
 <%@ page import="com.util.ConnectionProvider" %>
-<%@ page import="member.MemberDTO" %> 
+<%@ page import="member.MemberDTO" %>
 
 <%
-  MemberDTO loginUser = (MemberDTO) session.getAttribute("auth");
+MemberVO loginUser = (MemberVO) session.getAttribute("auth");
   int userNumber = (loginUser == null) ? -1 : loginUser.getUserNumber();
 
   int addrNo = 0;
   try { addrNo = Integer.parseInt(request.getParameter("addrNo")); } catch(Exception e) { addrNo = 0; }
 
-  AddressDTO a = null;
+  AddressVO a = null;
   if (userNumber != -1 && addrNo > 0) {
     AddressDAO dao = new AddressDAO();
     Connection conn = null;

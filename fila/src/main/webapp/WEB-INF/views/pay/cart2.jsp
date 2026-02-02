@@ -3,26 +3,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<!DOCTYPE html>
-
-<html class="no-js" lang="ko-KR"> <!--<![endif]-->
-<head>
-	<meta charset="UTF-8">
-	<meta name="format-detection" content="telephone=no">
-
-<title>장바구니 | FILA</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.1, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.1, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
-
-</head>
-
-<body class="view__style1" style="overflow-x: hidden;">
-
-<!-- start of :: header -->
-<jsp:include page="../common/header.jsp" />
-<!-- // end of :: header -->	
-
 cartList size = ${fn:length(cartList)}
 
 <form name="form6" id="form6"  target="dataFrame">
@@ -277,31 +257,3 @@ frm.submit();
 		<button type="button" class="top__btn">top</button>		
 	</div>
 </div>
-<!-- //하단 고정 버튼 (top, sns) -->
-
-
-<!-- start of :: footer -->
-<jsp:include page="../common/footer.jsp" />
-<!-- // end of :: footer -->
- 
-<script>
-        $(document).ready(function(){
-            if(typeof Swiper !== 'undefined') {
-                new Swiper('.goods__slider', {
-                    slidesPerView: 4,
-                    spaceBetween: 10,
-                    freeMode: true,
-                    scrollbar: {
-                        el: '.goods-slider-scrollbar',
-                        draggable: true,
-                    },
-                });
-            }
-        });
-</script>   
-    
-
-    
-    
-</body>
-</html>

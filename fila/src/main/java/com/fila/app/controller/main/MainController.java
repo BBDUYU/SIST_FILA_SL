@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fila.app.service.main.MainService;
 import com.fila.app.service.mypage.WishListService;
-import com.fila.app.domain.member.MemberDTO;
+import com.fila.app.domain.member.MemberVO;
 import com.fila.app.domain.event.EventproductDTO;
+import com.fila.app.domain.eventProduct.EventproductVO;
 
 @Controller
 @RequestMapping("/main/*") // 호출 주소: /main/main.htm
@@ -26,7 +27,7 @@ public class MainController {
     private MainService mainService;
 
     @Autowired
-    private WishListService wishListService;
+    private com.fila.app.service.wishlist.WishListService wishListService;
 
     @RequestMapping("main.htm")
     public String mainPage(
@@ -48,9 +49,9 @@ public class MainController {
         model.addAttribute("bannerList", mainData.get("bannerList"));
 
         // 4. 추천 상품 이미지 경로 가공 (비즈니스 로직)
-        List<EventproductDTO> recommendProducts = (List<EventproductDTO>) mainData.get("recommendProducts");
+        List<EventproductVO> recommendProducts = (List<EventproductVO>) mainData.get("recommendProducts");
         if (recommendProducts != null) {
-            for (EventproductDTO p : recommendProducts) {
+            for (EventproductVO p : recommendProducts) {
                 String img = p.getMainImageUrl();
                 if (img != null && img.contains("path=")) {
                     p.setMainImageUrl(img.split("path=")[1].replace("\\", "/"));
@@ -60,7 +61,7 @@ public class MainController {
         model.addAttribute("recommendProducts", recommendProducts);
 
         // 5. 로그인 사용자별 위시리스트(찜) 정보 처리
-        MemberDTO loginUser = (MemberDTO) session.getAttribute("auth");
+        MemberVO loginUser = (MemberVO) session.getAttribute("auth");
         if (loginUser != null) {
             Set<String> wishedSet = wishListService.getWishedSet(loginUser.getUserNumber());
             model.addAttribute("wishedSet", wishedSet);
