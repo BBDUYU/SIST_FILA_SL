@@ -3,9 +3,13 @@ package com.fila.app.service.main;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fila.app.domain.eventProduct.EventproductVO;
+import com.fila.app.domain.main.MainbannerVO;
 
 // 기존 DTO들을 VO로 이름 변경하여 사용한다고 가정합니다.
 
