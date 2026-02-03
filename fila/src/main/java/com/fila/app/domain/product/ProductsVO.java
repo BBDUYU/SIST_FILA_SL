@@ -3,13 +3,16 @@ package com.fila.app.domain.product;
 import java.util.Date;
 import java.util.List;
 
+import com.fila.app.domain.admin.StyleImageVO;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Data
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProductsVO {
     
 	// 1. PRODUCTS 테이블 컬럼

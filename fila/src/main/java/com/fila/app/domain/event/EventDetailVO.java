@@ -3,8 +3,16 @@ package com.fila.app.domain.event;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fila.app.domain.admin.StyleImageVO;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class EventDetailVO {
     private EventVO event;
     private List<SectionVO> sections = new ArrayList<>();

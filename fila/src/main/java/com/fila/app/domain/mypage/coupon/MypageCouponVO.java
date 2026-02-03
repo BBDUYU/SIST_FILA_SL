@@ -2,9 +2,17 @@ package com.fila.app.domain.mypage.coupon;
 
 import java.util.Date;
 
+import com.fila.app.domain.admin.StyleImageVO;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class MypageCouponVO {
 
     private int userCouponId;

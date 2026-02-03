@@ -1,12 +1,16 @@
 package com.fila.app.domain.product;
 
+import com.fila.app.domain.admin.StyleImageVO;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProductsOptionVO {
     
 	// DB 컬럼과 매핑되는 필드들 (CamelCase 권장)

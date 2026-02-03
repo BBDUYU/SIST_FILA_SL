@@ -1,8 +1,14 @@
 package com.fila.app.domain.admin;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class StyleImageVO {
     private int styleImageId;
     private int styleId;

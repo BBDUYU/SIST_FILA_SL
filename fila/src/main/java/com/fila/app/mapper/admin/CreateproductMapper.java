@@ -53,4 +53,6 @@ public interface CreateproductMapper {
     void deleteOptionCombinations(String productId);
     void deleteOptionValues(String productId);
     void deleteOptionGroups(String productId);
+    
+    List<com.fila.app.domain.admin.ProductVO> selectAdminProductList();
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fila.app.domain.admin.CreateproductVO;
+import com.fila.app.domain.admin.ProductVO;
 import com.fila.app.mapper.admin.CreateproductMapper;
 import com.fila.app.mapper.admin.StyleMapper;
 
@@ -24,6 +25,13 @@ public class AdminProductServiceImpl implements AdminProductService {
     @Autowired
     private StyleMapper styleMapper;
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductVO> getProductList() {
+        // productMapper(CreateproductMapper)에 이 메서드가 있어야 합니다.
+        return productMapper.selectAdminProductList();
+    }
+    
     @Override
     @Transactional(readOnly = true)
     public Map<Integer, List<Map<String, Object>>> getProductFormData() {

@@ -3,11 +3,18 @@ package com.fila.app.domain.event;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fila.app.domain.admin.StyleImageVO;
 import com.fila.app.domain.product.ProductsVO;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SectionVO {
     private int sectionId;
     private int eventId;

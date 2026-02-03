@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import com.fila.app.domain.admin.CreateproductVO;
+import com.fila.app.domain.admin.ProductVO;
 
 public interface AdminProductService {
     // 폼 데이터 로딩
+	List<ProductVO> getProductList();
     Map<Integer, List<Map<String, Object>>> getProductFormData();
     void getAdminFullFormData(HttpServletRequest request);
     
