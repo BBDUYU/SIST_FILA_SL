@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.fila.app.domain.categories.CategoriesVO;
 
-@Mapper
+
 public interface CategoriesMapper {
     
     // [조회 기능]

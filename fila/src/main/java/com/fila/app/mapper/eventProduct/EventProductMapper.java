@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.fila.app.domain.eventProduct.EventproductVO;
 
-@Mapper
+
 public interface EventProductMapper {
     // 1. 활성화된 이벤트 목록 (키워드용)
     List<EventproductVO> selectActiveEventKeywords();

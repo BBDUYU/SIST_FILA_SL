@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import com.fila.app.domain.admin.CreateproductVO;
 
-@Mapper
+
 public interface CreateproductMapper {
     // 1. 상품 ID 및 시퀀스 관련
     String generateProductId(@Param("sequenceName") String sequenceName);

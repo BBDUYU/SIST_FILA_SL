@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import com.fila.app.domain.admin.*; // VO 패키지 경로에 맞게 수정
 
-@Mapper
+
 public interface StyleMapper {
     // 조회 관련
     List<StyleVO> selectStyleList();

@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import com.fila.app.domain.admin.CouponVO;
 import com.fila.app.domain.admin.UserInfoVO;
 
-@Mapper
+
 public interface CouponMapper {
     // [관리자] 쿠폰 마스터 관리
     List<CouponVO> selectList();

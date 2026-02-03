@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import com.fila.app.domain.member.ChildVO;
 import com.fila.app.domain.member.MemberVO;
 
-@Mapper
+
 public interface MypageMemberMapper {
 
     // ===== modify =====

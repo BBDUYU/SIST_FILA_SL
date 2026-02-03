@@ -4,7 +4,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import com.fila.app.domain.admin.UserInfoVO; // DTO에서 VO로 변경 확인
 
-@Mapper
+
 public interface UserInfoMapper {
     // 회원 전체 리스트
     List<UserInfoVO> selectUserList();

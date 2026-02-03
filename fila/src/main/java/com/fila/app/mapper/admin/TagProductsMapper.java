@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import com.fila.app.domain.admin.ProductVO;
 
 
-@Mapper
+
 public interface TagProductsMapper {
     /**
      * 특정 태그(CategoryId)에 속한 상품 목록 조회

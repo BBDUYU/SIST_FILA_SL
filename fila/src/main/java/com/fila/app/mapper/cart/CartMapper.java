@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import com.fila.app.domain.cart.CartItemVO;
 import com.fila.app.domain.order.OrderItemVO;
 
-@Mapper
+
 public interface CartMapper {
 
 	// [1] 전체 조회(원래 DAO에 있던 SELECT)
