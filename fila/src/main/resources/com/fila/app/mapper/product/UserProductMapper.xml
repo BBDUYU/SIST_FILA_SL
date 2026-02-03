@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.fila.app.mapper.product.ProductMapper">
+<mapper namespace="com.fila.app.mapper.product.UserProductMapper">
 
   <select id="selectAllProducts" resultType="com.fila.app.domain.product.ProductsVO">
     SELECT 
