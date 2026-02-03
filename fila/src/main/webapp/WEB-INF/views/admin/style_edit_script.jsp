@@ -6,8 +6,8 @@
 		// [수정 핵심] 페이지 로드 시 기존 매칭된 상품들을 태그로 자동 추가
 		<c:forEach var="p" items="${productList}">
 			<c:forEach var="mid" items="${matchedProductIds}">
-				<c:if test="${mid eq p.productid}">
-					addProductTag('${p.productid}', '${p.name}');
+				<c:if test="${mid eq p.productId}">
+					addProductTag('${p.productId}', '${p.name}');
 				</c:if>
 			</c:forEach>
 		</c:forEach>

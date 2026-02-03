@@ -1,22 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<!DOCTYPE html>
-<html>
-<head>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<title>FILA Admin - 상품 수정</title>
-
-</head>
-
-<body>
-	<div id="wrap" class="admin-section">
-		<jsp:include page="../common/sidebar.jsp">
-			<jsp:param name="currentPage" value="product" />
-		</jsp:include>
-
-		<form id="productForm" action="editProduct.htm" method="post" enctype="multipart/form-data">
-			<input type="hidden" name="product_id" value="${product.product_id}">
+<form id="productForm" action="editProduct.htm" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="product_id" value="${product.productId}">
 			
 			<div id="contents" style="max-width: 1300px; margin: 0 auto; display: flex; gap: 40px;">
 
@@ -32,11 +18,11 @@
 							</div>
 							<div id="main-preview" class="preview-container">
 								<c:forEach items="${imageList}" var="img">
-									<c:if test="${img.image_type eq 'MAIN'}">
-										<div class="img-box" id="ex-img-${img.product_image_id}">
-											<img src="${pageContext.request.contextPath}${img.image_url}">
-											<input type="hidden" name="existing_image_ids" value="${img.product_image_id}">
-											<button type="button" class="del-btn" onclick="markImageDelete('${img.product_image_id}',this)">×</button>
+									<c:if test="${img.imageType eq 'MAIN'}">
+										<div class="img-box" id="ex-img-${img.productImageId}">
+											<img src="${pageContext.request.contextPath}${img.imageUrl}">
+											<input type="hidden" name="existing_image_ids" value="${img.productImageId}">
+											<button type="button" class="del-btn" onclick="markImageDelete('${img.productImageId}',this)">×</button>
 										</div>
 									</c:if>
 								</c:forEach>
@@ -54,10 +40,10 @@
 							<div id="model-preview" class="preview-container">
 								<c:forEach items="${imageList}" var="img">
 									<c:if test="${img.image_type eq 'MODEL'}">
-										<div class="img-box" id="ex-img-${img.product_image_id}">
-											<img src="${pageContext.request.contextPath}${img.image_url}">
-											<input type="hidden" name="existing_image_ids" value="${img.product_image_id}">
-											<button type="button" class="del-btn" onclick="markImageDelete('${img.product_image_id}',this)">×</button>
+										<div class="img-box" id="ex-img-${img.productImageId}">
+											<img src="${pageContext.request.contextPath}${img.imageUrl}">
+											<input type="hidden" name="existing_image_ids" value="${img.productImageId}">
+											<button type="button" class="del-btn" onclick="markImageDelete('${img.productImageId}',this)">×</button>
 										</div>
 									</c:if>
 								</c:forEach>
@@ -75,10 +61,10 @@
 							<div id="detail-preview" class="preview-container">
 								<c:forEach items="${imageList}" var="img">
 									<c:if test="${img.image_type eq 'DETAIL'}">
-										<div class="img-box" id="ex-img-${img.product_image_id}">
-											<img src="${pageContext.request.contextPath}${img.image_url}">
-											<input type="hidden" name="existing_image_ids" value="${img.product_image_id}">
-											<button type="button" class="del-btn" onclick="markImageDelete('${img.product_image_id}',this)">×</button>
+										<div class="img-box" id="ex-img-${img.productImageId}">
+											<img src="${pageContext.request.contextPath}${img.imageUrl}">
+											<input type="hidden" name="existing_image_ids" value="${img.productImageId}">
+											<button type="button" class="del-btn" onclick="markImageDelete('${img.productImageId}',this)">×</button>
 										</div>
 									</c:if>
 								</c:forEach>
@@ -94,13 +80,13 @@
 						<label>노출 카테고리 지정</label>
 						<div class="category-container">
 							<div class="category-select" id="depth1">
-								<c:forEach items="${list}" var="c"><c:if test="${c.depth eq 1}"><div class="cate-item" onclick="filterCategory(2, '${c.category_id}', this)">${c.name}</div></c:if></c:forEach>
+								<c:forEach items="${list}" var="c"><c:if test="${c.depth eq 1}"><div class="cate-item" onclick="filterCategory(2, '${c.categoryId}', this)">${c.name}</div></c:if></c:forEach>
 							</div>
 							<div class="category-select" id="depth2">
-								<c:forEach items="${list}" var="c"><c:if test="${c.depth eq 2}"><div class="cate-item" data-parent="${c.parent_id}" onclick="filterCategory(3, '${c.category_id}', this)" style="display: none;">${c.name}</div></c:if></c:forEach>
+								<c:forEach items="${list}" var="c"><c:if test="${c.depth eq 2}"><div class="cate-item" data-parent="${c.parentId}" onclick="filterCategory(3, '${c.categoryId}', this)" style="display: none;">${c.name}</div></c:if></c:forEach>
 							</div>
 							<div class="category-select" id="depth3">
-								<c:forEach items="${list}" var="c"><c:if test="${c.depth eq 3}"><div class="cate-item" data-parent="${c.parent_id}" onclick="toggleCategory(this, '${c.category_id}')" style="display: none;">${c.name}</div></c:if></c:forEach>
+								<c:forEach items="${list}" var="c"><c:if test="${c.depth eq 3}"><div class="cate-item" data-parent="${c.parentId}" onclick="toggleCategory(this, '${c.categoryId}')" style="display: none;">${c.name}</div></c:if></c:forEach>
 							</div>
 						</div>
 						<div id="selected-tags" style="margin-top: 15px; display: flex; gap: 8px; flex-wrap: wrap; min-height: 35px;"></div>
@@ -112,9 +98,9 @@
 					        <c:forEach items="${tagList}" var="c">
 					            <c:if test="${c.category_id >= 4000 && c.category_id < 5000}">
 					                <label class="opt-item tag-item">
-									    <input type="checkbox" name="tag_ids" value="${c.category_id}" 
+									    <input type="checkbox" name="tag_ids" value="${c.categoryId}" 
 									        <c:forEach items="${productCategories}" var="pc">
-									           <c:if test="${pc.CATEGORY_ID == c.category_id || pc.category_id == c.category_id}">
+									           <c:if test="${pc.CATEGORY_ID == c.categoryId || pc.categoryId == c.categoryId}">
 									                checked
 									            </c:if>
 									        </c:forEach>
@@ -137,7 +123,7 @@
 							        <c:if test="${entry.key == 2}">
 							            <c:forEach items="${entry.value}" var="opt">
 							                <label class="opt-item">
-							                    <input type="radio" name="sport_option" value="${opt.v_master_id}" ${product.sport_option_id == opt.v_master_id ? 'checked' : ''} required> 
+							                    <input type="radio" name="sport_option" value="${opt.vMasterId}" ${product.sportOptionId == opt.vMasterId ? 'checked' : ''} required> 
 							                    <span>${opt.value_name}</span>
 							                </label>
 							            </c:forEach>
@@ -150,9 +136,9 @@
 							        <c:if test="${entry.key >= 4 && entry.key <= 8}">
 							            <c:forEach items="${entry.value}" var="opt">
 							                <label class="opt-item size-item m-${entry.key}" style="display: none;">
-							                    <input type="checkbox" name="size_options" value="${opt.v_master_id}" 
-							                    	<c:forEach items="${productSizes}" var="sId"><c:if test="${sId == opt.v_master_id}">checked</c:if></c:forEach>> 
-							                    <span>${opt.value_name}</span>
+							                    <input type="checkbox" name="size_options" value="${opt.vMasterId}" 
+							                    	<c:forEach items="${productSizes}" var="sId"><c:if test="${sId == opt.vMasterId}">checked</c:if></c:forEach>> 
+							                    <span>${opt.valueName}</span>
 							                </label>
 							            </c:forEach>
 							        </c:if>
@@ -167,14 +153,14 @@
 							<label>스타일(룩북) 연결</label>
 							<select name="styleId" class="f-input">
 								<option value="0">-- 선택 안함 --</option>
-								<c:forEach items="${styleList}" var="s"><option value="${s.styleId}" ${product.style_id == s.styleId ? 'selected' : ''}>${s.styleName}</option></c:forEach>
+								<c:forEach items="${styleList}" var="s"><option value="${s.styleId}" ${product.styleId == s.styleId ? 'selected' : ''}>${s.styleName}</option></c:forEach>
 							</select>
 						</div>
 						<div class="input-group" style="flex: 1;">
 							<label>이벤트 섹션 연결</label>
 							<select name="sectionId" class="f-input">
 								<option value="0">-- 선택 안함 --</option>
-								<c:forEach items="${eventSectionList}" var="es"><option value="${es.sectionId}" ${product.section_id == es.sectionId ? 'selected' : ''}>${es.name}</option></c:forEach>
+								<c:forEach items="${eventSectionList}" var="es"><option value="${es.sectionId}" ${product.sectionId == es.sectionId ? 'selected' : ''}>${es.name}</option></c:forEach>
 							</select>
 						</div>
 					</div>
@@ -183,7 +169,7 @@
 
 					<div style="display: flex; gap: 10px;">
 						<div class="input-group" style="flex: 1;"><label>판매가(원)</label><input type="number" name="price" class="f-input" value="${product.price}" required></div>
-						<div class="input-group" style="flex: 0.7;"><label>할인율(%)</label><input type="number" name="discount_rate" class="f-input" value="${product.discount_rate}"></div>
+						<div class="input-group" style="flex: 0.7;"><label>할인율(%)</label><input type="number" name="discount_rate" class="f-input" value="${product.discountRate}"></div>
 						<div class="input-group" style="flex: 1;"><label>재고수량</label><input type="number" name="stock" class="f-input" value="${product.stock}" required></div>
 					</div>
 
@@ -195,10 +181,5 @@
 					<button type="button" class="submit-btn" onclick="registProduct()">상품 수정 완료</button>
 				</div>
 			</div>
-			<input type="hidden" id="gender_option_input" name="gender_option" value="${product.gender_option_id}">
+			<input type="hidden" id="gender_option_input" name="gender_option" value="${product.genderOptionId}">
 		</form>
-	</div>
-
-
-</body>
-</html>

@@ -11,9 +11,9 @@
             <table class="detail-table">
                 <tr>
                     <th>카테고리</th>
-                    <td>${dto.category_name}</td>
+                    <td>${dto.categoryName}</td>
                     <th>작성일</th>
-                    <td><fmt:formatDate value="${dto.created_at}" pattern="yyyy-MM-dd HH:mm"/></td>
+                    <td><fmt:formatDate value="${dto.createdAt}" pattern="yyyy-MM-dd HH:mm"/></td>
                 </tr>
                 <tr>
                     <th>제목</th>
@@ -21,18 +21,18 @@
                 </tr>
                 <tr>
                     <th>작성자</th>
-                    <td colspan="3">${dto.created_id}</td>
+                    <td colspan="3">${dto.createdId}</td>
                 </tr>
                 <tr>
                     <th>이미지 경로</th>
-                    <td colspan="3"><code>${dto.image_url}</code></td>
+                    <td colspan="3"><code>${dto.imageUrl}</code></td>
                 </tr>
             </table>
 
             <div class="notice-img-box">
                 <p style="text-align: left; color: #888; font-size: 12px; margin-bottom: 10px;">[ 미리보기 ]</p>
                 <c:choose>
-                    <c:when test="${not empty dto.image_url}">
+                    <c:when test="${not empty dto.imageUrl}">
                         <img src="${dto.image_url}" alt="공지 이미지">
                     </c:when>
                     <c:otherwise>
@@ -43,7 +43,7 @@
 
             <div class="btn-area">
                 <a href="noticeManage.htm" class="btn btn-list">목록으로</a>
-                <a href="noticeEdit.htm?id=${dto.notice_id}" class="btn btn-edit">수정하기</a>
+                <a href="noticeEdit.htm?id=${dto.noticeId}" class="btn btn-edit">수정하기</a>
                 <button type="button" class="btn btn-delete" onclick="deleteConfirm()">삭제하기</button>
             </div>
         </div>

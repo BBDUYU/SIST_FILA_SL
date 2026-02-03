@@ -14,13 +14,13 @@
                     <th>문의 유형</th>
                     <td>${qna.type}</td>
                     <th>작성일</th>
-                    <td><fmt:formatDate value="${qna.created_at}" pattern="yyyy-MM-dd HH:mm"/></td>
+                    <td><fmt:formatDate value="${qna.createdAt}" pattern="yyyy-MM-dd HH:mm"/></td>
                 </tr>
                 <tr>
                     <th>작성자</th>
                     <td>${qna.name}</td>
                     <th>상품코드</th>
-                    <td>${empty qna.product_id ? '-' : qna.product_id}</td>
+                    <td>${empty qna.productId ? '-' : qna.productId}</td>
                 </tr>
                  <tr>
                     <th>질문 내용</th>
@@ -29,7 +29,7 @@
             </table>
 
             <form action="${pageContext.request.contextPath}/admin/saveProductAnswer.htm" method="post">
-                <input type="hidden" name="qna_id" value="${qna.qna_id}">
+                <input type="hidden" name="qna_id" value="${qna.qnaId}">
                 
                 <div class="section-title">관리자 답변</div>
                 <table class="info-table">
@@ -39,10 +39,10 @@
                             <textarea name="answer_content" class="answer-textarea" placeholder="답변 내용을 입력하세요.">${qna.answer}</textarea>
                         </td>
                     </tr>
-                    <c:if test="${not empty qna.answered_at}">
+                    <c:if test="${not empty qna.answeredAt}">
                         <tr>
                             <th>최종 답변일</th>
-                            <td><fmt:formatDate value="${qna.answered_at}" pattern="yyyy-MM-dd HH:mm"/></td>
+                            <td><fmt:formatDate value="${qna.answeredAt}" pattern="yyyy-MM-dd HH:mm"/></td>
                         </tr>
                     </c:if>
                 </table>

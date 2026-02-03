@@ -37,7 +37,7 @@ public class CreateproductVO {
     private String sportOption;    
     private String[] sizeOptions;
 	
-    private int sportOption_id;      // 기존 선택된 스포츠 옵션 ID
+    private int sportOptionId;      // 기존 선택된 스포츠 옵션 ID
     private List<Integer> sizeOptionIds; // 기존 선택된 사이즈 ID 리스트
     private int styleId;       // 기존 연결된 스타일 ID
     private int sectionId;     // 기존 연결된 이벤트 섹션 ID

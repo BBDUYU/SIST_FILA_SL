@@ -28,22 +28,22 @@
                         <c:when test="${not empty noticeList}">
                             <c:forEach var="dto" items="${noticeList}">
                                 <tr>
-                                    <td>${dto.notice_id}</td>
+                                    <td>${dto.noticeId}</td>
                                     <td>
-                                        <span style="color: #888;">[${dto.category_name}]</span>
+                                        <span style="color: #888;">[${dto.categoryName}]</span>
                                     </td>
                                     <td class="td-subject">
-                                        <a href="${pageContext.request.contextPath}/admin/noticeDetail.htm?id=${dto.notice_id}" class="link-title">
+                                        <a href="${pageContext.request.contextPath}/admin/noticeDetail.htm?id=${dto.noticeId}" class="link-title">
                                             ${dto.title}
                                         </a>
                                     </td>
-                                    <td>${dto.created_id}</td>
+                                    <td>${dto.createdId}</td>
                                     <td>
-                                        <fmt:formatDate value="${dto.created_at}" pattern="yyyy-MM-dd"/>
+                                        <fmt:formatDate value="${dto.createdAt}" pattern="yyyy-MM-dd"/>
                                     </td>
                                     <td>
                                         <button type="button" style="color:red; border:none; background:none; cursor:pointer;" 
-                                                onclick="location.href='notice_delete.htm?id=${dto.notice_id}'">삭제</button>
+                                                onclick="location.href='notice_delete.htm?id=${dto.noticeId}'">삭제</button>
                                     </td>
                                 </tr>
                             </c:forEach>

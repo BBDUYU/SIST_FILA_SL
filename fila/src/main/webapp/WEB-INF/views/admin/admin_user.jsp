@@ -23,7 +23,7 @@
                 <tbody>
                     <c:forEach var="user" items="${userList}">
                         <tr>
-                            <td>${user.usernumber}</td>
+                            <td>${user.userNumber}</td>
                             <td><strong>${user.id}</strong></td>
                             <td>${user.name}</td> <td>${user.email}</td>
                             <td><fmt:formatDate value="${user.createAt}" pattern="yyyy-MM-dd" /></td>
@@ -39,7 +39,7 @@
                                 </c:choose>
                             </td>
                             <td>
-                                <button class="btn-detail" onclick="location.href='${pageContext.request.contextPath}/admin/userDetail.htm?userNum=${user.usernumber}'">상세보기</button>
+                                <button class="btn-detail" onclick="location.href='${pageContext.request.contextPath}/admin/userDetail.htm?userNum=${user.userNumber}'">상세보기</button>
                             </td>
                         </tr>
                     </c:forEach>

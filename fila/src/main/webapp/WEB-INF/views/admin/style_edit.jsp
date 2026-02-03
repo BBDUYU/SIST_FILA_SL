@@ -8,12 +8,12 @@
 
 		<form id="editForm">
 			<%-- 스타일 ID --%>
-			<input type="hidden" name="style_id" value="${style.style_id}">
+			<input type="hidden" name="style_id" value="${style.styleId}">
 
 			<table class="write-table">
 				<tr>
 					<th>스타일 명칭 *</th>
-					<td><input type="text" name="style_name" value="${style.style_name}" style="width:100%; padding:10px; border:1px solid #ddd;" required></td>
+					<td><input type="text" name="style_name" value="${style.styleName}" style="width:100%; padding:10px; border:1px solid #ddd;" required></td>
 				</tr>
 				<tr>
 					<th>스타일 설명</th>
@@ -32,8 +32,8 @@
 						<div id="main-preview" class="preview-container">
 							<c:forEach var="img" items="${imageList}">
 								<div class="preview-box">
-									<c:if test="${img.is_main == 1}"><span class="main-badge">MAIN</span></c:if>
-									<c:set var="safePath" value="${fn:replace(img.image_url, '\\\\', '/')}" />
+									<c:if test="${img.isMain == 1}"><span class="main-badge">MAIN</span></c:if>
+									<c:set var="safePath" value="${fn:replace(img.imageUrl, '\\\\', '/')}" />
 									<img src="${pageContext.request.contextPath}/displayImage.do?path=${safePath}">
 								</div>
 							</c:forEach>
@@ -44,8 +44,8 @@
 					<th>노출 여부</th>
 					<td>
 						<select name="use_yn" style="padding:10px; border:1px solid #ddd;">
-							<option value="1" ${style.use_yn == 1 ? 'selected' : ''}>활성화</option>
-							<option value="0" ${style.use_yn == 0 ? 'selected' : ''}>비활성화</option>
+							<option value="1" ${style.useYn == 1 ? 'selected' : ''}>활성화</option>
+							<option value="0" ${style.useYn == 0 ? 'selected' : ''}>비활성화</option>
 						</select>
 					</td>
 				</tr>
@@ -76,13 +76,13 @@
 						<c:forEach var="p" items="${productList}">
 							<tr>
 								<td><img src="${pageContext.request.contextPath}/displayImage.do?path=${p.mainImageUrl}" width="40" height="40"></td>
-								<td>${p.productid}</td>
+								<td>${p.productId}</td>
 								<td style="text-align: left;"><strong>${p.name}</strong></td>
 								<td><fmt:formatNumber value="${p.price}" pattern="#,###" />원</td>
 								<td>${p.status}</td>
 								<td>
 									<button type="button" class="small-add-btn" 
-										onclick="addProductTag('${p.productid}', '${p.name}')" id="btn-${p.productid}">추가</button>
+										onclick="addProductTag('${p.productId}', '${p.name}')" id="btn-${p.productId}">추가</button>
 								</td>
 							</tr>
 						</c:forEach>

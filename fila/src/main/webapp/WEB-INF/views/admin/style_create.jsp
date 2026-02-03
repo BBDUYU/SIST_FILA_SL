@@ -65,13 +65,13 @@
 						<c:forEach var="p" items="${productList}">
 							<tr>
 								<td><img src="${pageContext.request.contextPath}/displayImage.do?path=${p.mainImageUrl}" width="40" height="40"></td>
-								<td>${p.productid}</td>
+								<td>${p.productId}</td>
 								<td style="text-align: left;"><strong>${p.name}</strong></td>
 								<td><fmt:formatNumber value="${p.price}" pattern="#,###" />원</td>
 								<td>${p.status}</td>
 								<td>
 									<button type="button" class="small-add-btn" 
-										onclick="addProductTag('${p.productid}', '${p.name}')" id="btn-${p.productid}">추가</button>
+										onclick="addProductTag('${p.productId}', '${p.name}')" id="btn-${p.productId}">추가</button>
 								</td>
 							</tr>
 						</c:forEach>
