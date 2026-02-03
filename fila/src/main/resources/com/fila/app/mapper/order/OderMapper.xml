@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fila.app.mapper.order.OderMapper">
+
+	<!-- 1. 주문번호 생성 -->
+    <select id="generateOrderId" resultType="string">
+        SELECT TO_CHAR(SYSDATE, 'YYYYMMDD') || '-' || LPAD(SEQ_ORDER_ID.NEXTVAL, 4, '0')
+        FROM DUAL
+    </select>
+
+    <!-- 2. ORDERS INSERT -->
+    <insert id="insertOrder" parameterType="com.fila.app.domain.order.OrderVO">
+        INSERT INTO ORDERS
+            (ORDER_ID, USER_NUMBER, ADDRESS_ID, TOTAL_AMOUNT,
+             ORDER_STATUS, CREATED_AT, DELIVERY_METHOD, DELIVERY_REQUEST)
+        VALUES
+            (#{orderId}, #{userNumber}, #{addressId}, #{totalAmount},
+             '결제완료', SYSDATE, #{deliveryMethod}, #{deliveryRequest})
+    </insert>
+
+    <!-- 3. ORDER_ITEMS INSERT (Batch) -->
+    <insert id="insertOrderItems">
+        INSERT INTO ORDER_ITEMS
+            (ORDER_ITEM_ID, ORDER_ID, PRODUCT_ID,
+             COMBINATION_ID, QUANTITY, PRICE, CANCEL_STATUS, STATUS_UPDATED_AT)
+        <foreach collection="items" item="item" separator="UNION ALL">
+            SELECT
+                SEQ_ORDER_ITEM.NEXTVAL,
+                #{item.orderId},
+                #{item.productId},
+                <choose>
+                    <when test="item.combinationId != null and item.combinationId &gt; 0">
+                        #{item.combinationId}
+                    </when>
+                    <otherwise>
+                        NULL
+                    </otherwise>
+                </choose>,
+                #{item.quantity},
+                #{item.price},
+                'N',
+                SYSDATE
+            FROM DUAL
+        </foreach>
+    </insert>
+
+    <!-- 4. PAYMENT INSERT -->
+    <insert id="insertPayment">
+        INSERT INTO PAYMENT
+            (PAYMENT_ID, ORDER_ID, AMOUNT, PAYMENT_METHOD, PAYMENT_STATUS, PAID_AT)
+        VALUES
+            (SEQ_PAYMENT.NEXTVAL, #{orderId}, #{amount}, #{method}, 'PAID', SYSDATE)
+    </insert>
+
+    <!-- 5. 쿠폰 사용 처리 -->
+    <update id="updateCouponUsed">
+        UPDATE USER_COUPON
+        SET IS_USED = 1, USED_AT = SYSDATE
+        WHERE USER_COUPON_ID = #{userCouponId}
+    </update>
+
+    <!-- 포인트 사용 내역 -->
+    <insert id="insertPointHistory">
+        INSERT INTO USERPOINTS
+            (POINT_ID, USER_NUMBER, ORDER_ID, POINT_TYPE, AMOUNT, BALANCE, DESCRIPTION, CREATED_AT)
+        VALUES
+            (
+                SEQ_POINT.NEXTVAL,
+                #{userNumber},
+                #{orderId},
+                'USED',
+                #{usedAmount} * -1,
+                (
+                    SELECT
+                        NVL(
+                            (SELECT BALANCE
+                               FROM (SELECT BALANCE
+                                       FROM USERPOINTS
+                                      WHERE USER_NUMBER = #{userNumber}
+                                      ORDER BY POINT_ID DESC)
+                              WHERE ROWNUM = 1),
+                            0
+                        ) - #{usedAmount}
+                    FROM DUAL
+                ),
+                '상품 구매 사용',
+                SYSDATE
+            )
+    </insert>
+
+    <!-- 재고 차감 -->
+    <update id="updateDecreaseStock">
+        UPDATE PRODUCT_OPTION_STOCK
+        SET STOCK = STOCK - #{quantity},
+            IS_SOLDOUT = CASE WHEN (STOCK - #{quantity}) &lt;= 0 THEN 1 ELSE 0 END
+        WHERE COMBINATION_ID = #{combinationId}
+          AND STOCK &gt;= #{quantity}
+    </update>
+
+    <!-- 주문 적립 포인트 -->
+    <insert id="insertOrderPoint">
+        INSERT INTO USERPOINTS
+            (POINT_ID, USER_NUMBER, ORDER_ID, AMOUNT, POINT_TYPE, BALANCE, DESCRIPTION, CREATED_AT)
+        VALUES
+            (
+                SEQ_POINT.NEXTVAL,
+                #{userNumber},
+                #{orderId},
+                #{amount},
+                'EARN',
+                (
+                    SELECT
+                        NVL(
+                            (SELECT BALANCE
+                               FROM (SELECT BALANCE
+                                       FROM USERPOINTS
+                                      WHERE USER_NUMBER = #{userNumber}
+                                      ORDER BY POINT_ID DESC)
+                              WHERE ROWNUM = 1),
+                            0
+                        ) + #{amount}
+                    FROM DUAL
+                ),
+                '주문 번호[' || #{orderId} || '] 결제 적립(5%)',
+                SYSDATE
+            )
+    </insert>
+
+    <!-- 6. 주문 목록 조회 -->
+    <select id="selectUserOrderList" resultType="com.fila.app.domain.order.OrderVO">
+        SELECT *
+        FROM ORDERS
+        WHERE 1=1
+        <if test="userNumber != null and userNumber &gt; 0">
+            AND USER_NUMBER = #{userNumber}
+        </if>
+
+        <choose>
+            <when test="type == 'ORDER'">
+                AND ORDER_STATUS IN ('결제완료', '상품준비중', '배송준비중', '배송중', '배송완료')
+            </when>
+            <when test="type == 'CANCEL'">
+                AND ORDER_STATUS IN ('취소요청', '반품요청', '취소완료', '반품완료')
+            </when>
+        </choose>
+
+        ORDER BY CREATED_AT DESC
+    </select>
+
+    <!-- 7. 주문 상태 업데이트 -->
+    <update id="updateOrderStatus">
+        UPDATE ORDERS
+        SET ORDER_STATUS = #{status},
+            UPDATED_AT = SYSDATE
+        WHERE ORDER_ID = #{orderId}
+    </update>
+
+    <!-- 주문 상세 상품 목록 -->
+    <select id="selectOrderItemsDetail" resultType="com.fila.app.domain.order.OrderItemVO">
+        SELECT i.PRODUCT_ID,
+               p.NAME AS PRODUCT_NAME,
+               i.QUANTITY,
+               i.PRICE,
+               i.COMBINATION_ID,
+               v.VALUE_NAME AS OPTION_SIZE
+        FROM ORDER_ITEMS i
+        JOIN PRODUCTS p ON i.PRODUCT_ID = p.PRODUCT_ID
+        LEFT JOIN PRODUCT_OPTION_COMBI_VALUES cv ON i.COMBINATION_ID = cv.COMBINATION_ID
+        LEFT JOIN PRODUCT_OPTION_VALUES v ON cv.VALUE_ID = v.VALUE_ID
+        WHERE i.ORDER_ID = #{orderId}
+    </select>
+
+    <!-- 재고 증가 -->
+    <update id="updateIncreaseStock">
+        UPDATE PRODUCT_OPTION_STOCK
+        SET STOCK = STOCK + #{quantity},
+            IS_SOLDOUT = CASE WHEN (STOCK + #{quantity}) &gt; 0 THEN 0 ELSE 1 END
+        WHERE COMBINATION_ID = #{combinationId}
+          AND STORE_ID = 4
+    </update>
+
+    <!-- 마스터 쿠폰 상태 변경 (안쓴다 했지만 그대로 변환) -->
+    <update id="updateMasterCouponStatus">
+        UPDATE COUPON
+        SET STATUS = 'N'
+        WHERE COUPON_ID = (
+            SELECT COUPON_ID
+            FROM USER_COUPON
+            WHERE USER_COUPON_ID = #{userCouponId}
+        )
+    </update>
+
+    <!-- 주문 단건 조회 -->
+    <select id="selectOrderById" resultType="com.fila.app.domain.order.OrderVO">
+        SELECT o.*,
+               a.RECIPIENT_NAME,
+               a.RECIPIENT_PHONE,
+               a.ZIPCODE,
+               a.MAIN_ADDR,
+               a.DETAIL_ADDR,
+               p.PAYMENT_METHOD
+        FROM ORDERS o
+        JOIN DELIVERY_ADDRESS a ON o.ADDRESS_ID = a.ADDRESS_ID
+        LEFT JOIN PAYMENT p ON o.ORDER_ID = p.ORDER_ID
+        WHERE o.ORDER_ID = #{orderId}
+    </select>
+
+</mapper>
