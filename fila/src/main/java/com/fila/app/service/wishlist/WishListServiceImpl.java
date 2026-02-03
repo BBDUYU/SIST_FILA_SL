@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
-import com.fila.app.domain.wishlist.WishListVO;
 import com.fila.app.mapper.wishlist.WishListMapper;
 
 @Service
@@ -18,7 +17,7 @@ public class WishListServiceImpl implements WishListService{
         this.wishListMapper = wishListMapper;
     }
 
-    public List<WishListVO> getWishList(int userNumber) {
+    public List<com.fila.app.domain.mypage.WishListVO> getWishList(int userNumber) {
         return wishListMapper.selectWishListByUser(userNumber);
     }
 

@@ -1,5 +1,8 @@
 package com.fila.app.domain;
 
+import lombok.Data;
+
+@Data
 public class MemberVO {
 
     private int userNumber;
@@ -18,89 +21,5 @@ public class MemberVO {
     private String status;        // ACTIVE
     private String grade;         // BASIC
 
-    // ===== getter / setter =====
-
-    public int getUserNumber() {
-        return userNumber;
-    }
-    public void setUserNumber(int userNumber) {
-        this.userNumber = userNumber;
-    }
-
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public int getMarketingAgree() {
-        return marketingAgree;
-    }
-    public void setMarketingAgree(int marketingAgree) {
-        this.marketingAgree = marketingAgree;
-    }
-
-    public String getRole() {
-        return role;
-    }
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getGrade() {
-        return grade;
-    }
-    public void setGrade(String grade) {
-        this.grade = grade;
-    }
+   
 }

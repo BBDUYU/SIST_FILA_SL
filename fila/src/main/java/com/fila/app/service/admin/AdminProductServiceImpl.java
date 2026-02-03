@@ -46,7 +46,7 @@ public class AdminProductServiceImpl implements AdminProductService {
         productMapper.insertProduct(product);
         
         // 2. 카테고리 관계 저장 (성별 + 하위 카테고리)
-        saveCategoryRelations(product.getProduct_id(), categoryIds, tagIds, genderOption);
+        saveCategoryRelations(product.getProductId(), categoryIds, tagIds, genderOption);
         
         // 3. 옵션 및 재고 등록 (기존 DAO의 복잡 로직을 Service에서 제어)
         // 이 부분은 기존 DAO의 insertProductOptions와 insertDefaultStock 로직을 
@@ -58,8 +58,8 @@ public class AdminProductServiceImpl implements AdminProductService {
         }
 
         // 5. 스타일 및 이벤트 연결
-        if (styleId > 0) productMapper.insertStyleProduct(product.getProduct_id(), styleId);
-        if (sectionId > 0) productMapper.insertEventProduct(product.getProduct_id(), sectionId);
+        if (styleId > 0) productMapper.insertStyleProduct(product.getProductId(), styleId);
+        if (sectionId > 0) productMapper.insertEventProduct(product.getProductId(), sectionId);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class AdminProductServiceImpl implements AdminProductService {
         }
 
         // 4. 연관 데이터 초기화 후 재등록 (트랜잭션으로 안전 보장)
-        String pId = dto.getProduct_id();
+        String pId = dto.getProductId();
         productMapper.deleteOptionCombiValues(pId);
         productMapper.deleteOptionStock(pId);
         productMapper.deleteOptionCombinations(pId);

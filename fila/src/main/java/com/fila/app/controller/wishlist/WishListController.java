@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.fila.app.domain.MemberVO;
-import com.fila.app.domain.wishlist.WishListVO;
 import com.fila.app.service.wishlist.WishListService;
 
 @Controller
@@ -27,7 +26,7 @@ public class WishListController {
         MemberVO loginUser = (MemberVO) session.getAttribute("auth");
         if (loginUser == null) return "redirect:/login.htm";
 
-        List<WishListVO> wishList = wishListService.getWishList(loginUser.getUserNumber());
+        List<com.fila.app.domain.mypage.WishListVO> wishList = wishListService.getWishList(loginUser.getUserNumber());
         model.addAttribute("wishList", wishList);
 
         // ✅ include 구조 유지

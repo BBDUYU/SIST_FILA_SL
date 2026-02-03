@@ -4,12 +4,11 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.fila.app.domain.wishlist.WishListVO;
 
 public interface WishListMapper {
 
 	// 1) 위시리스트 목록
-    List<WishListVO> selectWishListByUser(@Param("userNumber") int userNumber);
+    List<com.fila.app.domain.mypage.WishListVO> selectWishListByUser(@Param("userNumber") int userNumber);
 
     // 2) 중복 체크 (DAO의 dupSql 그대로)
     int existsUserProduct(@Param("userNumber") int userNumber,

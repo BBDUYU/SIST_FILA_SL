@@ -5,7 +5,7 @@
 <mapper namespace="com.fila.app.mapper.wishlist.WishListMapper">
 
 	<!-- 1) 위시리스트 목록 (SELECT문 그대로) -->
-  <select id="selectWishListByUser" parameterType="int" resultType="com.fila.app.domain.wishlist.WishListVO">
+  <select id="selectWishListByUser" parameterType="int" resultType="com.fila.app.domain.mypage.WishListVO">
     SELECT
       W.WISHLIST_ID, W.USER_NUMBER, W.PRODUCT_ID, W.SIZE_TEXT, W.CREATED_AT,
       P.NAME AS PRODUCT_NAME, P.PRICE, NVL(P.DISCOUNT_RATE,0) AS DISCOUNT_RATE,

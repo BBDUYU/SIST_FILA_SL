@@ -34,7 +34,7 @@ public class AdminTagServiceImpl implements AdminTagService {
         int newId = maxId + 1;
         
         CategoriesVO vo = CategoriesVO.builder()
-                            .category_id(newId)
+                            .categoryId(newId)
                             .name(tagName)
                             .build();
         

@@ -236,11 +236,11 @@
                                                 <c:forEach var="rDto" items="${recommendKeywords}">
                                                     <li>
                                                         <c:choose>
-                                                            <c:when test="${not empty rDto.product_id}">
-                                                                <a href="${pageContext.request.contextPath}/product/product_detail.htm?id=${rDto.product_id}">${rDto.name}</a>
+                                                            <c:when test="${not empty rDto.productId}">
+                                                                <a href="${pageContext.request.contextPath}/product/product_detail.htm?id=${rDto.productId}">${rDto.name}</a>
                                                             </c:when>
                                                             <c:when test="${not empty rDto.slug}">
-                                                                <a href="${pageContext.request.contextPath}/event/event.htm?slug=${rDto.slug}">${rDto.event_name}</a>
+                                                                <a href="${pageContext.request.contextPath}/event/event.htm?slug=${rDto.slug}">${rDto.eventName}</a>
                                                             </c:when>
                                                         </c:choose>
                                                     </li>
@@ -264,16 +264,16 @@
                                                             <c:forEach var="pDto" items="${recommendProducts}" varStatus="status">
                                                                 <div class="goods swiper-slide">
                                                                     <div class="photo">
-                                                                        <a href="${pageContext.request.contextPath}/product/product_detail.htm?product_id=${pDto.product_id}">
-                                                                            <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${pDto.product_id}/${pDto.product_id}_main_1.jpg" alt="${pDto.name}">
+                                                                        <a href="${pageContext.request.contextPath}/product/product_detail.htm?product_id=${pDto.productId}">
+                                                                            <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${pDto.productId}/${pDto.productId}_main_1.jpg" alt="${pDto.name}">
                                                                         </a>
                                                                     </div>
                                                                     <div class="info">
-                                                                        <a href="${pageContext.request.contextPath}/product/product_detail.htm?product_id=${pDto.product_id}">
+                                                                        <a href="${pageContext.request.contextPath}/product/product_detail.htm?product_id=${pDto.productId}">
                                                                             <p class="category">RECOMMEND</p>
                                                                             <p class="name">${pDto.name}</p>
                                                                             <div class="price">
-                                                                                <p class="sale"><fmt:formatNumber value="${pDto.price * (100 - pDto.discount_rate) / 100}" type="number" />원</p>
+                                                                                <p class="sale"><fmt:formatNumber value="${pDto.price * (100 - pDto.discountRate) / 100}" type="number" />원</p>
                                                                             </div>
                                                                         </a>
                                                                     </div>

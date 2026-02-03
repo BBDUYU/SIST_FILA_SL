@@ -22,7 +22,7 @@ public class AdminStyleServiceImpl implements AdminStyleService {
         List<StyleVO> styleList = styleMapper.selectActiveStyleList();
         if (styleList != null) {
             for (StyleVO style : styleList) {
-                style.setImages(styleMapper.selectStyleImages(style.getStyle_id()));
+                style.setImages(styleMapper.selectStyleImages(style.getStyleId()));
             }
         }
         return styleList;
@@ -33,17 +33,17 @@ public class AdminStyleServiceImpl implements AdminStyleService {
     public boolean registerStyle(StyleVO styleVo, List<StyleImageVO> imageList, List<StyleProductVO> productList) {
         // 1. 스타일 마스터 등록 (selectKey 등으로 생성된 ID가 VO에 담김)
         int result = styleMapper.insertStyle(styleVo);
-        int styleId = styleVo.getStyle_id();
+        int styleId = styleVo.getStyleId();
 
         if (result > 0) {
             // 2. 이미지 정보 저장
             for (StyleImageVO img : imageList) {
-                img.setStyle_id(styleId);
+                img.setStyleId(styleId);
                 styleMapper.insertStyleImage(img);
             }
             // 3. 연관 상품 저장
             for (StyleProductVO prod : productList) {
-                prod.setStyle_id(styleId);
+                prod.setStyleId(styleId);
                 styleMapper.insertStyleProduct(prod);
             }
             return true;
@@ -54,7 +54,7 @@ public class AdminStyleServiceImpl implements AdminStyleService {
     @Override
     @Transactional
     public void updateStyleComplete(StyleVO styleVo, List<StyleImageVO> newImages, String[] productIds, boolean hasNewImages) {
-        int styleId = styleVo.getStyle_id();
+        int styleId = styleVo.getStyleId();
         
         // (1) 마스터 정보 수정
         styleMapper.updateStyle(styleVo);
@@ -63,7 +63,7 @@ public class AdminStyleServiceImpl implements AdminStyleService {
         if (hasNewImages) {
             styleMapper.deleteStyleImages(styleId);
             for (StyleImageVO img : newImages) {
-                img.setStyle_id(styleId);
+                img.setStyleId(styleId);
                 styleMapper.insertStyleImage(img);
             }
         }
@@ -73,9 +73,9 @@ public class AdminStyleServiceImpl implements AdminStyleService {
         if (productIds != null) {
             for (int i = 0; i < productIds.length; i++) {
                 StyleProductVO spVo = new StyleProductVO();
-                spVo.setStyle_id(styleId);
-                spVo.setProduct_id(productIds[i]);
-                spVo.setSort_order(i + 1);
+                spVo.setStyleId(styleId);
+                spVo.setProductId(productIds[i]);
+                spVo.setSortOrder(i + 1);
                 styleMapper.insertStyleProduct(spVo);
             }
         }
@@ -91,7 +91,7 @@ public class AdminStyleServiceImpl implements AdminStyleService {
             
             // 각 상품별 사이즈 옵션 로드
             for (StyleProductVO product : products) {
-                product.setSizeOptions(styleMapper.getProductSizes(product.getProduct_id()));
+                product.setSizeOptions(styleMapper.getProductSizes(product.getProductId()));
             }
             style.setProducts(products);
         }

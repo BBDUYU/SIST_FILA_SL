@@ -1,5 +1,8 @@
 package com.fila.app.domain.event;
 
+import lombok.Data;
+
+@Data
 public class SectionImageVO {
     private int sectionImageId;
     private int sectionId;

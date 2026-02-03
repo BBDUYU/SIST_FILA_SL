@@ -15,5 +15,81 @@
 
         <typeAlias alias="CategoriesVO"
                    type="com.fila.app.domain.categories.CategoriesVO"/>
+                   
+        <typeAlias alias="CouponVO"
+                   type="com.fila.app.domain.admin.CouponVO"/>
+        <typeAlias alias="CreateproductVO"
+                   type="com.fila.app.domain.admin.CreateproductVO"/>
+        <typeAlias alias="ProductVO"
+                   type="com.fila.app.domain.admin.ProductVO"/>
+        <typeAlias alias="StyleImageVO"
+                   type="com.fila.app.domain.admin.StyleImageVO"/>
+        <typeAlias alias="StyleProductVO"
+                   type="com.fila.app.domain.admin.StyleProductVO"/>
+        <typeAlias alias="StyleVO"
+                   type="com.fila.app.domain.admin.StyleVO"/>
+        <typeAlias alias="UserInfoVO"
+                   type="com.fila.app.domain.admin.UserInfoVO"/>
+                   
+        <typeAlias alias="CartItemVO"
+                   type="com.fila.app.domain.cart.CartItemVO"/>
+                   
+        <typeAlias alias="EventDetailVO"
+                   type="com.fila.app.domain.event.EventDetailVO"/>
+        <typeAlias alias="EventVO"
+                   type="com.fila.app.domain.event.EventVO"/>
+        <typeAlias alias="SectionImageVO"
+                   type="com.fila.app.domain.event.SectionImageVO"/>
+        <typeAlias alias="SectionVO"
+                   type="com.fila.app.domain.event.SectionVO"/>
+                   
+        <typeAlias alias="EventproductVO"
+                   type="com.fila.app.domain.eventProduct.EventproductVO"/>
+                   
+        <typeAlias alias="MainbannerVO"
+                   type="com.fila.app.domain.main.MainbannerVO"/>
+                   
+        <typeAlias alias="ChildVO"
+                   type="com.fila.app.domain.member.ChildVO"/>
+        <typeAlias alias="MemberVO"
+                   type="com.fila.app.domain.member.MemberVO"/>
+                   
+        <typeAlias alias="AddressVO"
+                   type="com.fila.app.domain.address.AddressVO"/>
+                   
+        <typeAlias alias="WishListVO"
+                   type="com.fila.app.domain.mypage.WishListVO"/>
+                   
+        <typeAlias alias="MypageQnaCategoryVO"
+                   type="com.fila.app.domain.mypage.qna.MypageQnaCategoryVO"/>
+        <typeAlias alias="MypageQnaVO"
+                   type="com.fila.app.domain.mypage.qna.MypageQnaVO"/>
+                   
+        <typeAlias alias="NoticeVO"
+                   type="com.fila.app.domain.notice.NoticeVO"/>
+                   
+        <typeAlias alias="OrderItemVO"
+                   type="com.fila.app.domain.order.OrderItemVO"/>
+        <typeAlias alias="OrderVO"
+                   type="com.fila.app.domain.order.OrderVO"/>
+        <typeAlias alias="PaymentVO"
+                   type="com.fila.app.domain.order.PaymentVO"/>
+                   
+        <typeAlias alias="ProductsOptionVO"
+                   type="com.fila.app.domain.product.ProductsOptionVO"/>
+        <typeAlias alias="ProductsVO"
+                   type="com.fila.app.domain.product.ProductsVO"/>
+                   
+        <typeAlias alias="QnaVO"
+                   type="com.fila.app.domain.qna.QnaVO"/>
+                   
+        <typeAlias alias="ReviewVO"
+                   type="com.fila.app.domain.review.ReviewVO"/>
+        <typeAlias alias="SearchVO"
+                   type="com.fila.app.domain.search.SearchVO"/>
+
+
+                   
+                   
     </typeAliases>
 </configuration>

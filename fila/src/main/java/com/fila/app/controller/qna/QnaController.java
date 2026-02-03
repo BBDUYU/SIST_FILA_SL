@@ -41,7 +41,7 @@ public class QnaController {
         }
         
         // 2. 작성자 정보 세팅
-        qna.setUser_number(member.getUserNumber()); // MemberVO의 필드명 확인 (getUserNumber or getNo)
+        qna.setUserNumber(member.getUserNumber()); // MemberVO의 필드명 확인 (getUserNumber or getNo)
         
         // 3. 서비스 호출
         int result = qnaService.writeQna(qna);

@@ -29,7 +29,7 @@ import com.fila.app.mapper.address.AddressMapper;
 import com.fila.app.mapper.admin.CouponMapper;
 import com.fila.app.mapper.cart.CartMapper;
 import com.fila.app.mapper.order.OderMapper;
-import com.fila.app.mapper.product.ProductMapper;
+import com.fila.app.mapper.product.UserProductMapper;
 
 @Controller
 @RequestMapping("/order")
@@ -38,7 +38,7 @@ public class OrderController {
 	@Autowired
 	private AddressMapper addressMapper;
 	@Autowired
-	private ProductMapper productMapper;
+	private UserProductMapper productMapper;
 	@Autowired
 	private CartMapper cartMapper;
 	@Autowired
@@ -86,7 +86,7 @@ public class OrderController {
             ProductsVO product = productMapper.getProduct(productId);
             if (product != null) {
                 int originPrice = product.getPrice();
-                int salePrice = originPrice * (100 - product.getDiscount_rate()) / 100;
+                int salePrice = originPrice * (100 - product.getDiscountRate()) / 100;
 
                 orderItems.add(OrderItemVO.builder()
                         .productId(productId)
@@ -203,7 +203,7 @@ public class OrderController {
 
                 if (pId != null && !pId.isEmpty()) {
                     ProductsVO product = productMapper.getProduct(pId);
-                    int salePrice = product.getPrice() * (100 - product.getDiscount_rate()) / 100;
+                    int salePrice = product.getPrice() * (100 - product.getDiscountRate()) / 100;
 
                     items.add(OrderItemVO.builder()
                             .productId(pId)

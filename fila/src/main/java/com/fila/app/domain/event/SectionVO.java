@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.fila.app.domain.product.ProductsVO;
 
+import lombok.Data;
 
+@Data
 public class SectionVO {
     private int sectionId;
     private int eventId;

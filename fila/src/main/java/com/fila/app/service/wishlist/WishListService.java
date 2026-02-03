@@ -3,11 +3,10 @@ package com.fila.app.service.wishlist;
 import java.util.List;
 import java.util.Set;
 
-import com.fila.app.domain.wishlist.WishListVO;
 
 public interface WishListService {
 
-	List<WishListVO> getWishList(int userNumber);
+	List<com.fila.app.domain.mypage.WishListVO> getWishList(int userNumber);
 
     void addWish(int userNumber, String productId, String sizeText);
 
