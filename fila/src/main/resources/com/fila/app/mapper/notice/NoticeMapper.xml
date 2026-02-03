@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fila.app.mapper.notice.NoticeMapper">
+
+  <select id="selectList" resultType="com.fila.app.domain.notice.NoticeVO">
+    SELECT 
+        notice_id, category_name, title, created_id, created_at, image_url
+    FROM notice
+    WHERE 1=1
+    
+    <if test="category != null and category != ''">
+        AND category_name = #{category}
+    </if>
+    
+    <if test="keyword != null and keyword != ''">
+        AND title LIKE '%' || #{keyword} || '%'
+    </if>
+    
+    ORDER BY notice_id DESC
+  </select>
+
+  <select id="selectOne" resultType="com.fila.app.domain.notice.NoticeVO">
+    SELECT * FROM notice 
+    WHERE notice_id = #{noticeId}
+  </select>
+
+  <insert id="insert">
+    INSERT INTO notice (
+        notice_id, category_name, title, created_id, created_at, image_url
+    ) VALUES (
+        SEQ_NOTICE_ID.NEXTVAL, #{category_name}, #{title}, #{created_id}, SYSDATE, #{image_url}
+    )
+  </insert>
+
+  <delete id="delete">
+    DELETE FROM notice 
+    WHERE notice_id = #{noticeId}
+  </delete>
+
+</mapper>
