@@ -25,7 +25,7 @@
 
       <div class="btn-box">
 <div class="btn-box">
- <a href="<%=request.getContextPath()%>/login.htm" class="btn_bg__bk">
+ <a href="<%=request.getContextPath()%>/login.do" class="btn_bg__bk">
   로그인
 </a>
 

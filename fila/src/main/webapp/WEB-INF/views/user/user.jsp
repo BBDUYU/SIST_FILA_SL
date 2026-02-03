@@ -17,7 +17,7 @@
     <h2 class="login-title">로그인</h2>
 
     <!-- 아이디 / 비밀번호 -->
-    <form class="login-form" method="post" action="/login.do">
+    <form class="login-form" method="post" action="${pageContext.request.contextPath}/member/login.do">
       <div class="input-wrap">
         <input type="text" name="id" placeholder="아이디" required>
       </div>
@@ -31,7 +31,10 @@
         <label>
           <input type="checkbox" name="rememberId"> 아이디 저장
         </label>
-        <a href="/member/find_account.jsp">아이디 / 비밀번호 찾기</a>
+       <a href="${pageContext.request.contextPath}/member/find-id-pw.do">
+  아이디 / 비밀번호 찾기
+</a>
+
       </div>
 
       <button type="submit" class="btn-login">로그인</button>
@@ -47,13 +50,15 @@
     <hr class="login-divider">
 
     <!-- 회원가입 -->
-    <button type="button" class="btn-join"
-            onclick="location.href='/member/join_intro.jsp'">
+   <button type="button" class="btn-join"
+        onclick="location.href='${pageContext.request.contextPath}/member/join.do'">
+
       회원가입
     </button>
 
     <div class="guest-order">
-      <a href="/order/guest_order.jsp">비회원 주문조회</a>
+      <a href="${pageContext.request.contextPath}/order/guest.do">비회원 주문조회</a>
+
     </div>
 
   </section>

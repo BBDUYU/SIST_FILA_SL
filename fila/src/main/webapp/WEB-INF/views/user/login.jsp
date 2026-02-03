@@ -17,9 +17,10 @@
 		<!-- login -->
 		<section class="mbr-box">
 			<!-- 입력 폼 - 이메일, 비밀번호 -->
-			<form id="loginForm" name="loginForm"
-				  action="${pageContext.request.contextPath}/login.htm"
-				  method="post" clasus="on">
+	<form id="loginForm" name="loginForm"
+       action="${pageContext.request.contextPath}/login.do"
+      method="post" clasus="on">
+
 
 				<input type="hidden" name="rtnUrl" value="index.htm">
 				<input type="hidden" name="lgc" id="lgc" value="0">
@@ -28,7 +29,7 @@
 
 				<div class="inp-box">
 					<div>
-						<input type="text" id="memberId1" name="mb_id">
+						<input type="text" id="memberId1" name="id">
 					</div>
 
 					<div>
@@ -68,7 +69,7 @@
 
 			<div class="btn-box">
 				<div class="btn-box">
-  <a href="<%=request.getContextPath()%>/member/join.htm"
+  <a href="<%=request.getContextPath()%>/member/join"
      class="btn_sld__bk" tabindex="59">
      회원가입
   </a>

@@ -49,7 +49,7 @@ $(function(){
     }
 
     $.ajax({
-      url: contextPath + '/member/find_id_pw.htm',
+      url: contextPath + '/member/find_id_pw.do',
       type: 'post',
       dataType: 'text',
       data: {
@@ -98,7 +98,7 @@ $(function(){
     }
 
     $.ajax({
-      url: contextPath + '/member/pw_reset.htm',
+      url: contextPath + '/member/pw_reset.do',
       type: 'post',
       dataType: 'text',
       data: {
@@ -108,7 +108,7 @@ $(function(){
       success: function(res){
         if($.trim(res) === 'OK'){
           alert('비밀번호가 변경되었습니다.');
-          location.href = contextPath + '/login.htm';
+          location.href = contextPath + '/login.do';
         } else {
           alert('비밀번호 변경 실패');
         }

@@ -43,10 +43,10 @@ public class LoginController {
     @PostMapping("/login.do")
     public String loginProcess(
             @RequestParam("id") String id,
-            @RequestParam("pw") String pw,
+            @RequestParam("password") String password,
             HttpSession session) {
 
-        MemberVO member = memberService.login(id, pw);
+    	 MemberVO member = memberService.login(id, password);
 
         // 로그인 실패
         if (member == null) {

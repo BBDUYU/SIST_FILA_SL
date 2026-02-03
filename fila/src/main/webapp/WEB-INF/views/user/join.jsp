@@ -18,7 +18,9 @@
 </div>
 
     <!-- 실제 가입 폼 -->
-<form id="joinForm"method="post"action="<%=request.getContextPath()%>/member/join_submit.htm">
+<form id="joinForm" method="post"
+      action="<%=request.getContextPath()%>/member/join.do">
+
 
       <!-- 상태값 -->
       <input type="hidden" name="join_cert" id="join_cert" value="no">

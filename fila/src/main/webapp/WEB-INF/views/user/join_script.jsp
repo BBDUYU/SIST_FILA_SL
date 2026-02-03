@@ -80,21 +80,24 @@ $('#idCheckBtn').on('click', function(){
   }
 
   $.ajax({
-	  url: '<%=request.getContextPath()%>/member/idCheck.htm',
-	  type: 'post',
-	  data: { id: memberId },   // 🔥 여기!
+	  url: '<%=request.getContextPath()%>/member/id-check.do',
+	  type: 'get',
+	  data: { id: memberId },
 	  success: function(res){
-	    if(res === 'OK'){
-	      alert('사용 가능한 아이디입니다.');
-	      $('#id_check').val('yes');
-	    } else if(res === 'DUPLICATE'){
+
+	    // res === true  → 이미 존재 (중복)
+	    // res === false → 사용 가능
+	    if(res === true){
 	      alert('이미 사용 중인 아이디입니다.');
 	      $('#id_check').val('no');
 	    } else {
-	      alert('아이디를 입력해주세요.');
+	      alert('사용 가능한 아이디입니다.');
+	      $('#id_check').val('yes');
 	    }
 	  }
 	});
+
+
 
 });
 
