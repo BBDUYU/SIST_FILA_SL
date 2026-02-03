@@ -26,20 +26,20 @@
 					<tr>
 						<td>
 							<c:choose>
-								<c:when test="${not empty s.main_image_url}">
-									<img src="${pageContext.request.contextPath}/displayImage.do?path=${s.main_image_url}" class="style-thumb">
+								<c:when test="${not empty s.mainImageUrl}">
+									<img src="${pageContext.request.contextPath}/displayImage.do?path=${s.mainImageUrl}" class="style-thumb">
 								</c:when>
 								<c:otherwise>
 									<div style="width:70px; height:90px; background:#eee; line-height:90px; font-size:11px; color:#999;">No Image</div>
 								</c:otherwise>
 							</c:choose>
 						</td>
-						<td>${s.style_id}</td>
-						<td style="text-align: left; font-weight: bold;">${s.style_name}</td>
+						<td>${s.styleId}</td>
+						<td style="text-align: left; font-weight: bold;">${s.styleName}</td>
 						<td style="text-align: left; color: #888; font-size: 13px;">${s.description}</td>
 						<td>
 							<c:choose>
-								<c:when test="${s.use_yn == 1}">
+								<c:when test="${s.useYn == 1}">
 									<span class="badge-use bg-live">활성화</span>
 								</c:when>
 								<c:otherwise>
@@ -49,13 +49,13 @@
 						</td>
 						<td>
 						    <button class="small-btn"
-						        onclick="location.href='${pageContext.request.contextPath}/admin/editStyle.htm?id=${s.style_id}'">수정</button>
+						        onclick="location.href='${pageContext.request.contextPath}/admin/editStyle.htm?id=${s.styleId}'">수정</button>
 						    
 						    <%-- 삭제 대신 상태 변경 토글 버튼 --%>
 						    <button type="button" 
-						            class="small-btn ${s.use_yn == 1 ? 'btn-stop' : 'btn-live'}" 
-						            style="background-color: ${s.use_yn == 1 ? '#e31837' : '#2ecc71'}; color: white; border: none; margin-left:5px; width: 100px;"
-						            onclick="toggleStatus('${s.style_id}', ${s.use_yn})">
+						            class="small-btn ${s.useYn == 1 ? 'btn-stop' : 'btn-live'}" 
+						            style="background-color: ${s.useYn == 1 ? '#e31837' : '#2ecc71'}; color: white; border: none; margin-left:5px; width: 100px;"
+						            onclick="toggleStatus('${s.styleId}', ${s.useYn})">
 						        ${s.use_yn == 1 ? '비활성화' : '활성화'}
 						    </button>
 						</td>

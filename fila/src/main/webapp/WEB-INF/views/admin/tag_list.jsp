@@ -24,34 +24,34 @@
 			<tbody>
 				<c:forEach var="tag" items="${tagList}">
 					<tr>
-						<td>${tag.category_id}</td>
+						<td>${tag.categoryId}</td>
 						<td style="text-align: left; padding-left: 30px;"><span
 							class="tag-badge"># ${tag.name}</span></td>
 						<td><c:choose>
-								<c:when test="${tag.use_yn eq 1}">
+								<c:when test="${tag.useYn eq 1}">
 									<span style="color: #2ecc71; font-weight: bold;">● 사용중</span>
 								</c:when>
 								<c:otherwise>
 									<span style="color: #999; font-weight: bold;">● 중지</span>
 								</c:otherwise>
 							</c:choose></td>
-						<td><fmt:formatDate value="${tag.updated_at}"
+						<td><fmt:formatDate value="${tag.updatedAt}"
 								pattern="yyyy-MM-dd HH:mm" /></td>
 						<td>
-						    <button class="small-btn" onclick="openEditModal('${tag.category_id}', '${tag.name}')">수정</button>
+						    <button class="small-btn" onclick="openEditModal('${tag.categoryId}', '${tag.name}')">수정</button>
 						    
 						    <c:choose>
-						        <c:when test="${tag.use_yn eq 1}">
+						        <c:when test="${tag.useYn eq 1}">
 						            <%-- 현재 사용 중이면 '중지' 버튼 노출 --%>
 						            <button class="small-btn btn-delete" 
-						                onclick="if(confirm('#${tag.name} 태그를 비활성화하시겠습니까?')) { location.href='toggleTag.htm?id=${tag.category_id}&status=0'; }">
+						                onclick="if(confirm('#${tag.name} 태그를 비활성화하시겠습니까?')) { location.href='toggleTag.htm?id=${tag.categoryId}&status=0'; }">
 						                중지
 						            </button>
 						        </c:when>
 						        <c:otherwise>
 						            <%-- 현재 중지 상태면 '사용' 버튼 노출 (파란색 계열 스타일 권장) --%>
 						            <button class="small-btn" style="background-color: #2ecc71 !important; border-color: #2ecc71 !important;"
-						                onclick="if(confirm('#${tag.name} 태그를 활성화하시겠습니까?')) { location.href='toggleTag.htm?id=${tag.category_id}&status=1'; }">
+						                onclick="if(confirm('#${tag.name} 태그를 활성화하시겠습니까?')) { location.href='toggleTag.htm?id=${tag.categoryId}&status=1'; }">
 						                사용
 						            </button>
 						        </c:otherwise>

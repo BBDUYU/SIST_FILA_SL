@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class CouponVO {
 	private int couponId;
 	private String name;
-	private String discountYype;
+	private String discountType;
 	private int discountValue;
 	private Date expiresAt;
 	private Timestamp createdAt;

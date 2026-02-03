@@ -44,7 +44,7 @@
                     <tr>
 					    <th>작성자</th>
 					    <td>
-					        <input type="text" name="created_id" value="${sessionScope.user_number}" 
+					        <input type="text" name="created_id" value="${sessionScope.userNumber}" 
        class="input-text" style="background:#eee;" readonly>
 					        <p style="color: #888; font-size: 12px; margin: 5px 0 0 0;">* 관리자 계정 번호로 자동 기록됩니다.</p>
 					    </td>

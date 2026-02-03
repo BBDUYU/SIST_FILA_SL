@@ -50,13 +50,13 @@
 						<label>노출 카테고리 지정 (중복 선택 가능)</label>
 						<div class="category-container">
 							<div class="category-select" id="depth1">
-								<c:forEach items="${list}" var="c"><c:if test="${c.depth eq 1}"><div class="cate-item" onclick="filterCategory(2, '${c.category_id}', this)">${c.name}</div></c:if></c:forEach>
+								<c:forEach items="${list}" var="c"><c:if test="${c.depth eq 1}"><div class="cate-item" onclick="filterCategory(2, '${c.categoryId}', this)">${c.name}</div></c:if></c:forEach>
 							</div>
 							<div class="category-select" id="depth2">
-								<c:forEach items="${list}" var="c"><c:if test="${c.depth eq 2}"><div class="cate-item" data-parent="${c.parent_id}" onclick="filterCategory(3, '${c.category_id}', this)" style="display: none;">${c.name}</div></c:if></c:forEach>
+								<c:forEach items="${list}" var="c"><c:if test="${c.depth eq 2}"><div class="cate-item" data-parent="${c.parentId}" onclick="filterCategory(3, '${c.categoryId}', this)" style="display: none;">${c.name}</div></c:if></c:forEach>
 							</div>
 							<div class="category-select" id="depth3">
-								<c:forEach items="${list}" var="c"><c:if test="${c.depth eq 3}"><div class="cate-item" data-parent="${c.parent_id}" onclick="toggleCategory(this, '${c.category_id}')" style="display: none;">${c.name}</div></c:if></c:forEach>
+								<c:forEach items="${list}" var="c"><c:if test="${c.depth eq 3}"><div class="cate-item" data-parent="${c.parentId}" onclick="toggleCategory(this, '${c.categoryId}')" style="display: none;">${c.name}</div></c:if></c:forEach>
 							</div>
 						</div>
 						<div id="selected-tags" style="margin-top: 15px; display: flex; gap: 8px; flex-wrap: wrap; min-height: 35px;"></div>
@@ -67,11 +67,11 @@
 					    <div class="opt-list" style="background: #fff; border: 1px solid var(--border-color); padding: 15px;">
 					        <c:forEach items="${tagList}" var="c">
 					            <%-- 카테고리 ID가 4000번대인 것들만 루프 --%>
-					            <c:if test="${c.category_id >= 4000 && c.category_id < 5000}">
+					            <c:if test="${c.categoryId >= 4000 && c.categoryId < 5000}">
 					                <label class="opt-item tag-item">
-					                    <input type="checkbox" name="tag_ids" value="${c.category_id}" 
+					                    <input type="checkbox" name="tag_ids" value="${c.categoryId}" 
 					                        <c:forEach items="${productCategories}" var="pc">
-					                            <c:if test="${pc.category_id == c.category_id}">checked</c:if>
+					                            <c:if test="${pc.categoryId == c.categoryId}">checked</c:if>
 					                        </c:forEach>
 					                    > 
 					                    <span># ${c.name}</span>
@@ -93,8 +93,8 @@
 							        <c:if test="${entry.key == 2}">
 							            <c:forEach items="${entry.value}" var="opt">
 							                <label class="opt-item">
-							                    <input type="radio" name="sport_option" value="${opt.v_master_id}" required> 
-							                    <span>${opt.value_name}</span>
+							                    <input type="radio" name="sport_option" value="${opt.vMasterId}" required> 
+							                    <span>${opt.valueName}</span>
 							                </label>
 							            </c:forEach>
 							        </c:if>
@@ -107,8 +107,8 @@
 						        <c:if test="${entry.key >= 4 && entry.key <= 8}">
 						            <c:forEach items="${entry.value}" var="opt">
 						                <label class="opt-item size-item m-${entry.key}" style="display: none;">
-						                    <input type="checkbox" name="size_options" value="${opt.v_master_id}"> 
-						                    <span>${opt.value_name}</span>
+						                    <input type="checkbox" name="size_options" value="${opt.vMasterId}"> 
+						                    <span>${opt.valueName}</span>
 						                </label>
 						            </c:forEach>
 						        </c:if>

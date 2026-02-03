@@ -55,4 +55,6 @@ public interface CreateproductMapper {
     void deleteOptionGroups(String productId);
     
     List<com.fila.app.domain.admin.ProductVO> selectAdminProductList();
+    
+    List<Map<String, Object>> getProductOptionsDetail(@Param("productId") String productId);
 }

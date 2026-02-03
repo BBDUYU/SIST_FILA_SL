@@ -7,15 +7,15 @@
     window.onload = function() {
         // 1. 기존 선택된 카테고리 태그들 복원
         <c:forEach items="${productCategories}" var="pc">
-            <c:if test="${pc.category_id < 4000}">
-                selectedCategories.set("${pc.category_id}", "${not empty pc.full_path ? pc.full_path : pc.name}");
+            <c:if test="${pc.categoryId < 4000}">
+                selectedCategories.set("${pc.categoryId}", "${not empty pc.fullPath ? pc.fullPath : pc.name}");
             </c:if>
         </c:forEach>
         renderCategoryUI();
         
         // 2. 사이즈 영역 복원
-        const gName = "${product.gender_name}"; 
-        const cType = "${product.category_type}"; 
+        const gName = "${product.genderName}"; 
+        const cType = "${product.categoryType}"; 
         restoreSizeDisplay(gName, cType);
     };
 

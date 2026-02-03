@@ -53,10 +53,10 @@
 							</c:choose></td>
 						<td>
 							<button class="small-btn"
-								onclick="location.href='${pageContext.request.contextPath}/admin/editProduct.htm?id=${p.productid}'">수정</button>
+								onclick="location.href='${pageContext.request.contextPath}/admin/editProduct.htm?id=${p.productId}'">수정</button>
 							<button class="small-btn"
 							    style="background-color: #e31837; color: white; border: none;"
-							    onclick="if(confirm('정말 삭제하시겠습니까?')) { location.href='${pageContext.request.contextPath}/admin/deleteProduct.htm?id=${p.productid}'; }">
+							    onclick="if(confirm('정말 삭제하시겠습니까?')) { location.href='${pageContext.request.contextPath}/admin/deleteProduct.htm?id=${p.productId}'; }">
 							    삭제
 							</button>
 						</td>

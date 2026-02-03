@@ -22,7 +22,7 @@
 					<table class="info-table">
 						<tr>
 							<th>회원 번호</th>
-							<td>${user.usernumber}</td>
+							<td>${user.userNumber}</td>
 							<th>회원 ID</th>
 							<td style="font-weight: bold; color: var(--fila-navy);">${user.id}</td>
 						</tr>
@@ -135,26 +135,26 @@
     <tbody>
     <c:forEach var="c" items="${user.couponList}">
         <%-- 행 스타일: 사용 완료했거나, 관리자가 중지(N)시킨 쿠폰은 흐리게 처리 --%>
-        <tr style="${c.isused eq '1' or c.status eq 'N' ? 'background-color: #f9f9f9; color: #bbb;' : ''}">
-            <td>${c.usercouponid}</td>
-            <td style="text-align: left; font-weight: bold;">${c.coupon_name}</td>
+        <tr style="${c.isUsed eq '1' or c.status eq 'N' ? 'background-color: #f9f9f9; color: #bbb;' : ''}">
+            <td>${c.userCouponId}</td>
+            <td style="text-align: left; font-weight: bold;">${c.couponName}</td>
             <td>
                 <c:choose>
-                    <c:when test="${c.discount_type eq 'AMOUNT'}">
+                    <c:when test="${c.discountType eq 'AMOUNT'}">
                         <fmt:formatNumber value="${c.price}" pattern="#,###"/>원 할인
                     </c:when>
-                    <c:when test="${c.discount_type eq 'PERCENT'}">
+                    <c:when test="${c.discountType eq 'PERCENT'}">
                         ${c.price}% 할인
                     </c:when>
                     <c:otherwise>무료배송</c:otherwise>
                 </c:choose>
             </td>
-            <td><fmt:formatDate value="${c.expireddate}" pattern="yyyy-MM-dd" /> 까지</td>
+            <td><fmt:formatDate value="${c.expiredDate}" pattern="yyyy-MM-dd" /> 까지</td>
             
             <%-- 상태 표시 로직 수정 --%>
             <td>
                 <c:choose>
-                    <c:when test="${c.isused eq '1'}">
+                    <c:when test="${c.isUsed eq '1'}">
                         <span style="color: #999;">사용완료</span>
                     </c:when>
                     <c:when test="${c.status eq 'N'}">
@@ -168,8 +168,8 @@
             
             <td>
                 <c:choose>
-                    <c:when test="${not empty c.usedat}">
-                        <fmt:formatDate value="${c.usedat}" pattern="yyyy-MM-dd HH:mm" />
+                    <c:when test="${not empty c.usedAt}">
+                        <fmt:formatDate value="${c.usedAt}" pattern="yyyy-MM-dd HH:mm" />
                     </c:when>
                     <c:otherwise>-</c:otherwise>
                 </c:choose>
@@ -283,10 +283,10 @@
 								<c:when test="${not empty user.childList}">
 									<c:forEach var="child" items="${user.childList}">
 										<tr>
-											<td style="text-align: center;">${child.childname}</td>
-											<td style="text-align: center;">${child.childgender eq 'M' ? '남아' : '여아'}</td>
+											<td style="text-align: center;">${child.childName}</td>
+											<td style="text-align: center;">${child.childGender eq 'M' ? '남아' : '여아'}</td>
 											<td style="text-align: center;"><fmt:formatDate
-													value="${child.childbirth}" pattern="yyyy년 MM월 dd일" /></td>
+													value="${child.childBirth}" pattern="yyyy년 MM월 dd일" /></td>
 										</tr>
 									</c:forEach>
 								</c:when>

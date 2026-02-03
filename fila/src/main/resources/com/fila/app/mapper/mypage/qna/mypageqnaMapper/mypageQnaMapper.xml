@@ -3,46 +3,74 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.fila.app.mapper.mypage.qna.MypageQnaMapper">
+<mapper namespace="com.fila.app.mapper.mypage.qnaMapper.MypageQnaMapper">
 
-    <select id="selectCategoryList"
-        resultType="com.fila.app.domain.mypage.qna.MypageQnaCategoryVO">
-        SELECT category_id   AS categoryId,
-               category_name AS categoryName
+    <select id="selectCategoryList" resultType="com.fila.app.domain.qna.MypageQnaCategoryVO">
+        SELECT 
+            category_id   AS categoryId,
+            category_name AS categoryName
         FROM inquiry_category
+        ORDER BY category_id ASC
     </select>
-    
-    <select id="selectMyQnaList"
-    parameterType="string"
-    resultType="com.fila.app.domain.mypage.qna.MypageQnaVO">
-    SELECT
-        qna_id      AS qnaId,
-        member_id   AS memberId,
-        category_id AS categoryId,
-        title,
-        content,
-        status,
-        reg_date    AS regDate
-    FROM qna
-    WHERE member_id = #{memberId}
-    ORDER BY qna_id DESC
-</select>
-    
 
-    <insert id="insertQna"
-        parameterType="com.fila.app.domain.mypage.qna.MypageQnaVO">
-        INSERT INTO qna (
-            qna_id, member_id, category_id, title, content, status
+    <insert id="insertInquiry" parameterType="com.fila.app.domain.qna.MypageQnaVO">
+        INSERT INTO INQUIRY (
+            INQUIRY_ID, USER_NUMBER, CATEGORY_ID, TITLE, CONTENT, STATUS, CREATED_AT
         ) VALUES (
-            qna_seq.NEXTVAL,
-            #{memberId},
-            #{categoryId},
-            #{title},
-            #{content},
-            'WAIT'
+            SEQ_INQUIRY.NEXTVAL, #{userNumber}, #{categoryId}, #{title}, #{content}, 'WAIT', SYSDATE
         )
-        
-        
     </insert>
+
+    <update id="updatePrivacyAgree">
+        MERGE INTO USER_MARKETING_MAP m
+        USING DUAL ON (m.USER_NUMBER = #{userNumber} AND m.MARKETING_ID = 5)
+        WHEN MATCHED THEN 
+            UPDATE SET IS_AGREED = #{isAgreed}, AGREED_AT = SYSDATE
+        WHEN NOT MATCHED THEN 
+            INSERT (MAP_ID, USER_NUMBER, MARKETING_ID, IS_AGREED, AGREED_AT)
+            VALUES (SEQ_MAP.NEXTVAL, #{userNumber}, 5, #{isAgreed}, SYSDATE)
+    </update>
+
+    <select id="selectByUser" resultType="com.fila.app.domain.qna.MypageQnaVO">
+        SELECT i.*, c.CATEGORY_NAME AS categoryName
+        FROM INQUIRY i
+        JOIN INQUIRY_CATEGORY c ON i.CATEGORY_ID = c.CATEGORY_ID
+        WHERE i.USER_NUMBER = #{userNumber}
+        ORDER BY i.CREATED_AT DESC
+    </select>
+
+    <select id="selectByUserAndStatus" resultType="com.fila.app.domain.qna.MypageQnaVO">
+        SELECT i.*, c.CATEGORY_NAME AS categoryName
+        FROM INQUIRY i
+        JOIN INQUIRY_CATEGORY c ON i.CATEGORY_ID = c.CATEGORY_ID
+        WHERE i.USER_NUMBER = #{userNumber}
+          AND i.STATUS = #{status}
+        ORDER BY i.CREATED_AT DESC
+    </select>
+
+    <select id="selectAllInquiries" resultType="com.fila.app.domain.qna.MypageQnaVO">
+        SELECT i.*, c.CATEGORY_NAME AS categoryName, u.NAME AS userName
+        FROM INQUIRY i
+        JOIN INQUIRY_CATEGORY c ON i.CATEGORY_ID = c.CATEGORY_ID
+        JOIN USERS u ON i.USER_NUMBER = u.USER_NUMBER
+        ORDER BY i.CREATED_AT DESC
+    </select>
+
+    <update id="updateReply">
+        UPDATE INQUIRY 
+        SET 
+            REPLY_CONTENT = #{replyContent}, 
+            STATUS = 'DONE', 
+            REPLY_AT = SYSDATE 
+        WHERE INQUIRY_ID = #{inquiryId}
+    </update>
+
+    <select id="selectInquiryDetail" resultType="com.fila.app.domain.qna.MypageQnaVO">
+        SELECT i.*, c.CATEGORY_NAME AS categoryName, u.NAME AS userName
+        FROM INQUIRY i
+        JOIN INQUIRY_CATEGORY c ON i.CATEGORY_ID = c.CATEGORY_ID
+        JOIN USERS u ON i.USER_NUMBER = u.USER_NUMBER
+        WHERE i.INQUIRY_ID = #{inquiryId}
+    </select>
 
 </mapper>

@@ -26,27 +26,27 @@
                         <c:when test="${not empty qnaList}">
                             <c:forEach var="dto" items="${qnaList}">
                                 <tr>
-                                    <td>${dto.qna_id}</td>
+                                    <td>${dto.qnaId}</td>
                                     <td>${dto.type}</td>
                                     
                                     <td style="font-size: 13px; color: #888;">
-                                        ${not empty dto.product_id ? dto.product_id : '-'}
+                                        ${not empty dto.productId ? dto.productId : '-'}
                                     </td>
                                     
                                     <td class="td-subject">
-									    <c:if test="${dto.is_secret == 1}">
+									    <c:if test="${dto.isSecret == 1}">
 									        <img src="//image.fila.co.kr/fila/kr/images/common/ico_lock.png" alt="잠금" style="width: 12px; opacity: 0.6; margin-right: 3px;">
 									    </c:if>
-									    <a href="${pageContext.request.contextPath}/admin/productQnaDetail.htm?qna_id=${dto.qna_id}" class="link-title">
+									    <a href="${pageContext.request.contextPath}/admin/productQnaDetail.htm?qna_id=${dto.qnaId}" class="link-title">
 									        ${dto.question}
 									    </a>
 									</td>
                                     
                                     <td>${dto.name}</td>
-                                    <td>${dto.user_number}</td>
+                                    <td>${dto.userNumber}</td>
                                     
                                     <td>
-                                        <fmt:formatDate value="${dto.created_at}" pattern="yyyy-MM-dd"/>
+                                        <fmt:formatDate value="${dto.createdAt}" pattern="yyyy-MM-dd"/>
                                     </td>
                                     
                                     <td>
