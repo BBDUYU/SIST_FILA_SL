@@ -264,7 +264,7 @@
                                                             <c:forEach var="pDto" items="${recommendProducts}" varStatus="status">
                                                                 <div class="goods swiper-slide">
                                                                     <div class="photo">
-                                                                        <a href="${pageContext.request.contextPath}/product/product_detail.htm?product_id=${pDto.productId}">
+                                                                        <a href="${pageContext.request.contextPath}/product/product_detail.htm?productId=${pDto.productId}">
                                                                             <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${pDto.productId}/${pDto.productId}_main_1.jpg" alt="${pDto.name}">
                                                                         </a>
                                                                     </div>
