@@ -27,44 +27,51 @@ public class ReviewController {
     @Setter(onMethod_ = @Autowired)
     private ReviewService reviewService;
     
-    // [POST] 리뷰 등록 처리 (기존 ReviewWrite 핸들러 역할)
+    // [POST] 리뷰 등록 처리
     @PostMapping("/write.do")
     public String write(
             ReviewVO review, 
-            @RequestParam("reviewFile") MultipartFile file, // 스프링의 파일 업로드 객체
+            @RequestParam("reviewFile") MultipartFile file, 
             HttpServletRequest request,
             Model model
             ) throws Exception {
 
         // 1. 파일 업로드 처리
         if (!file.isEmpty()) {
-            // 서버의 실제 저장 경로 찾기
-            String uploadFolder = request.getServletContext().getRealPath("/images/review");
+            // [수정 1] 서버 내부 경로(getRealPath)가 아니라, 고정된 로컬 경로(C드라이브) 사용
+            String uploadFolder = "C:\\fila_upload\\review"; 
+            
             File saveDir = new File(uploadFolder);
             if (!saveDir.exists()) saveDir.mkdirs(); // 폴더 없으면 생성
             
-            String fileName = file.getOriginalFilename();
-            // 실제 파일 저장
+            // [권장] 파일명 중복 방지를 위해 UUID 추가 (선택사항)
+            String uuid = java.util.UUID.randomUUID().toString();
+            String originalName = file.getOriginalFilename();
+            String fileName = uuid + "_" + originalName;
+            
+            // 실제 파일 저장 (C:\fila_upload\review\_파일명.jpg)
             File saveFile = new File(uploadFolder, fileName);
             file.transferTo(saveFile);
             
-            // DB에 저장할 경로 세팅
-            review.setReviewImg("/images/review/" + fileName);
+            // [수정 2] DB에는 웹 접근 경로("/upload/review/...")로 저장
+            // servlet-context.xml 의 mapping="/upload/**" 설정 덕분에 연결됨
+            // (주의: VO 필드명이 review_img라면 setReview_img 로 쓰셔야 합니다)
+            review.setReviewImg("/upload/review/" + fileName);
         }
 
-        // 2. 서비스 호출 (리뷰 등록)
+        // 2. 서비스 호출
         int result = reviewService.writeReview(review);
         
-        // 3. 결과 페이지 이동 (메시지 알림창)
+        // 3. 결과 페이지 이동
         if (result == 1) {
             model.addAttribute("msg", "리뷰가 정상적으로 등록되었습니다.");
+            // (주의: VO 필드명이 product_id라면 getProduct_id 로 쓰셔야 합니다)
             model.addAttribute("loc", "/product/detail?product_id=" + review.getProductId());
         } else {
             model.addAttribute("msg", "리뷰 등록 실패.");
             model.addAttribute("loc", "javascript:history.back()");
         }
         
-        // 공통 알림 페이지 (message.jsp)로 이동
         return "common/message"; 
     }
     
