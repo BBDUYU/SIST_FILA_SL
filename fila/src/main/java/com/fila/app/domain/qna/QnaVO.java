@@ -10,15 +10,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class QnaVO {
-    private int qna_id;
-    private String product_id;
-    private int user_number;
+    private int qnaId;
+    private String productId;
+    private int userNumber;
     private String name;
     private String type;
     private String question;
     private String answer;
     private String status;
-    private int is_secret;
+    private int isSecret;
     
     // 날짜 포맷 지정 (프론트엔드에 보여질 형식)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")

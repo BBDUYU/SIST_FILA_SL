@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserInfoVO {
 	//유저
-	private int usernumber;
+	private int userNumber;
 	private String name;
 	private String id; 
 	private String email;
@@ -27,64 +27,64 @@ public class UserInfoVO {
 	private Date updatedAt;
 	private Date birthday;
 	private String gender;
-	private String marketingagree;
-	private String marketingtype;
+	private String marketingAgree;
+	private String marketingType;
 	private String grade;
 	private String kakaoid;
 	private String naverid;
 	
 	//포인트
-	private int pointid;
-	private String orderid;
+	private int pointId;
+	private String orderId;
 	private String type;
 	private int amout;
 	private int balance;
 	private String description;
 	
 	//자녀정보
-	private int childid;
-	private String childname;
-	private Date childbirth;
-	private String childgender;
+	private int childId;
+	private String childName;
+	private Date childBirth;
+	private String childGender;
 	
 	//배송지
-	private int addressid;
-	private String addressname;
-	private String recipientname;
-	private String recipientphone;
-	private String zipcode;
-	private String mainaddr;
-	private String detailaddr;
-	private String isdefault;
+	private int addressId;
+	private String addressName;
+	private String recipientName;
+	private String recipientPhone;
+	private String zipCode;
+	private String mainAddr;
+	private String detailAddr;
+	private String isDefault;
 	
 	//주문상세정보
-	private int orderitemid;
+	private int orderItemId;
 	private int quantity;
 	private int price;
-	private String cancelstatus;
-	private String cancelreason;
-	private Date statusupdatedat;
-	private String productid;
+	private String cancelStatus;
+	private String cancelReason;
+	private Date statusUpdatedAt;
+	private String productId;
 	
 	//회원보유쿠폰
-	private int usercouponid;
-	private int couponid;
-	private String isused;
-	private Date usedat;
-	private Date expireddate;
-	private Date receivedat;
-	private String coupon_name;          
-	private String discount_type;
+	private int userCouponId;
+	private int couponId;
+	private String isUsed;
+	private Date usedAt;
+	private Date expiredDate;
+	private Date receivedAt;
+	private String couponName;          
+	private String discountType;
 	
 	//문의 내역
-	private int inquiryid;
-	private int categoryid;
+	private int inquiryId;
+	private int categoryId;
 	private String title;
 	private String content;
-	private String imageurl;
+	private String imageUrl;
 	private String status;
 	private String reply;
-	private Date replyat;
+	private Date replyAt;
 	
 	// UserInfoDTO.java 내부에 추가
 	private java.util.List<UserInfoVO> childList;

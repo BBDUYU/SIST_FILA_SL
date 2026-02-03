@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class NoticeVO {
 	
-	private int notice_id;
-	private String category_name;
+	private int noticeId;
+	private String categoryName;
 	private String title;
-	private String created_id;
+	private String createdId;
 	
 	// [3] EmpVO처럼 JSON으로 나갈 때 날짜 포맷을 맞추고 싶다면 추가 (선택사항)
 	// 화면에 2026-01-30 15:00:00 처럼 예쁘게 찍힘

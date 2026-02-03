@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class SearchVO {
-	private int keyword_id;
+	private int keywordId;
 	private String keyword;
-	private int search_count;
-	private Date last_search_date;
+	private int searchCount;
+	private Date lastSearchDate;
 }

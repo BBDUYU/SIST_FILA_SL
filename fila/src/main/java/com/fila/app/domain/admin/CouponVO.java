@@ -14,12 +14,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CouponVO {
-	private int coupon_id;
+	private int couponId;
 	private String name;
-	private String discount_type;
-	private int discount_value;
-	private Date expires_at;
-	private Timestamp created_at;
+	private String discountYype;
+	private int discountValue;
+	private Date expiresAt;
+	private Timestamp createdAt;
 	private String status;
-	private String serial_number; 
+	private String serialNumber; 
 }

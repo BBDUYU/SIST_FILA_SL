@@ -12,13 +12,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class EventproductVO {
 	
-	private String product_id;
+	private String productId;
     private String name;        
     private int price;          
-    private int discount_rate;  
+    private int discountRate;  
     
-    private int event_id;
-    private String event_name;  
+    private int eventId;
+    private String eventName;  
     private String slug;        
     private String mainImageUrl;
     

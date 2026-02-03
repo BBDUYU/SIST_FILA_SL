@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ProductVO {
-    private String productid;    // 상품 ID
+    private String productId;    // 상품 ID
     private String name;         // 상품명
     private String categoryName; // 카테고리명 (JOIN 결과)
     private int price;           // 가격

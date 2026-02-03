@@ -6,16 +6,16 @@ import lombok.Data;
 
 @Data
 public class StyleProductVO {
-    private String product_id; 
-    private int style_id;     
-    private int sort_order;   
+    private String productId; 
+    private int styleId;     
+    private int sortOrder;   
     
-    private String product_name; 
-    private String product_image;
+    private String productName; 
+    private String productImage;
     private int price;
-    public String getProduct_image() {
-        if (this.product_image == null) return "";
-        return this.product_image.replace("\\", "/");
+    public String getProductImage() {
+        if (this.productImage == null) return "";
+        return this.productImage.replace("\\", "/");
     }
     private List<String> sizeOptions;
 }
