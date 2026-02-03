@@ -82,7 +82,7 @@
 
 		<div class="foot">
 			<button type="button" class="btn_bg__bk" id="btnPwOpen" onclick="openPwLayer()">비밀번호 재설정</button>
-			<button type="button" class="on" onclick="location.href='/member/login.asp'">로그인</button>
+			<button type="button" class="on" onclick="location.href='/member/login.do'">로그인</button>
 		</div>
 	</div>
 </div>
@@ -100,7 +100,7 @@
 
 		<div class="con">
 			<form name="pwForm" method="post" class="join_form modify_form">
-				<input type="hidden" name="memberID" id="pwTargetId">
+				<input type="hidden" name="id" id="pwTargetId">
 
 				<div class="wrap">
 					<div class="password-box">

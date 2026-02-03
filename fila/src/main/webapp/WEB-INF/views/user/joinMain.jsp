@@ -9,7 +9,7 @@
 						<p class="txt">카카오 간편 회원가입으로 보다 간편하게 회원가입이 가능합니다.</p>
 						<div class="btn-box">
 							<a href="javascript:snsJoin('KK');void(0);" class="join_kakao">카카오 1초 간편가입</a>
-							<a href="${pageContext.request.contextPath}/member/join.htm"
+							<a href="${pageContext.request.contextPath}/member/join.do"
    class="btn_sld__bk">
    본인인증 후 회원가입
 </a>
