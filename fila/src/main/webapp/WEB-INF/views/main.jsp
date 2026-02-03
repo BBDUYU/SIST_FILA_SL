@@ -222,13 +222,13 @@ function mainGroup(tagId, element) {
                 html += '<div class="goods swiper-slide">'
                     + '  <div class="photo">'
                     + '    <div class="before">'
-                    + '      <a href="' + contextPath + '/product/product_detail.htm?product_id=' + id + '">'
+                    + '      <a href="' + contextPath + '/product/product_detail.htm?productId=' + id + '">'
                     + '        <img src="' + finalUrl + '" alt="' + name + '">'
                     + '      </a>'
                     + '    </div>'
                     + '  </div>'
                     + '  <div class="info">'
-                    + '    <a href="' + contextPath + '/product/product_detail.htm?product_id=' + id + '">'
+                    + '    <a href="' + contextPath + '/product/product_detail.htm?productId=' + id + '">'
                     + '      <div class="top">'
                     + '        <p class="category">' + category + '</p>'
                     + '        <div class="tag">'
@@ -428,10 +428,10 @@ $(document).ready(function() {
                         <div class="photo">
                             <div class="before">
                                 <%-- 클릭 시 스타일 상세페이지로 이동 --%>
-                                <a href="${pageContext.request.contextPath}/style/detail.htm?id=${s.style_id}"> 
+                                <a href="${pageContext.request.contextPath}/style/detail.htm?id=${s.styleId}"> 
                                     <c:choose>
-                                        <c:when test="${not empty s.main_image_url}">
-                                            <img src="${pageContext.request.contextPath}/displayImage.do?path=${s.main_image_url}" alt="${s.style_name}">
+                                        <c:when test="${not empty s.mainImageUrl}">
+                                            <img src="${pageContext.request.contextPath}/displayImage.do?path=${s.mainImageUrl}" alt="${s.styleName}">
                                         </c:when>
                                         <c:otherwise>
                                             <img src="${pageContext.request.contextPath}/images/no_image.jpg" alt="No Image">
