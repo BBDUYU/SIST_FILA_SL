@@ -49,7 +49,7 @@ public class ReviewController {
             file.transferTo(saveFile);
             
             // DB에 저장할 경로 세팅
-            review.setReview_img("/images/review/" + fileName);
+            review.setReviewImg("/images/review/" + fileName);
         }
 
         // 2. 서비스 호출 (리뷰 등록)
@@ -58,7 +58,7 @@ public class ReviewController {
         // 3. 결과 페이지 이동 (메시지 알림창)
         if (result == 1) {
             model.addAttribute("msg", "리뷰가 정상적으로 등록되었습니다.");
-            model.addAttribute("loc", "/product/detail?product_id=" + review.getProduct_id());
+            model.addAttribute("loc", "/product/detail?product_id=" + review.getProductId());
         } else {
             model.addAttribute("msg", "리뷰 등록 실패.");
             model.addAttribute("loc", "javascript:history.back()");
