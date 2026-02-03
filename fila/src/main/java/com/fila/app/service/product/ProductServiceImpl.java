@@ -59,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
         List<ProductsOptionVO> sizeOptions = productMapper.getProductOptions(productId);
 
         // (4) 관련 상품 (같은 카테고리)
-        List<ProductsVO> relatedList = productMapper.selectProductsByCategory(product.getCategory_id());
+        List<ProductsVO> relatedList = productMapper.selectProductsByCategory(product.getCategoryId());
 
         // (5) 맵에 담기
         resultMap.put("product", product);
