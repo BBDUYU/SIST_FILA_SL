@@ -82,7 +82,7 @@
 								<td>${p.status}</td>
 								<td>
 									<button type="button" class="small-add-btn" 
-										onclick="addProductTag('${p.productId}', '${p.name}')" id="btn-${p.productid}">추가</button>
+										onclick="addProductTag('${p.productId}', '${p.name}')" id="btn-${p.productId}">추가</button>
 								</td>
 							</tr>
 						</c:forEach>
