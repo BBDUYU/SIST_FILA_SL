@@ -293,70 +293,123 @@
             <div class="search-bg__wrap"></div>
         </div>
 
-        <div class="util-account">
-            <button type="button" class="account__btn" onclick="location.href='${pageContext.request.contextPath}/mypage/orders.htm'">account</button>
-            <div class="account__layer">
-                <div class="inner">
-                    <c:choose>
-                        <%-- 1. 비로그인 상태 --%>
-                        <c:when test="${empty auth}">
-                            <div class="account-menu-box">
-                                <ul>
-                                    <li><a href="${pageContext.request.contextPath}/member/login.htm">로그인</a></li>
-                                   <li><a href="${pageContext.request.contextPath}/member/joinMain.htm">회원가입</a></li>
+       <div class="util-account">
+    <button type="button" class="account__btn"
+            onclick="location.href='${pageContext.request.contextPath}/mypage/orders.htm'">
+        account
+    </button>
 
+ <div class="account__layer">
+    <div class="inner">
 
-
-                                    
-                                    <%-- <li><a href="${pageContext.request.contextPath}/mypage.htm">마이페이지</a></li>
-                                    <li><a href="${pageContext.request.contextPath}/mypageOrder.htm">주문/배송</a></li>
-                                    <li><a href="${pageContext.request.contextPath}/inquiry/list.htm">1:1 문의</a></li>
-                                    <li><a href="${pageContext.request.contextPath}/mypageWishlist.htm">위시리스트</a></li> --%>
-
-                                                          
-                                    <li><a href="<%=request.getContextPath()%>/view/user/SearchIdPw.jsp"> 아이디 / 비밀번호 찾기</a></li>
-                                    <li><a href="#">이벤트</a></li>
-
-                                </ul>
-                            </div>
-                        </c:when>
-
-                        <%-- 2. 로그인 상태 --%>
-                        <c:otherwise>
-                            <c:choose>
-                                <%-- 2-1. 관리자 --%>
-                                <c:when test="${fn:contains(auth.id, 'admin')}">
-                                    <div class="account-menu-box">
-                                        <ul>
-                                            <li><a href="${pageContext.request.contextPath}/admin/userList.htm">관리자 페이지</a></li>
-                                        </ul>
-                                        <button type="button" class="logout__btn" onclick="location.href='${pageContext.request.contextPath}/logout.htm';">로그아웃</button>
-                                    </div>
-                                </c:when>
-                                <%-- 2-2. 일반 회원 --%>
-                                <c:otherwise>
-                                    <div class="account-info-box">
-                                        <div class="user-txt"><p class="name">${auth.name}님</p><p class="level">WHITE</p></div>
-                                        <div class="benefit-txt"><p class="percent">2% 적립</p><a href="/customer/membership.asp">자세히 보기</a></div>
-                                    </div>
-                                    <div class="account-menu-box">
-                                        <ul>
-                                            <li><a href="${pageContext.request.contextPath}/mypage/orders.htm">마이페이지</a></li>
-                                            <li><a href="${pageContext.request.contextPath}/mypage/orders.htm">주문/배송</a></li>
-                                            <li><a href="${pageContext.request.contextPath}/review/list.htm">1:1 문의</a></li>
-                                            <li><a href="${pageContext.request.contextPath}/mypage/wishlist.htm">위시리스트</a></li>
-                                            <li><a href="${pageContext.request.contextPath}/mypage/mycoupon.htm">쿠폰</a></li>
-                                            <li><a href="${pageContext.request.contextPath}/mypage/mypoint.htm">포인트</a></li>
-                                        </ul>
-                                        <button type="button" class="logout__btn" onclick="location.href='${pageContext.request.contextPath}/logout.htm';">로그아웃</button>
-                                    </div>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:otherwise>
-                    </c:choose>
+        <!-- =========================
+             로그인 사용자 정보 영역
+             (비로그인일 땐 아예 출력 안 됨)
+        ========================== -->
+        <c:if test="${not empty sessionScope.loginMember and not empty sessionScope.loginMember.id}">
+            <div class="account-info-box">
+                <div class="user-txt">
+                    <p class="name">
+                        ${sessionScope.loginMember.name}님
+                    </p>
+                    <p class="level">WHITE</p>
+                </div>
+                <div class="benefit-txt">
+                    <p class="percent">2% 적립</p>
+                    <a href="${pageContext.request.contextPath}/notice/membership.htm">
+                        자세히 보기
+                    </a>
                 </div>
             </div>
+        </c:if>
+
+        <!-- =========================
+             메뉴 영역 (항상 동일한 위치)
+        ========================== -->
+        <div class="account-menu-box">
+            <ul>
+
+                <!-- 비로그인 -->
+                <c:if test="${empty sessionScope.loginMember or empty sessionScope.loginMember.id}">
+                    <li>
+                        <a href="${pageContext.request.contextPath}/member/login.htm">
+                            로그인
+                        </a>
+                    </li>
+                    <li>
+                        <a href="${pageContext.request.contextPath}/member/joinMain.htm">
+                            회원가입
+                        </a>
+                    </li>
+                    <li>
+                        <a href="${pageContext.request.contextPath}/member/search-idpw.htm">
+                            아이디 / 비밀번호 찾기
+                        </a>
+                    </li>
+                    <li><a href="#">이벤트</a></li>
+                </c:if>
+
+                <!-- 로그인 + 관리자 -->
+                <c:if test="${not empty sessionScope.loginMember 
+                             and fn:contains(sessionScope.loginMember.id, 'admin')}">
+                    <li>
+                        <a href="${pageContext.request.contextPath}/admin/userList.htm">
+                            관리자 페이지
+                        </a>
+                    </li>
+                </c:if>
+
+                <!-- 로그인 + 일반회원 -->
+                <c:if test="${not empty sessionScope.loginMember 
+                             and not fn:contains(sessionScope.loginMember.id, 'admin')}">
+                    <li>
+                        <a href="${pageContext.request.contextPath}/mypage/orders.htm">
+                            마이페이지
+                        </a>
+                    </li>
+                    <li>
+                        <a href="${pageContext.request.contextPath}/mypage/orders.htm">
+                            주문/배송
+                        </a>
+                    </li>
+                    <li>
+                        <a href="${pageContext.request.contextPath}/review/list.htm">
+                            1:1 문의
+                        </a>
+                    </li>
+                    <li>
+                        <a href="${pageContext.request.contextPath}/mypage/wishlist.htm">
+                            위시리스트
+                        </a>
+                    </li>
+                    <li>
+                        <a href="${pageContext.request.contextPath}/mypage/mycoupon.htm">
+                            쿠폰
+                        </a>
+                    </li>
+                    <li>
+                        <a href="${pageContext.request.contextPath}/mypage/mypoint.htm">
+                            포인트
+                        </a>
+                    </li>
+                </c:if>
+
+            </ul>
+
+            <!-- 로그아웃 버튼 (로그인 상태에서만) -->
+            <c:if test="${not empty sessionScope.loginMember and not empty sessionScope.loginMember.id}">
+                <button type="button" class="logout__btn"
+                        onclick="location.href='${pageContext.request.contextPath}/member/logout.do'">
+                    로그아웃
+                </button>
+            </c:if>
         </div>
+
+    </div>
+</div>
+
+
+
 
         <div class="util-cart">
             <button type="button" class="cart__btn" id="cart_cnt" onclick="location.href='${pageContext.request.contextPath}/pay/cart.htm';">cart</button>
