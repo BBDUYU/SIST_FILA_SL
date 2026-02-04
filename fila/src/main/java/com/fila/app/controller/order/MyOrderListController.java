@@ -10,7 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.fila.app.domain.MemberVO;
+import com.fila.app.domain.member.MemberVO;
 import com.fila.app.domain.order.OrderVO;
 import com.fila.app.service.order.OderService;
 
@@ -21,7 +21,7 @@ public class MyOrderListController {
 	@Autowired
 	private OderService oderService;
 
-    @GetMapping("/mypage/orders.htm")
+    @GetMapping("/orders.htm")
     public String myOrders(HttpSession session, Model model) {
 
         MemberVO auth = (MemberVO) session.getAttribute("auth");
@@ -33,7 +33,7 @@ public class MyOrderListController {
         model.addAttribute("orderList", list);
         model.addAttribute("totalCount", list.size());
 
-        return "mypage/orders";
+        return "orders";
     }
     
 }

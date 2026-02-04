@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.fila.app.service.main.MainService;
 import com.fila.app.domain.member.MemberVO;
 import com.fila.app.domain.eventProduct.EventproductVO;
-import com.fila.app.domain.member.MemberVO;
-import com.fila.app.service.main.MainService;
 
 @Controller
 @RequestMapping("/main/*") // 호출 주소: /main/main.htm

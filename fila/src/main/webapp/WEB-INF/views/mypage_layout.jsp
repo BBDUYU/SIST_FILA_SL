@@ -22,6 +22,9 @@
 	
     <%-- 실제 각 페이지의 본문이 들어가는 자리 --%>
     <tiles:insertAttribute name="content" ignore="true"/>
+    
+    <%-- 실제 각 페이지의 본문이 들어가는 자리 --%>
+    <tiles:insertAttribute name="footer" ignore="true"/>
 
 	<%-- script --%>
     <tiles:insertAttribute name="script" ignore="true"/>

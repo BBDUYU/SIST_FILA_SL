@@ -17,22 +17,22 @@ import com.fila.app.service.mypage.qna.MypageQnaService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/mypage/qna")
+@RequestMapping("/mypage")
 @RequiredArgsConstructor
 public class MypageQnaController {
 
     private final MypageQnaService service;
 
     /**
-     * 1. 1:1 문의 작성 페이지 이동 (.htm 규칙 적용)
+     * 1. 1:1 문의 작성 페이지 이동 (.htm 규칙 적용) 
      */
-    @RequestMapping(value = "/write.htm", method = RequestMethod.GET)
+    @RequestMapping(value = "/qnaWriteForm.htm", method = RequestMethod.GET)
     public String writeForm(Model model) {
         // 카테고리 목록을 미리 넘겨주어 JSP에서 Select 박스를 구성하게 합니다.
         List<MypageQnaCategoryVO> categories = service.getCategories();
         model.addAttribute("categories", categories);
         
-        return "mypage/qna_write";  // /WEB-INF/views/mypage/qna_write.jsp
+        return "qna_modal";  // /WEB-INF/views/mypage/qna_write.jsp
     }
 
     /**
@@ -50,7 +50,7 @@ public class MypageQnaController {
     /**
      * 3. 내 문의 목록 조회
      */
-    @RequestMapping(value = "/list.htm", method = RequestMethod.GET)
+    @RequestMapping(value = "/qna.htm", method = RequestMethod.GET)
     public String list(@RequestParam(value = "status", required = false, defaultValue = "ALL") String status, 
                        Model model) {
         
@@ -62,7 +62,7 @@ public class MypageQnaController {
         model.addAttribute("qnaList", list);
         model.addAttribute("currentStatus", status);
         
-        return "mypage/qna_list";
+        return "qna";
     }
 
     /**

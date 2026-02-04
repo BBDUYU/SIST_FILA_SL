@@ -5,7 +5,7 @@
 
 <mapper namespace="com.fila.app.mapper.mypage.qnaMapper.MypageQnaMapper">
 
-    <select id="selectCategoryList" resultType="com.fila.app.domain.qna.MypageQnaCategoryVO">
+    <select id="selectCategoryList" resultType="com.fila.app.domain.mypage.qna.MypageQnaCategoryVO">
         SELECT 
             category_id   AS categoryId,
             category_name AS categoryName
@@ -13,7 +13,7 @@
         ORDER BY category_id ASC
     </select>
 
-    <insert id="insertInquiry" parameterType="com.fila.app.domain.qna.MypageQnaVO">
+    <insert id="insertInquiry" parameterType="com.fila.app.domain.mypage.qna.MypageQnaVO">
         INSERT INTO INQUIRY (
             INQUIRY_ID, USER_NUMBER, CATEGORY_ID, TITLE, CONTENT, STATUS, CREATED_AT
         ) VALUES (
@@ -31,7 +31,7 @@
             VALUES (SEQ_MAP.NEXTVAL, #{userNumber}, 5, #{isAgreed}, SYSDATE)
     </update>
 
-    <select id="selectByUser" resultType="com.fila.app.domain.qna.MypageQnaVO">
+    <select id="selectByUser" resultType="com.fila.app.domain.mypage.qna.MypageQnaVO">
         SELECT i.*, c.CATEGORY_NAME AS categoryName
         FROM INQUIRY i
         JOIN INQUIRY_CATEGORY c ON i.CATEGORY_ID = c.CATEGORY_ID
@@ -39,7 +39,7 @@
         ORDER BY i.CREATED_AT DESC
     </select>
 
-    <select id="selectByUserAndStatus" resultType="com.fila.app.domain.qna.MypageQnaVO">
+    <select id="selectByUserAndStatus" resultType="com.fila.app.domain.mypage.qna.MypageQnaVO">
         SELECT i.*, c.CATEGORY_NAME AS categoryName
         FROM INQUIRY i
         JOIN INQUIRY_CATEGORY c ON i.CATEGORY_ID = c.CATEGORY_ID
@@ -48,7 +48,7 @@
         ORDER BY i.CREATED_AT DESC
     </select>
 
-    <select id="selectAllInquiries" resultType="com.fila.app.domain.qna.MypageQnaVO">
+    <select id="selectAllInquiries" resultType="com.fila.app.domain.mypage.qna.MypageQnaVO">
         SELECT i.*, c.CATEGORY_NAME AS categoryName, u.NAME AS userName
         FROM INQUIRY i
         JOIN INQUIRY_CATEGORY c ON i.CATEGORY_ID = c.CATEGORY_ID
@@ -65,7 +65,7 @@
         WHERE INQUIRY_ID = #{inquiryId}
     </update>
 
-    <select id="selectInquiryDetail" resultType="com.fila.app.domain.qna.MypageQnaVO">
+    <select id="selectInquiryDetail" resultType="com.fila.app.domain.mypage.qna.MypageQnaVO">
         SELECT i.*, c.CATEGORY_NAME AS categoryName, u.NAME AS userName
         FROM INQUIRY i
         JOIN INQUIRY_CATEGORY c ON i.CATEGORY_ID = c.CATEGORY_ID

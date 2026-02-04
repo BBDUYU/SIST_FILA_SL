@@ -13,9 +13,9 @@ public class LgmanageController {
     @GetMapping("/lgmanage.htm")
     public String lgmanage(HttpSession session) {
 
-        Object loginMember = session.getAttribute("loginMember");
+        Object auth = session.getAttribute("auth");
 
-        if (loginMember == null) {
+        if (auth == null) {
             return "redirect:/member/login.htm";
         }
 

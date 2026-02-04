@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.fila.app.domain.MemberVO;
+import com.fila.app.domain.member.MemberVO;
 import com.fila.app.service.member.MemberService;
 
 @Controller
@@ -55,7 +55,7 @@ public class LoginController {
         }
 
         // 로그인 성공
-        session.setAttribute("loginMember", member);
+        session.setAttribute("auth", member);
 
         return "redirect:/"; // 메인 페이지
     }

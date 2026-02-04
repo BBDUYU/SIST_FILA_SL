@@ -10,8 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fila.app.domain.MemberVO;
 import com.fila.app.domain.admin.UserInfoVO;
+import com.fila.app.domain.member.MemberVO;
 import com.fila.app.service.admin.CouponService;
 
 import lombok.RequiredArgsConstructor;

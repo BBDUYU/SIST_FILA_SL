@@ -1,7 +1,8 @@
 package com.fila.app.mapper.member;
 
 import org.apache.ibatis.annotations.Param;
-import com.fila.app.domain.MemberVO;
+
+import com.fila.app.domain.member.MemberVO;
 
 public interface MemberMapper {
 

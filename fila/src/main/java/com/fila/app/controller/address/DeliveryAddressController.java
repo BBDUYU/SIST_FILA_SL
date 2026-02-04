@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.fila.app.domain.MemberVO;
 import com.fila.app.domain.address.AddressVO;
+import com.fila.app.domain.member.MemberVO;
 import com.fila.app.mapper.address.AddressMapper; 
 
 @Controller

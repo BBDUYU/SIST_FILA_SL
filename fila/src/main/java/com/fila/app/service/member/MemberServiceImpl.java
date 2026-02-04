@@ -3,7 +3,7 @@ package com.fila.app.service.member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fila.app.domain.MemberVO;
+import com.fila.app.domain.member.MemberVO;
 import com.fila.app.mapper.member.MemberMapper;
 
 @Service

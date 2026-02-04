@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fila.app.domain.MemberVO;
+import com.fila.app.domain.member.MemberVO;
 import com.fila.app.domain.qna.QnaVO;
 import com.fila.app.service.qna.QnaService;
 

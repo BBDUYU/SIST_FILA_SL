@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fila.app.domain.MemberVO;
+import com.fila.app.domain.member.MemberVO;
 import com.fila.app.mapper.address.AddressMapper;
 
 import lombok.RequiredArgsConstructor;
