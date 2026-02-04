@@ -1,11 +1,34 @@
-login.jsp
-
-
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<style>
+/* 🔴 헤더가 로그인 영역을 덮는 문제 해결 */
 
+/* header의 가상 레이어 제거 */
+#header::before,
+.gnb-bg__wrap,
+.search-bg__wrap {
+    display: none !important;
+    pointer-events: none !important;
+}
 
+/* header를 뒤로 보냄 */
+#header {
+    position: relative !important;
+    z-index: 10 !important;
+}
 
+/* 로그인 contents를 앞으로 */
+#contents {
+    position: relative;
+    z-index: 50;
+}
+
+/* contents 내부 클릭 보장 */
+#contents,
+#contents * {
+    pointer-events: auto !important;
+}
+</style>
 
 	
 	<!-- // end of :: header -->
