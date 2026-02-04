@@ -1,11 +1,46 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<div id="wrap">
+
+	
+<style>
+/* 로그인 페이지 전용 헤더 겹침 방지 */
+
+/* GNB 확장 전부 제거 */
+#header .gnb-bg__wrap,
+#header .search-bg__wrap,
+#header .gnb-depth,
+#header .gnb-depth2,
+#header .gnb-depth-wrap {
+    display: none !important;
+}
+
+/* 헤더는 고정(sticky/fixed) 상태 유지 */
+#header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* 실제 헤더 높이만큼 body에 공간 확보 */
+body {
+    padding-top: 120px; /* ← 여기 중요 */
+}
+
+/* contents에서는 margin 제거 */
+#contents {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+</style>
+
 
 	
 	<!-- // end of :: header -->
 
-	<form name="searchFormReal" method="get" autocomplete="off" action="/search/search_result.asp">
+	<form name="searchFormReal" method="get"
+      action="${pageContext.request.contextPath}/search">
+
 		<input type="hidden" name="sWord" value />
 		<input type="hidden" name="searchsCateNo" value />
 	</form>
@@ -18,8 +53,9 @@
 		<section class="mbr-box">
 			<!-- 입력 폼 - 이메일, 비밀번호 -->
 	<form id="loginForm" name="loginForm"
-       action="${pageContext.request.contextPath}/login.do"
-      method="post" clasus="on">
+      action="${pageContext.request.contextPath}/member/login.htm"
+      method="post" class="on">
+
 
 
 				<input type="hidden" name="rtnUrl" value="index.htm">
@@ -29,7 +65,8 @@
 
 				<div class="inp-box">
 					<div>
-						<input type="text" id="memberId1" name="id">
+					<input type="text" id="memberId1" name="id" placeholder="아이디">
+
 					</div>
 
 					<div>
@@ -46,7 +83,11 @@
 						<label for="idCheck">아이디 저장</label>
 					</div>
 
-					<div class="id-srh"><a href="<%=request.getContextPath()%>/view/user/SearchIdPw.jsp" tabindex="55">아이디 / 비밀번호 찾기</a></div>
+					<div class="id-srh"><a href="${pageContext.request.contextPath}/member/pw-find.htm"
+   tabindex="55">
+   아이디 / 비밀번호 찾기
+</a>
+</div>
 				</div>
 
 				<!-- 로그인 버튼 -->
@@ -59,8 +100,8 @@
 
 			<!-- sns 로그인 -->
 			<div class="login_sns">
-				<a href="javascript:snsLogin('NV');void(0);" class="btn_naver" tabindex="57">네이버로 로그인하기</a>
-				<a href="javascript:kakaoLogin();" class="btn_kakao">카카오로 로그인하기</a>
+				<a href="#" class="btn_naver">네이버로 로그인하기</a>
+                <a href="#" class="btn_kakao">카카오로 로그인하기</a>
 
 			</div>
 
@@ -69,11 +110,16 @@
 
 			<div class="btn-box">
 				<div class="btn-box">
-  <a href="<%=request.getContextPath()%>/member/join"
-     class="btn_sld__bk" tabindex="59">
-     회원가입
-  </a>
-				<a href="guest.asp" class="txt__btn" tabindex="60">비회원 주문조회</a>
+  <a href="${pageContext.request.contextPath}/member/join.htm"
+   class="btn_sld__bk" tabindex="59">
+   회원가입
+</a>
+
+				<a href="${pageContext.request.contextPath}/order/order_address.htm"
+   class="txt__btn" tabindex="60">
+   비회원 주문조회
+</a>
+
 			</div>
 		</section>
 		<!-- //login -->
@@ -120,7 +166,12 @@
 				var frm = document.formbiz;
 				frm.submit();   
 			}
+			
+	
+
 			</script>
+			
+	
 
 			<form id="form-biz" name="formbiz" action="https://bizmessage.kakao.com/chat/open" method="post" target="kakaoPop">
 				<input type="hidden" name="uuid" value="@fila" />
@@ -136,4 +187,3 @@
 
 
 
-</div>

@@ -13,9 +13,9 @@
     <%-- c --%>
     <tiles:insertAttribute name="c_start" ignore="true"/>
     
-<body class="hd__style1 _style_main">
     <%-- 헤더 --%>
     <tiles:insertAttribute name="header" />
+<body class="hd__style1 _style_main">
 
     <%-- 실제 각 페이지의 본문이 들어가는 자리 --%>
     <tiles:insertAttribute name="content" />
