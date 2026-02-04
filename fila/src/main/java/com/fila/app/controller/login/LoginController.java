@@ -24,7 +24,7 @@ public class LoginController {
      * 로그인 화면
      * 기존 JoinFormHandler / LoginFormHandler 역할
      */
-    @GetMapping("/login.do")
+    @GetMapping("/login.htm")
     public String loginForm(
             @RequestParam(value = "error", required = false) String error,
             Model model) {
@@ -41,7 +41,7 @@ public class LoginController {
      * 로그인 처리
      * 기존 LoginService + LoginCheckFilter 일부 역할
      */
-    @PostMapping("/login.do")
+    @PostMapping("/login.htm")
     public String loginProcess(
             @RequestParam("id") String id,
             @RequestParam("password") String password,
@@ -64,7 +64,7 @@ public class LoginController {
      * 로그아웃
      * 기존 세션 invalidate 로직
      */
-    @GetMapping("/logout.do")
+    @GetMapping("/logout.htm")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/";

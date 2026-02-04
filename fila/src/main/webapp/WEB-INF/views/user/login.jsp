@@ -53,7 +53,7 @@ body {
 		<section class="mbr-box">
 			<!-- 입력 폼 - 이메일, 비밀번호 -->
 	<form id="loginForm" name="loginForm"
-      action="${pageContext.request.contextPath}/member/login.do"
+      action="${pageContext.request.contextPath}/member/login.htm"
       method="post" class="on">
 
 
@@ -83,7 +83,7 @@ body {
 						<label for="idCheck">아이디 저장</label>
 					</div>
 
-					<div class="id-srh"><a href="${pageContext.request.contextPath}/member/pw-find.do"
+					<div class="id-srh"><a href="${pageContext.request.contextPath}/member/pw-find.htm"
    tabindex="55">
    아이디 / 비밀번호 찾기
 </a>
@@ -110,7 +110,7 @@ body {
 
 			<div class="btn-box">
 				<div class="btn-box">
-  <a href="${pageContext.request.contextPath}/member/join.do"
+  <a href="${pageContext.request.contextPath}/member/join.htm"
    class="btn_sld__bk" tabindex="59">
    회원가입
 </a>
