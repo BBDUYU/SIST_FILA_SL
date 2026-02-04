@@ -37,7 +37,7 @@ public class AdminProductController {
         // ProductVO 리스트를 가져와서 목록 화면에 전달
         List<ProductVO> list = adminProductService.getProductList(); 
         model.addAttribute("productList", list);
-        return "admin/product_list";
+        return "product_list";
     }
 
     /**
@@ -63,11 +63,11 @@ public class AdminProductController {
             model.addAttribute("imageList", imageList);
             model.addAttribute("productCategories", productCategories);
             model.addAttribute("mode", "edit");
-            return "admin/product_edit";
+            return "product_edit";
         }
 
         model.addAttribute("mode", "create");
-        return "admin/product_create";
+        return "product_create";
     }
 
     /**
@@ -117,7 +117,7 @@ public class AdminProductController {
             }
 
             jsonResponse.put("status", "success");
-            jsonResponse.put("redirect", request.getContextPath() + "/admin/productList.htm");
+            jsonResponse.put("redirect", request.getContextPath() + "productList.htm");
 
         } catch (Exception e) {
             e.printStackTrace();

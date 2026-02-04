@@ -26,7 +26,7 @@ public class AdminCouponController {
     public String couponList(Model model) throws Exception {
         List<CouponVO> list = couponService.getCouponList();
         model.addAttribute("couponList", list);
-        return "admin/coupon_list"; // view/admin/coupon_list.jsp
+        return "coupon_list"; // view/admin/coupon_list.jsp
     }
 
     /**
@@ -34,7 +34,7 @@ public class AdminCouponController {
      */
     @RequestMapping(value = "/create_coupon.htm", method = RequestMethod.GET)
     public String createCouponForm() {
-        return "admin/create_coupon"; // view/admin/create_coupon.jsp
+        return "create_coupon"; // view/admin/create_coupon.jsp
     }
 
     /**
