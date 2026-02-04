@@ -36,10 +36,10 @@ public class CartListController {
         List<CartItemVO> cartList = cartService.selectAll(userNumber);
         request.setAttribute("cartList", cartList);
 
-        return "/view/pay/cart.jsp";
+        return "pay";
     }
 
-    @PostMapping("/cart/add")
+    @PostMapping("/cart/add.htm")
     public String addCart(HttpSession session, HttpServletRequest request) throws Exception {
 
         Object auth = (session == null) ? null : session.getAttribute("auth");
@@ -71,7 +71,7 @@ public class CartListController {
         }
     }
 
-    @PostMapping("/cart/delete")
+    @PostMapping("/cart/delete.htm")
     public String deleteSelected(HttpSession session, String ids) throws Exception {
 
         Object auth = (session == null) ? null : session.getAttribute("auth");
@@ -83,7 +83,7 @@ public class CartListController {
         return "redirect:/pay/cart.htm";
     }
 
-    @PostMapping("/cart/clear")
+    @PostMapping("/cart/clear.htm")
     public String clearAll(HttpSession session) throws Exception {
 
         Object auth = (session == null) ? null	 : session.getAttribute("auth");
@@ -95,7 +95,7 @@ public class CartListController {
         return "redirect:/pay/cart.htm";
     }
 
-    @PostMapping("/cart/update")
+    @PostMapping("/cart/update.htm")
     public String updateOption(HttpSession session, int cartItemId, int qty, String size) throws Exception {
 
         Object auth = (session == null) ? null : session.getAttribute("auth");

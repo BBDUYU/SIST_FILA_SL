@@ -7,7 +7,7 @@
     <div class="inner2">
         <form name="form99" id="form99">
             <input type="hidden" name="cartItemId" value="${param.cartItemId}">
-            <input type="hidden" name="productId" value="${product.product_id}">
+            <input type="hidden" name="productId" value="${product.productId}">
             <input type="hidden" name="cartPrice" value="${product.price * (100 - product.discount_rate) / 100}">
 
             <div class="head __line">

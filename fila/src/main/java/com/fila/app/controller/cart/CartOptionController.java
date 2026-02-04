@@ -18,10 +18,10 @@ public class CartOptionController {
     private ProductService productService;
 
     @GetMapping("/cart/cartOption.htm")
-    public String cartOption(@RequestParam("product_id") String productId,
+    public String cartOption(@RequestParam("productId") String productId,
                              HttpServletRequest request) {
 
         request.setAttribute("resultMap", productService.getProductDetail(productId));
-        return "/view/pay/cart_option_modal";
+        return "/pay/cart_option_modal";
     }
 }
