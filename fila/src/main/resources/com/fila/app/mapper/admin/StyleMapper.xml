@@ -61,4 +61,15 @@
         ORDER BY s.STYLE_ID DESC
     </select>
 
+	<insert id="insertStyleProduct" parameterType="com.fila.app.domain.admin.StyleProductVO">
+    INSERT INTO STYLE_PRODUCT (
+        STYLE_ID, 
+        PRODUCT_ID, 
+        SORT_ORDER
+    ) VALUES (
+        #{styleId}, 
+        #{productId}, 
+        #{sortOrder}
+    )
+</insert>
 </mapper>

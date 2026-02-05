@@ -77,7 +77,6 @@ public class AdminStyleController {
         String path = request.getServletPath();
         boolean isEdit = path.contains("editStyle");
 
-        // (1) 마스터 정보 수집
         String styleName = request.getParameter("style_name");
         String description = request.getParameter("description");
         int useYn = Integer.parseInt(request.getParameter("use_yn") != null ? request.getParameter("use_yn") : "1");
@@ -89,31 +88,41 @@ public class AdminStyleController {
                 .useYn(useYn)
                 .build();
 
+        int styleId;
+        
         if (isEdit) {
-            styleVo.setStyleId(Integer.parseInt(request.getParameter("style_id")));
+            styleId = Integer.parseInt(request.getParameter("style_id"));
+            styleVo.setStyleId(styleId);
+        } else {
+            // [방법 1 적용 후] DB에 마스터를 먼저 넣고 styleId를 받아옴
+            styleService.registerStyleMaster(styleVo); 
+            styleId = styleVo.getStyleId(); 
         }
 
-        // (2) 파일 처리 및 이미지 VO 생성
+        // 파일 처리
         List<MultipartFile> files = request.getFiles("style_images");
         List<StyleImageVO> imageList = new ArrayList<>();
         boolean hasNewImages = (files != null && !files.isEmpty() && !files.get(0).isEmpty());
 
         if (hasNewImages) {
-            // ID 결정 (수정은 기존ID, 신규는 임시폴더 사용 후 서비스에서 이동 권장하나 여기선 로직 단순화)
-            String uploadId = isEdit ? String.valueOf(styleVo.getStyleId()) : "temp_" + System.currentTimeMillis();
-            String uploadPath = "C:/fila_upload/style/" + uploadId + "/";
-            
+            String uploadPath = "C:/fila_upload/style/" + styleId + "/"; // 번호 기반 폴더
             File dir = new File(uploadPath);
-            if(isEdit && dir.exists()) deleteDirectory(dir);
+            
+            if (dir.exists()) deleteDirectory(dir);
             dir.mkdirs();
 
             for (int i = 0; i < files.size(); i++) {
-                MultipartFile file = files.get(i);
-                String fileName = file.getOriginalFilename();
-                file.transferTo(new File(uploadPath + fileName));
+                MultipartFile mFile = files.get(i);
+                if (mFile.isEmpty()) continue;
+
+                String fileName = mFile.getOriginalFilename();
+                mFile.transferTo(new File(uploadPath + fileName));
+
+                String dbPath = "C:/fila_upload/style/" + styleId + "/" + fileName;
 
                 imageList.add(StyleImageVO.builder()
-                        .imageUrl("C:/fila_upload/style/" + uploadId + "/" + fileName)
+                        .styleId(styleId)
+                        .imageUrl(dbPath)
                         .isMain(i == 0 ? 1 : 0) 
                         .sortOrder(i + 1)
                         .altText(styleName)
@@ -121,21 +130,22 @@ public class AdminStyleController {
             }
         }
 
-        // (3) 서비스 호출
+        // 최종 저장
         if (isEdit) {
             styleService.updateStyleComplete(styleVo, imageList, productIds, hasNewImages);
         } else {
-            // 신규 등록 시 매칭 상품을 StyleProductVO 리스트로 변환
-            List<StyleProductVO> productList = new ArrayList<>();
+            List<StyleProductVO> styleProducts = new ArrayList<>();
             if (productIds != null) {
                 for (int i = 0; i < productIds.length; i++) {
-                    productList.add(StyleProductVO.builder()
+                    styleProducts.add(StyleProductVO.builder()
+                            .styleId(styleId)
                             .productId(productIds[i])
                             .sortOrder(i + 1)
                             .build());
                 }
             }
-            styleService.registerStyle(styleVo, imageList, productList);
+            // 아까 확인한 인터페이스 메서드명 registerStyle로 호출
+            styleService.registerStyle(styleVo, imageList, styleProducts);
         }
 
         return "success";

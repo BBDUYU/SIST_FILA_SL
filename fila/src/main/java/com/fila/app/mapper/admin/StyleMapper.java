@@ -24,4 +24,5 @@ public interface StyleMapper {
     int updateStyleStatus(@Param("id") int id, @Param("status") int status);
     void deleteStyleImages(int styleId);
     void deleteStyleProducts(int styleId);
+    
 }
