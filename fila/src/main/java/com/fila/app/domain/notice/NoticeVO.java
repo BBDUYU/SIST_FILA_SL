@@ -23,10 +23,10 @@ public class NoticeVO {
 	// [3] EmpVO처럼 JSON으로 나갈 때 날짜 포맷을 맞추고 싶다면 추가 (선택사항)
 	// 화면에 2026-01-30 15:00:00 처럼 예쁘게 찍힘
 	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-	private Date created_at;
-	private String updated_id;
+	private Date createdAt;
+	private String updatedId;
 	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-	private Date updated_at;
-	private String image_url;
+	private Date updatedAt;
+	private String imageUrl;
 	
 }

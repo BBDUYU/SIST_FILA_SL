@@ -11,17 +11,25 @@
         question, is_secret, status, created_at,
         answer_email, is_email_notify
     ) VALUES (
-        seq_qna.nextval, #{product_id}, #{user_number}, #{type}, 
-        #{question}, #{is_secret}, 'WAITING', SYSDATE,
-        #{answer_email, jdbcType=VARCHAR}, #{is_email_notify}
+        seq_qna.nextval, #{productId}, #{userNumber}, #{type}, 
+        #{question}, #{isSecret}, 'WAITING', SYSDATE,
+        #{answerEmail, jdbcType=VARCHAR}, #{isEmailNotify}
     )
   </insert>
 
   <select id="selectList" resultType="com.fila.app.domain.qna.QnaVO">
     SELECT 
-        q.qna_id, q.product_id, q.user_number, q.type, q.question, q.answer, 
-        q.status, q.is_secret, q.created_at, q.answered_at,
-        u.id AS user_id
+        q.qna_id      AS qnaId, 
+        q.product_id   AS productId, 
+        q.user_number  AS userNumber, 
+        q.type, 
+        q.question, 
+        q.answer, 
+        q.status, 
+        q.is_secret    AS isSecret, 
+        q.created_at   AS createdAt, 
+        q.answered_at  AS answeredAt,
+        u.id           AS userId
     FROM qna q
     LEFT JOIN users u ON q.user_number = u.user_number
     WHERE q.product_id = #{productId}
@@ -30,9 +38,16 @@
 
   <select id="selectAdminQnaList" resultType="com.fila.app.domain.qna.QnaVO">
     SELECT 
-        q.qna_id, q.product_id, q.user_number, q.type, q.question, 
-        q.answer, q.status, q.is_secret, q.created_at,
-        u.name AS name
+        q.qna_id      AS qnaId, 
+        q.product_id   AS productId, 
+        q.user_number  AS userNumber, 
+        q.type, 
+        q.question, 
+        q.answer, 
+        q.status, 
+        q.is_secret    AS isSecret, 
+        q.created_at   AS createdAt,
+        u.name         AS name
     FROM qna q
     JOIN users u ON q.user_number = u.user_number
     ORDER BY q.qna_id DESC
@@ -40,7 +55,17 @@
 
   <select id="selectQnaDetail" resultType="com.fila.app.domain.qna.QnaVO">
     SELECT 
-        q.*, u.name 
+        q.qna_id      AS qnaId,
+        q.product_id   AS productId,
+        q.user_number  AS userNumber,
+        q.type,
+        q.question,
+        q.answer,
+        q.status,
+        q.is_secret    AS isSecret,
+        q.created_at   AS createdAt,
+        q.answered_at  AS answeredAt,
+        u.name         AS name 
     FROM qna q
     JOIN users u ON q.user_number = u.user_number
     WHERE q.qna_id = #{qnaId}

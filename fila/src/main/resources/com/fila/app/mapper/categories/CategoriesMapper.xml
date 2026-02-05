@@ -5,7 +5,13 @@
 <mapper namespace="com.fila.app.mapper.categories.CategoriesMapper">
 
     <sql id="categoryColumns">
-        category_id, name, parent_id, depth, created_at, updated_at, use_yn
+        category_id AS categoryId, 
+        name, 
+        parent_id   AS parentId, 
+        depth, 
+        created_at  AS createdAt, 
+        updated_at  AS updatedAt, 
+        use_yn      AS useYn
     </sql>
 
     <select id="selectCategoryList" resultType="com.fila.app.domain.categories.CategoriesVO">
@@ -50,7 +56,7 @@
 
     <insert id="insertTag">
         INSERT INTO categories (category_id, name, depth, created_at, updated_at, use_yn)
-        VALUES (#{category_id}, #{name}, 4, SYSDATE, SYSDATE, 1)
+        VALUES (#{categoryId}, #{name}, 4, SYSDATE, SYSDATE, 1)
     </insert>
 
     <update id="updateTag">

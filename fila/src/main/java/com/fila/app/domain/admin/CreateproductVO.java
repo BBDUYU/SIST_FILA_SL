@@ -27,7 +27,7 @@ public class CreateproductVO {
 	private int productImageId;
 	private String imageUrl;
 	private String imageType;
-	private int is_main;
+	private int isMain;
 	private int sortOrder;
 	
 	private int relId;

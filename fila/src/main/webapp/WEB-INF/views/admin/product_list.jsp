@@ -8,7 +8,7 @@
 		<div class="section-header"
 			style="display: flex; justify-content: space-between; align-items: center;">
 			<h3 class="section-title">상품 관리 리스트</h3>
-			<button onclick="location.href='createProduct.htm'"
+			<button onclick="location.href='${pageContext.request.contextPath}/admin/createProduct.htm'"
 				class="submit-btn" style="width: 150px; margin: 0;">+ 신규 상품
 				등록</button>
 		</div>
@@ -32,7 +32,7 @@
 						<td><img
 							src="${pageContext.request.contextPath}/displayImage.do?path=${p.mainImageUrl}"
 							width="50" height="50" style="object-fit: cover;"></td>
-						<td>${p.productid}</td>
+						<td>${p.productId}</td>
 						<td>${p.categoryName}</td>
 						<td style="text-align: left; font-weight: bold;">${p.name}</td>
 						<td><fmt:formatNumber value="${p.price}" pattern="#,###" />원</td>

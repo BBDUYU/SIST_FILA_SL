@@ -9,17 +9,23 @@
     INSERT INTO review (
         review_id, product_id, user_number, content, rating, review_img, created_at
     ) VALUES (
-        seq_review.nextval, #{product_id}, #{user_number}, #{content}, #{rating}, #{review_img, jdbcType=VARCHAR}, SYSDATE
+        seq_review.nextval, #{productId}, #{userNumber}, #{content}, #{rating}, #{reviewImg, jdbcType=VARCHAR}, SYSDATE
     )
   </insert>
 
   <select id="selectListByFilter" resultType="com.fila.app.domain.review.ReviewVO">
     SELECT 
-        r.review_id, r.product_id, r.user_number, r.content, r.rating, r.review_img, r.created_at as regdate,
-        u.id as user_id,
-        (SELECT COUNT(*) FROM review_like l WHERE l.review_id = r.review_id AND l.type = 1) as like_cnt,
-        (SELECT COUNT(*) FROM review_like l WHERE l.review_id = r.review_id AND l.type = 0) as dislike_cnt,
-        (SELECT type FROM review_like l WHERE l.review_id = r.review_id AND l.user_number = #{userNumber}) as myLike
+        r.review_id     AS reviewId, 
+        r.product_id    AS productId, 
+        r.user_number   AS userNumber, 
+        r.content, 
+        r.rating, 
+        r.review_img    AS reviewImg, 
+        r.created_at    AS createdAt,
+        u.id            AS userId,
+        (SELECT COUNT(*) FROM review_like l WHERE l.review_id = r.review_id AND l.type = 1) AS likeCnt,
+        (SELECT COUNT(*) FROM review_like l WHERE l.review_id = r.review_id AND l.type = 0) AS dislikeCnt,
+        (SELECT type FROM review_like l WHERE l.review_id = r.review_id AND l.user_number = #{userNumber}) AS myLike
     FROM review r
     JOIN users u ON r.user_number = u.user_number
     WHERE r.product_id = #{productId}
@@ -51,9 +57,9 @@
 
   <select id="getReviewSummary" resultType="map">
     SELECT 
-        COUNT(*) as "total_cnt",
-        NVL(AVG(rating), 0) as "avg_score",
-        COUNT(CASE WHEN rating = 5 THEN 1 END) as "best_cnt"
+        COUNT(*)               AS "totalCnt",
+        NVL(AVG(rating), 0)    AS "avgScore",
+        COUNT(CASE WHEN rating = 5 THEN 1 END) AS "bestCnt"
     FROM review 
     WHERE product_id = #{productId}
   </select>

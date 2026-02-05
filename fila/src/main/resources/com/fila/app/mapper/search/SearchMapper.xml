@@ -16,12 +16,17 @@
     </update>
 
     <select id="selectTopKeywords" resultType="com.fila.app.domain.search.SearchVO">
-        SELECT * FROM (
+        SELECT 
+            keywordId, 
+            keyword, 
+            searchCount, 
+            lastSearchDate
+        FROM (
             SELECT 
-                KEYWORD_ID AS keyword_id, 
-                KEYWORD AS keyword, 
-                SEARCH_COUNT AS search_count, 
-                LAST_SEARCH_DATE AS last_search_date
+                KEYWORD_ID        AS keywordId, 
+                KEYWORD           AS keyword, 
+                SEARCH_COUNT      AS searchCount, 
+                LAST_SEARCH_DATE  AS lastSearchDate
             FROM SEARCH_KEYWORDS
             ORDER BY SEARCH_COUNT DESC
         ) 

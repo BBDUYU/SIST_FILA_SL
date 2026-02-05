@@ -27,7 +27,7 @@ public class AdminTagController {
     public String tagList(Model model) {
         List<CategoriesVO> list = adminTagService.getTagList();
         model.addAttribute("tagList", list);
-        return "admin/tag_list";
+        return "tag_list";
     }
 
     /**

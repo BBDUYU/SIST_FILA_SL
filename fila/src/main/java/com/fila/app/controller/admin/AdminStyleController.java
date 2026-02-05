@@ -36,11 +36,11 @@ public class AdminStyleController {
     /**
      * 1. 스타일 목록 조회
      */
-    @RequestMapping(value = "/style_list.htm", method = RequestMethod.GET)
+    @RequestMapping(value = "/styleList.htm", method = RequestMethod.GET)
     public String styleList(Model model) throws Exception {
         List<StyleVO> styleList = styleService.getStyleList();
         model.addAttribute("styleList", styleList);
-        return "admin/style_list";
+        return "style_list";
     }
 
     /**
@@ -64,7 +64,7 @@ public class AdminStyleController {
             model.addAttribute("matchedProductIds", matchedProductIds);
             return "admin/style_edit";
         }
-        return "admin/style_create";
+        return "style_create";
     }
 
     /**

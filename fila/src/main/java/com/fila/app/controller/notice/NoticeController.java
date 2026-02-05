@@ -26,7 +26,6 @@ import com.fila.app.service.notice.NoticeService;
 import lombok.Setter;
 
 @Controller
-@RequestMapping("/notice/*") // 기본 경로 설정
 public class NoticeController {
 
     @Setter(onMethod_ = @Autowired)
@@ -35,7 +34,7 @@ public class NoticeController {
     // ==========================================
     // [1. 사용자 기능] NoticeListHandler 대체
     // ==========================================
-    @GetMapping("/list")
+    @GetMapping("/noticeList")
     public String list(
             @RequestParam(value = "category", required = false) String category,
             @RequestParam(value = "keyword", required = false) String keyword,
@@ -44,7 +43,7 @@ public class NoticeController {
         // 사용자용 목록 조회 (이미지 포함된 카드 형태)
         List<NoticeVO> list = noticeService.getNoticeList(category, keyword);
         model.addAttribute("noticeList", list);
-        return "notice/notice_list"; 
+        return "notice_list"; 
     }
     
     // [추가] 이미지 출력 기능 (imageDisplay.htm 대체)
@@ -66,7 +65,7 @@ public class NoticeController {
     // ==========================================
     // [2. 관리자 기능] NoticeManageHandler 대체
     // ==========================================
-    @GetMapping("/admin/list")
+    @GetMapping("/admin/noticeManage")
     public String adminList(Model model) {
         // 관리자용 목록 조회 (전체 조회, 표 형태)
         List<NoticeVO> list = noticeService.getNoticeList(null, null); 
@@ -74,13 +73,13 @@ public class NoticeController {
         model.addAttribute("noticeList", list);
         model.addAttribute("pageName", "notice"); // 사이드바 활성화용
         
-        return "admin/notice_admin_list"; 
+        return "notice_admin_list"; 
     }
 
     // ==========================================
     // [3. 관리자 상세] NoticeDetailHandler 대체
     // ==========================================
-    @GetMapping("/admin/detail")
+    @GetMapping("/admin/noticeDetail")
     public String adminDetail(@RequestParam("id") int noticeId, Model model) {
         NoticeVO dto = noticeService.getNoticeDetail(noticeId);
         
@@ -92,7 +91,7 @@ public class NoticeController {
         model.addAttribute("dto", dto);
         model.addAttribute("pageName", "notice");
         
-        return "admin/notice_detail";
+        return "notice_detail";
     }
 
     // ==========================================
@@ -100,14 +99,14 @@ public class NoticeController {
     // ==========================================
     
     // 글쓰기 폼 (GET)
-    @GetMapping("/admin/write")
+    @GetMapping("/admin/noticeWrite")
     public String writeForm(Model model) {
         model.addAttribute("pageName", "notice");
-        return "admin/notice_admin_write";
+        return "notice_admin_write";
     }
 
     // 글쓰기 처리 (POST)
-    @PostMapping("/admin/write")
+    @PostMapping("/admin/noticeWrite")
     public String writePro(NoticeVO notice, HttpSession session) {
         // 1. 세션에서 관리자 ID 가져오기 (방어 로직 포함)
         // (LoginController에서 세션에 "auth"나 "id"로 저장했다고 가정)
@@ -124,22 +123,22 @@ public class NoticeController {
 
         // 3. 성공/실패 페이지 이동
         if (result > 0) {
-            return "redirect:/notice/admin/list"; // 성공 시 목록으로
+            return "redirect:/admin/noticeManage"; // 성공 시 목록으로
         } else {
-            return "redirect:/notice/admin/write"; // 실패 시 다시 글쓰기로
+            return "redirect:/admin/noticeWrite"; // 실패 시 다시 글쓰기로
         }
     }
 
     // ==========================================
     // [5. 관리자 삭제] NoticeDeleteHandler 대체
     // ==========================================
-    @PostMapping("/admin/delete")
+    @PostMapping("/admin/notice_delete")
     public String delete(@RequestParam("id") int noticeId) {
         // 서비스 호출 (삭제 실행)
         noticeService.removeNotice(noticeId);
         
         // 결과 상관없이 목록으로 리다이렉트 (기존 핸들러 로직 유지)
-        return "redirect:/notice/admin/list";
+        return "redirect:/admin/noticeManage";
     }
     
     // ==========================================

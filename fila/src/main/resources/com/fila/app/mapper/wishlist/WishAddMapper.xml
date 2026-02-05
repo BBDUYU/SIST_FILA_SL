@@ -4,15 +4,19 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fila.app.mapper.wishlist.WishAddMapper">
 
-  <!-- 중복 체크 (SELECT문 그대로) -->
   <select id="exists" resultType="boolean">
-    SELECT 1 FROM WISHLIST WHERE USER_NUMBER = #{userNumber} AND PRODUCT_ID = #{productId}
+    SELECT COUNT(*) 
+    FROM WISHLIST 
+    WHERE USER_NUMBER = #{userNumber} 
+      AND PRODUCT_ID = #{productId}
   </select>
 
-  <!-- INSERT (INSERT문 그대로) -->
   <insert id="insert">
-    INSERT INTO WISHLIST (WISHLIST_ID, USER_NUMBER, PRODUCT_ID, CREATED_AT)
-    VALUES (SEQ_WISHLIST.NEXTVAL, #{userNumber}, #{productId}, SYSDATE)
+    INSERT INTO WISHLIST (
+        WISHLIST_ID, USER_NUMBER, PRODUCT_ID, CREATED_AT
+    ) VALUES (
+        SEQ_WISHLIST.NEXTVAL, #{userNumber}, #{productId}, SYSDATE
+    )
   </insert>
 
 </mapper>

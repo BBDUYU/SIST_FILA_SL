@@ -56,7 +56,7 @@
 						            class="small-btn ${s.useYn == 1 ? 'btn-stop' : 'btn-live'}" 
 						            style="background-color: ${s.useYn == 1 ? '#e31837' : '#2ecc71'}; color: white; border: none; margin-left:5px; width: 100px;"
 						            onclick="toggleStatus('${s.styleId}', ${s.useYn})">
-						        ${s.use_yn == 1 ? '비활성화' : '활성화'}
+						        ${s.useYn == 1 ? '비활성화' : '활성화'}
 						    </button>
 						</td>
 					</tr>

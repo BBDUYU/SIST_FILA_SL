@@ -27,4 +27,8 @@ public interface AdminProductService {
                       String[] sizeOptions, int styleId, int sectionId, int stock);
     
     void deleteProduct(String productId);
+    
+    List<String> getImagePathsByIds(String[] imageIds);
+    
+    String generateProductId(int mainCateId);
 }

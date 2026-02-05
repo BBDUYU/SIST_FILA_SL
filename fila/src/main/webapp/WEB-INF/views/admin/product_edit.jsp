@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
+<div id="wrap" class="admin-section">
 <form id="productForm" action="editProduct.htm" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="product_id" value="${product.productId}">
 			
@@ -39,7 +39,7 @@
 							</div>
 							<div id="model-preview" class="preview-container">
 								<c:forEach items="${imageList}" var="img">
-									<c:if test="${img.image_type eq 'MODEL'}">
+									<c:if test="${img.imageType eq 'MODEL'}">
 										<div class="img-box" id="ex-img-${img.productImageId}">
 											<img src="${pageContext.request.contextPath}${img.imageUrl}">
 											<input type="hidden" name="existing_image_ids" value="${img.productImageId}">
@@ -60,7 +60,7 @@
 							</div>
 							<div id="detail-preview" class="preview-container">
 								<c:forEach items="${imageList}" var="img">
-									<c:if test="${img.image_type eq 'DETAIL'}">
+									<c:if test="${img.imageType eq 'DETAIL'}">
 										<div class="img-box" id="ex-img-${img.productImageId}">
 											<img src="${pageContext.request.contextPath}${img.imageUrl}">
 											<input type="hidden" name="existing_image_ids" value="${img.productImageId}">
@@ -96,11 +96,11 @@
 					    <label>인기 태그 지정 (중복 선택 가능)</label>
 					    <div class="opt-list" style="background: #fff; border: 1px solid var(--border-color); padding: 15px;">
 					        <c:forEach items="${tagList}" var="c">
-					            <c:if test="${c.category_id >= 4000 && c.category_id < 5000}">
+					            <c:if test="${c.categoryId >= 4000 && c.categoryId < 5000}">
 					                <label class="opt-item tag-item">
 									    <input type="checkbox" name="tag_ids" value="${c.categoryId}" 
 									        <c:forEach items="${productCategories}" var="pc">
-									           <c:if test="${pc.CATEGORY_ID == c.categoryId || pc.categoryId == c.categoryId}">
+									           <c:if test="${pc.categoryId == c.categoryId || pc.categoryId == c.categoryId}">
 									                checked
 									            </c:if>
 									        </c:forEach>
@@ -124,7 +124,7 @@
 							            <c:forEach items="${entry.value}" var="opt">
 							                <label class="opt-item">
 							                    <input type="radio" name="sport_option" value="${opt.vMasterId}" ${product.sportOptionId == opt.vMasterId ? 'checked' : ''} required> 
-							                    <span>${opt.value_name}</span>
+							                    <span>${opt.valueName}</span>
 							                </label>
 							            </c:forEach>
 							        </c:if>
@@ -183,3 +183,4 @@
 			</div>
 			<input type="hidden" id="gender_option_input" name="gender_option" value="${product.genderOptionId}">
 		</form>
+		</div>

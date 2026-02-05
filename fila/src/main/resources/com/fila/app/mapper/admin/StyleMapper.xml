@@ -3,29 +3,38 @@
 <mapper namespace="com.fila.app.mapper.admin.StyleMapper">
 
     <select id="selectStyleList" resultType="com.fila.app.domain.admin.StyleVO">
-        SELECT s.STYLE_ID, s.STYLE_NAME, s.USE_YN, s.DESCRIPTION, si.IMAGE_URL AS main_image_url
+        SELECT 
+            s.STYLE_ID      AS styleId, 
+            s.STYLE_NAME    AS styleName, 
+            s.USE_YN        AS useYn, 
+            s.DESCRIPTION, 
+            si.IMAGE_URL    AS mainImageUrl
         FROM STYLE s
         LEFT JOIN STYLE_IMAGE si ON s.STYLE_ID = si.STYLE_ID AND si.IS_MAIN = 1
         ORDER BY s.STYLE_ID DESC
     </select>
 
-    <insert id="insertStyle" useGeneratedKeys="true" keyProperty="style_id" keyColumn="STYLE_ID">
-        <selectKey keyProperty="style_id" resultType="int" order="BEFORE">
+    <insert id="insertStyle" useGeneratedKeys="true" keyProperty="styleId" keyColumn="STYLE_ID">
+        <selectKey keyProperty="styleId" resultType="int" order="BEFORE">
             SELECT SEQ_STYLE.NEXTVAL FROM DUAL
         </selectKey>
         INSERT INTO STYLE (STYLE_ID, STYLE_NAME, DESCRIPTION, USE_YN)
-        VALUES (#{style_id}, #{style_name}, #{description}, #{use_yn})
+        VALUES (#{styleId}, #{styleName}, #{description}, #{useYn})
     </insert>
 
     <insert id="insertStyleImage">
         INSERT INTO STYLE_IMAGE (STYLE_IMAGE_ID, STYLE_ID, IMAGE_URL, IS_MAIN, SORT_ORDER, ALT_TEXT)
-        VALUES (SEQ_STYLE_IMAGE.NEXTVAL, #{style_id}, #{image_url}, #{is_main}, #{sort_order}, #{alt_text})
+        VALUES (SEQ_STYLE_IMAGE.NEXTVAL, #{styleId}, #{imageUrl}, #{isMain}, #{sortOrder}, #{altText})
     </insert>
 
     <select id="selectStyleProductDetails" resultType="com.fila.app.domain.admin.StyleProductVO">
-        SELECT sp.PRODUCT_ID, sp.STYLE_ID, sp.SORT_ORDER,
-               p.NAME AS product_name, p.PRICE,
-               pi.IMAGE_URL AS product_image
+        SELECT 
+            sp.PRODUCT_ID   AS productId, 
+            sp.STYLE_ID     AS styleId, 
+            sp.SORT_ORDER   AS sortOrder,
+            p.NAME          AS productName, 
+            p.PRICE,
+            pi.IMAGE_URL    AS productImage
         FROM STYLE_PRODUCT sp
         JOIN PRODUCTS p ON sp.PRODUCT_ID = p.PRODUCT_ID
         LEFT JOIN PRODUCT_IMAGE pi ON p.PRODUCT_ID = pi.PRODUCT_ID AND pi.IS_MAIN = 1
@@ -41,17 +50,15 @@
         UPDATE STYLE SET USE_YN = #{status} WHERE STYLE_ID = #{id}
     </update>
 
-	<select id="selectActiveStyleList"
-	        resultType="com.fila.app.domain.admin.StyleVO">
-	    SELECT s.STYLE_ID,
-	           s.STYLE_NAME,
-	           si.IMAGE_URL AS main_image_url
-	    FROM STYLE s
-	    LEFT JOIN STYLE_IMAGE si
-	           ON s.STYLE_ID = si.STYLE_ID
-	          AND si.IS_MAIN = 1
-	    WHERE s.USE_YN = 1
-	    ORDER BY s.STYLE_ID DESC
-	</select>
+    <select id="selectActiveStyleList" resultType="com.fila.app.domain.admin.StyleVO">
+        SELECT 
+            s.STYLE_ID      AS styleId,
+            s.STYLE_NAME    AS styleName,
+            si.IMAGE_URL    AS mainImageUrl
+        FROM STYLE s
+        LEFT JOIN STYLE_IMAGE si ON s.STYLE_ID = si.STYLE_ID AND si.IS_MAIN = 1
+        WHERE s.USE_YN = 1
+        ORDER BY s.STYLE_ID DESC
+    </select>
 
-    </mapper>
+</mapper>
