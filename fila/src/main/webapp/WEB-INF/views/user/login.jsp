@@ -2,37 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 	
-<style>
-/* 로그인 페이지 전용 헤더 겹침 방지 */
-
-/* GNB 확장 전부 제거 */
-#header .gnb-bg__wrap,
-#header .search-bg__wrap,
-#header .gnb-depth,
-#header .gnb-depth2,
-#header .gnb-depth-wrap {
-    display: none !important;
-}
-
-/* 헤더는 고정(sticky/fixed) 상태 유지 */
-#header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-/* 실제 헤더 높이만큼 body에 공간 확보 */
-body {
-    padding-top: 120px; /* ← 여기 중요 */
-}
-
-/* contents에서는 margin 제거 */
-#contents {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-}
-
-</style>
 
 
 	

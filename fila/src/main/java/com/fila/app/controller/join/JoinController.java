@@ -58,7 +58,7 @@ public class JoinController {
      */
     @GetMapping("/joinend.htm")
     public String joinEnd() {
-        return "user/joinend";   // ❗❗ 절대 /member/joinend 아님
+        return "joinend";   // ❗❗ 절대 /member/joinend 아님
     }
 
 
