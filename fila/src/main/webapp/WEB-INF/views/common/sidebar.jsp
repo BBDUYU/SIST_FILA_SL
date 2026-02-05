@@ -52,7 +52,7 @@
 
 <div class="sidebar">
     <div class="logo">
-        <a href="${pageContext.request.contextPath}/index.htm" style="text-decoration: none; color: inherit;">FILA</a>
+        <a href="${pageContext.request.contextPath}/main/main.htm" style="text-decoration: none; color: inherit;">FILA</a>
         <span style="font-weight: 300; font-size: 16px; display: block; color: rgba(255, 255, 255, 0.5); letter-spacing: 1px;">ADMIN</span>
     </div>
     

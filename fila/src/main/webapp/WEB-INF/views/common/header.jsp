@@ -116,7 +116,7 @@
 
 <header id="header">
 	<h1 class="logo">
-		<a href="${pageContext.request.contextPath}/index.htm">FILA</a>
+		<a href="${pageContext.request.contextPath}/main/main.htm">FILA</a>
 	</h1>
 
 	<nav class="gnb">

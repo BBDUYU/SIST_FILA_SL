@@ -18,6 +18,7 @@ import com.fila.app.domain.member.MemberVO;
 import com.fila.app.domain.eventProduct.EventproductVO;
 
 @Controller
+@RequestMapping("/main/*") // 호출 주소: /main/main.htm
 public class MainController {
 
     @Autowired
@@ -26,7 +27,7 @@ public class MainController {
     @Autowired
     private com.fila.app.service.wishlist.WishListService wishListService;
 
-    @RequestMapping("index.htm")
+    @RequestMapping("main.htm")
     public String mainPage(
             @RequestParam(value = "searchItem", required = false) String searchItem,
             HttpSession session, 
