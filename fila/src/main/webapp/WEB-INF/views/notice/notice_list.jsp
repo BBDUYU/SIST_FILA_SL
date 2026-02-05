@@ -11,8 +11,8 @@
                 <a href="#">FAQ</a>
                 <a href="#">매장안내</a>
                 <a href="#">A/S 안내</a>
-                <a href="${pageContext.request.contextPath}/noticeList.htm" class="on">공지사항</a>
-                <a href="${pageContext.request.contextPath}/customer/membership.htm">Membership</a>
+                <a href="${pageContext.request.contextPath}/notice/list" class="on">공지사항</a>
+                <a href="${pageContext.request.contextPath}/notice/membership.htm">Membership</a>
             </div>
 
             <div class="notice_sort-box">
@@ -41,15 +41,15 @@
                                     <li style="text-align:center; padding:20px;">등록된 공지사항이 없습니다.</li>
                                 </c:when>
                                 <c:otherwise>
-                                    <c:forEach var="dto" items="${noticeList}" varStatus="status">
+                                    <c:forEach var="notice" items="${noticeList}" varStatus="status">
                                         <li class="notice-item ${status.first ? 'active' : ''}" 
-                                            onclick="showImage(this, '${dto.image_url}')">
+                                            onclick="showImage(this, '${notice.image_url}')">
                                             <a href="javascript:void(0);">
-                                                <span>${dto.category_name}</span>
+                                                <span>${notice.categoryName}</span>
                                                 <span class="date">
-                                                    <fmt:formatDate value="${dto.created_at}" pattern="yyyy-MM-dd"/>
+                                                    <fmt:formatDate value="${notice.createdAt}" pattern="yyyy-MM-dd"/>
                                                 </span>
-                                                <p class="title">${dto.title}</p>
+                                                <p class="title">${notice.title}</p>
                                             </a>
                                         </li>
                                     </c:forEach>
