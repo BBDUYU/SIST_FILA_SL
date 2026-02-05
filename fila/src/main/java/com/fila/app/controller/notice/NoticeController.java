@@ -165,7 +165,7 @@ public class NoticeController {
 
             // 4. 클라이언트가 접근할 URL 생성
             // (서버 설정에서 /upload/ 경로가 C:/fila_upload/로 매핑되어 있어야 함)
-            String imageUrl = "/upload/notice/" + realFileName;
+            String imageUrl = realFileName;
 
             // 5. JSON 문자열 리턴 {"url": "/upload/notice/..."}
             return "{\"url\": \"" + imageUrl + "\"}";
@@ -175,4 +175,16 @@ public class NoticeController {
             return "{\"error\": \"upload failed\"}";
         }
     }
+    
+    // ==========================================
+    // 멤버십 안내 페이지 (단순 이동)
+    // ==========================================
+    @GetMapping("/membership")
+    public String membership(Model model) {
+        // 사이드바나 탭 활성화를 위해 pageName 전달
+        model.addAttribute("pageName", "membership");
+        
+        return "notice/membership";
+    }
+    
 }

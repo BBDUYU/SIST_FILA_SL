@@ -11,7 +11,7 @@ $(document).ready(function() {
         $firstNotice.trigger("click"); 
         
         // 3. 만약 trigger로 안 되면 강제로 함수 호출
-        var firstImgUrl = "${noticeList[0].image_url}";
+        var firstImgUrl = "${noticeList[0].imageUrl}";
         if(firstImgUrl && firstImgUrl !== 'null') {
             showImage($firstNotice[0], firstImgUrl);
         }
@@ -30,7 +30,7 @@ function showImage(li, imgUrl) {
 
     // 2. 이미지 주소 처리
     if (imgUrl && imgUrl !== 'null' && imgUrl !== '') {
-        var displayUrl = "${pageContext.request.contextPath}/imageDisplay.htm?fileName=" + encodeURIComponent(imgUrl);
+        var displayUrl = "${pageContext.request.contextPath}/notice/display?fileName=" + encodeURIComponent(imgUrl);
         
         // src를 먼저 바꾸고 나서 show()를 해야 바로 뜨는 느낌이 납니다.
         $imgView.attr("src", displayUrl);
@@ -48,7 +48,7 @@ function searchNotice() {
     var keyword = $("#keyword").val();
     
     // 2. 서버 경로 설정
-    var url = "${pageContext.request.contextPath}/noticeList.htm";
+    var url = "${pageContext.request.contextPath}/notice/list";
     
     // 3. 파라미터 조합 (값이 있을 때만 깔끔하게 보냄)
     url += "?category=" + encodeURIComponent(category);
