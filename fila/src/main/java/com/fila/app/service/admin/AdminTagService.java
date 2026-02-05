@@ -13,4 +13,7 @@ public interface AdminTagService {
     int createTag(String tagName);
     
     List<ProductVO> getProductsByTag(int tagId);
+    
+    int updateTag(int categoryId, String tagName);
+    int updateTagStatus(int categoryId, int status);
 }

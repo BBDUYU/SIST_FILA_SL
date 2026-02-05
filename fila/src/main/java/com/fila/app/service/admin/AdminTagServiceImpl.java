@@ -18,6 +18,9 @@ public class AdminTagServiceImpl implements AdminTagService {
     @Autowired
     private TagProductsMapper tagProductsMapper; // 태그 상품 조회 매퍼 (Join/Subquery)
 
+    @Autowired
+    private com.fila.app.mapper.categories.CategoriesMapper categoriesMapper;
+    
     // 1. 관리자 페이지용 태그 목록 조회
     @Override
     @Transactional(readOnly = true)
@@ -29,8 +32,7 @@ public class AdminTagServiceImpl implements AdminTagService {
     @Override
     @Transactional
     public int createTag(String tagName) {
-        // 기존 최대 ID값 조회 후 +1
-        int maxId = tagMapper.getMaxTagId();
+        int maxId = categoriesMapper.getMaxTagId();
         int newId = maxId + 1;
         
         CategoriesVO vo = CategoriesVO.builder()
@@ -38,7 +40,7 @@ public class AdminTagServiceImpl implements AdminTagService {
                             .name(tagName)
                             .build();
         
-        return tagMapper.insertTag(vo);
+        return categoriesMapper.insertTag(vo);
     }
 
     // 3. 특정 태그에 속한 상품 리스트 조회 (추가된 기능)
@@ -46,5 +48,19 @@ public class AdminTagServiceImpl implements AdminTagService {
     @Transactional(readOnly = true)
     public List<ProductVO> getProductsByTag(int tagId) {
         return tagProductsMapper.selectProductsByTag(tagId);
+    }
+    
+    @Override
+    @Transactional
+    public int updateTag(int categoryId, String tagName) {
+        // XML의 id="updateTag" 호출
+        return categoriesMapper.updateTag(categoryId, tagName);
+    }
+
+    @Override
+    @Transactional
+    public int updateTagStatus(int categoryId, int status) {
+        // XML의 id="updateTagStatus" 호출 (status는 0 또는 1)
+        return categoriesMapper.updateTagStatus(categoryId, status);
     }
 }
