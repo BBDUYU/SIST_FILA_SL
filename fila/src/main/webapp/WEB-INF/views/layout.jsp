@@ -8,14 +8,32 @@
     <%-- 스타일 --%>
     <tiles:insertAttribute name="style" ignore="true"/>
     <tiles:insertAttribute name="add" ignore="true"/>
+    <link rel="icon" type="image/x-icon"
+	href="//filacdn.styleship.com/filacontent2/favicon.ico" />
+<link href="${pageContext.request.contextPath}/css/SpoqaHanSansNeo.css"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/normalize.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/opt-default.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/swiper-bundle.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/layout.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/product.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/sub.css">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
     </head>
     
     <%-- c --%>
     <tiles:insertAttribute name="c_start" ignore="true"/>
     
     <%-- 헤더 --%>
+<body class="<tiles:getAsString name="bodyClass" ignore="true"/>">
     <tiles:insertAttribute name="header" />
-<body class="hd__style1 _style_main">
 
     <%-- 실제 각 페이지의 본문이 들어가는 자리 --%>
     <tiles:insertAttribute name="content" />

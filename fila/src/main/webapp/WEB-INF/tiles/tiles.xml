@@ -16,6 +16,8 @@
     <definition name="main" extends="base-layout">
         <put-attribute name="title" value="FILA 메인" />
         <put-attribute name="content" value="/WEB-INF/views/main.jsp" />
+        <put-attribute name="bodyClass" value="hd__style1 _style_main" />
+        
     </definition>
     
     <!-- notice -->
