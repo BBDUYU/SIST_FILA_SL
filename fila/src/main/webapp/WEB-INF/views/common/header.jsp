@@ -373,7 +373,11 @@
                                         <ul>
                                             <li><a href="${pageContext.request.contextPath}/admin/userList.htm">관리자 페이지</a></li>
                                         </ul>
-                                        <button type="button" class="logout__btn" onclick="location.href='${pageContext.request.contextPath}/logout.htm';">로그아웃</button>
+                                       <button type="button" class="logout__btn"
+    onclick="location.href='${pageContext.request.contextPath}/member/logout.htm';">
+    로그아웃
+</button>
+
                                     </div>
                                 </c:when>
                                 <%-- 2-2. 일반 회원 --%>
@@ -391,7 +395,11 @@
                                             <li><a href="${pageContext.request.contextPath}/mypage/mycoupon.htm">쿠폰</a></li>
                                             <li><a href="${pageContext.request.contextPath}/mypage/mypoint.htm">포인트</a></li>
                                         </ul>
-                                        <button type="button" class="logout__btn" onclick="location.href='${pageContext.request.contextPath}/logout.htm';">로그아웃</button>
+                                        <button type="button" class="logout__btn"
+    onclick="location.href='${pageContext.request.contextPath}/member/logout.htm';">
+    로그아웃
+</button>
+
                                     </div>
                                 </c:otherwise>
                             </c:choose>
