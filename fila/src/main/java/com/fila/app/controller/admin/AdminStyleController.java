@@ -62,7 +62,7 @@ public class AdminStyleController {
             model.addAttribute("style", style);
             model.addAttribute("imageList", imageList);
             model.addAttribute("matchedProductIds", matchedProductIds);
-            return "admin/style_edit";
+            return "style_edit";
         }
         return "style_create";
     }

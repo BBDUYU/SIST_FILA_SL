@@ -72,4 +72,45 @@
         #{sortOrder}
     )
 </insert>
+<select id="selectStyleDetail" parameterType="int" resultType="com.fila.app.domain.admin.StyleVO">
+        SELECT 
+            STYLE_ID    AS styleId,
+            STYLE_NAME  AS styleName,
+            DESCRIPTION,
+            USE_YN      AS useYn
+        FROM STYLE
+        WHERE STYLE_ID = #{styleId}
+    </select>
+
+    <select id="selectStyleImages" parameterType="int" resultType="com.fila.app.domain.admin.StyleImageVO">
+        SELECT 
+            STYLE_IMAGE_ID AS styleImageId,
+            STYLE_ID       AS styleId,
+            IMAGE_URL      AS imageUrl,
+            IS_MAIN        AS isMain,
+            SORT_ORDER     AS sortOrder,
+            ALT_TEXT       AS altText
+        FROM STYLE_IMAGE
+        WHERE STYLE_ID = #{styleId}
+        ORDER BY SORT_ORDER ASC
+    </select>
+
+    <select id="selectMatchedProductIds" parameterType="int" resultType="string">
+        SELECT PRODUCT_ID
+        FROM STYLE_PRODUCT
+        WHERE STYLE_ID = #{styleId}
+        ORDER BY SORT_ORDER ASC
+    </select>
+    
+    <update id="updateStyle" parameterType="com.fila.app.domain.admin.StyleVO">
+        UPDATE STYLE SET
+            STYLE_NAME = #{styleName},
+            DESCRIPTION = #{description},
+            USE_YN = #{useYn}
+        WHERE STYLE_ID = #{styleId}
+    </update>
+
+    <delete id="deleteStyleProducts">
+        DELETE FROM STYLE_PRODUCT WHERE STYLE_ID = #{styleId}
+    </delete>
 </mapper>
