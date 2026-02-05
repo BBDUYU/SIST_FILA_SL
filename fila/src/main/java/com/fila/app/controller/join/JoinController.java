@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fila.app.domain.member.MemberVO;
+import com.fila.app.service.join.JoinService;
 import com.fila.app.service.member.MemberService;
 
 @Controller
@@ -16,43 +17,71 @@ import com.fila.app.service.member.MemberService;
 public class JoinController {
 
     @Autowired
+    private JoinService joinService;
+
+    @Autowired
     private MemberService memberService;
 
     /**
-     * 회원가입 화면
-     * (지금은 JSP 없어도 OK)
+     * 회원가입 메인 선택 화면
      */
-    @GetMapping("/join.do")
-    public String joinForm() {
-        return "join"; // 나중에 join.jsp
+    @GetMapping("/joinMain.htm")
+    public String joinMain() {
+        return "joinMain";
     }
 
     /**
-     * 회원가입 처리
+     * 회원가입 폼 화면
      */
-    @PostMapping("/join.do")
+    @GetMapping("/join.htm")
+    public String joinForm() {
+        return "join";
+    }
+
+    @PostMapping("/join.htm")
     public String joinProcess(MemberVO dto) {
 
-        // 핵심: Service → Mapper → DB
-        memberService.join(dto);
+        if (dto.getId() == null || dto.getPassword() == null) {
+            return "redirect:/member/join.htm";
+        }
 
-        return "redirect:/member/joinEnd.do";
+        joinService.join(dto);
+
+        // ✅ 무조건 여기로 이동
+        return "redirect:/member/joinend.htm";
     }
 
+
+
     /**
-     * 회원가입 완료
+     * 회원가입 완료 화면
      */
-    @GetMapping("/joinEnd.do")
+    @GetMapping("/joinend.htm")
     public String joinEnd() {
-        return "joinend"; // 나중에 joinend.jsp
+        return "user/joinend";   // ❗❗ 절대 /member/joinend 아님
     }
 
+
+
+
     /**
-     * 아이디 중복 체크 (ajax / 테스트용)
+     * 아이디 중복 체크 (AJAX)
+     * 반환값:
+     *  - OK        : 사용 가능
+     *  - DUPLICATE : 이미 사용 중
+     *  - EMPTY     : 값 없음
      */
-    @GetMapping("/id-check.do")
+    @GetMapping("/id-check.htm")
     @ResponseBody
-    public boolean idCheck(@RequestParam("id") String id) {
-        return memberService.isDuplicateId(id);
+    public String idCheck(@RequestParam("id") String id) {
+
+        if (id == null || id.trim().isEmpty()) {
+            return "EMPTY";
+        }
+
+        boolean duplicate = memberService.isDuplicateId(id);
+        return duplicate ? "DUPLICATE" : "OK";
     }
+
+    
 }
