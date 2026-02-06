@@ -18,11 +18,24 @@
 	</div>
 
 	<ul class="odr-tab">
-		<li><a href="javascript:void(0);" id="normalli" class="on">일반배송
-				<sup>${fn:length(cartList)}</sup>
-		</a></li>
-		<li><a href="javascript:void(0);" id="todayli">오늘도착 <sup id="todayCnt">0</sup></a></li>
+	  <li>
+	    <a href="${pageContext.request.contextPath}/pay/cart.htm"
+	       id="normalli"
+	       class="${activeTab eq 'normal' ? 'on' : ''}">
+	      일반배송 <sup>${fn:length(cartList)}</sup>
+	    </a>
+	  </li>
+	
+	  <li>
+	    <a href="${pageContext.request.contextPath}/pay/cart2.htm"
+	       id="todayli"
+	       class="${activeTab eq 'today' ? 'on' : ''}">
+	      오늘도착 <sup id="todayCnt">0</sup>
+	    </a>
+	  </li>
 	</ul>
+
+
 
 	<div class="order-info-box todayinfo" style="display: none;">
 		<div class="hd">
