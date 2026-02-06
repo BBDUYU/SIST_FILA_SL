@@ -28,4 +28,26 @@
         VALUES (#{categoryId}, #{name})
     </insert>
 
+	<select id="selectProductsByTag" resultType="com.fila.app.domain.product.ProductsVO">
+    SELECT 
+        productId, name, price, discountRate, imageUrl, depth1Name
+    FROM (
+        SELECT DISTINCT 
+            p.PRODUCT_ID AS productId, 
+            p.NAME, 
+            p.PRICE, 
+            p.DISCOUNT_RATE AS discountRate, 
+            pi.IMAGE_URL AS imageUrl, 
+            (SELECT NAME FROM CATEGORIES WHERE CATEGORY_ID = p.CATEGORY_ID) AS depth1Name,
+            p.CREATED_AT 
+        FROM PRODUCTS p 
+        JOIN PRODUCT_CATEGORY_REL pc ON p.PRODUCT_ID = pc.PRODUCT_ID 
+        JOIN PRODUCT_IMAGE pi ON p.PRODUCT_ID = pi.PRODUCT_ID 
+        WHERE pc.CATEGORY_ID = #{tagId} 
+          AND pi.IS_MAIN = 1 
+          AND p.STATUS IN ('NORMAL', 'SALE')
+    )
+    ORDER BY CREATED_AT DESC
+</select>
+
 </mapper>

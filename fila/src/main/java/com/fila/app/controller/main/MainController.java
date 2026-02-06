@@ -8,10 +8,13 @@ import java.util.Set;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fila.app.service.main.MainService;
 import com.fila.app.domain.member.MemberVO;
@@ -24,6 +27,9 @@ public class MainController {
     @Autowired
     private MainService mainService;
 
+    @Autowired
+    private com.fila.app.mapper.tag.TagMapper tagMapper;
+    
     @Autowired
     private com.fila.app.service.wishlist.WishListService wishListService;
 
@@ -67,7 +73,19 @@ public class MainController {
             model.addAttribute("wishedSet", Collections.emptySet());
         }
 
+        
+        
         // 6. Tiles 설정 이름 리턴
         return "main"; 
+    }
+    @RequestMapping("mainGroupAjax.htm")
+    @ResponseBody // HTML이 아닌 JSON 데이터를 직접 응답으로 보냄
+    public ResponseEntity<List<com.fila.app.domain.product.ProductsVO>> mainGroupAjax(
+            @RequestParam("tagId") int tagId) {
+        
+        List<com.fila.app.domain.product.ProductsVO> list = tagMapper.selectProductsByTag(tagId);
+        
+        // 명시적으로 OK 상태와 함께 리스트를 리턴
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }
