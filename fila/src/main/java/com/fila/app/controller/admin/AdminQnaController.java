@@ -69,20 +69,22 @@ public class AdminQnaController {
         return "redirect:/admin/productQnaDetail.htm?qna_id=" + qnaId;
     }
 
-    /**
-     * 4. 1:1 문의 답변 등록 (AJAX 방식)
-     * 만약 1:1 문의도 동일한 로직을 사용한다면 answerQna를 재사용합니다.
-     */
-    @RequestMapping(value = "/answerInquiry.htm", method = RequestMethod.POST)
+	    /**
+	     * 4. 1:1 문의 답변 등록 (AJAX 방식)
+	     * 만약 1:1 문의도 동일한 로직을 사용한다면 answerQna를 재사용합니다.
+	     */
+    @RequestMapping(value = "/answerAction.htm", method = RequestMethod.POST)
     @ResponseBody
     public String answerInquiry(@RequestParam("inquiryId") int inquiryId,
                                 @RequestParam("content") String content) {
         try {
-            qnaService.answerQna(inquiryId, content);
-            return "success";
+            // qnaService 대신 myPageqnaService의 1:1 문의 전용 메서드 호출
+            boolean isSuccess = myPageqnaService.answerInquiry(inquiryId, content);
+            return isSuccess ? "success" : "fail";
         } catch (Exception e) {
-            return "fail";
+            e.printStackTrace();
         }
+        return "redirect:/admin/inquiryList.htm";
     }
     
     @RequestMapping("/inquiryList.htm")
