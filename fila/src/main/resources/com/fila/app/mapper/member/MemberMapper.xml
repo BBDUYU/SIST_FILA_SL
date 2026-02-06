@@ -5,8 +5,10 @@
 
 <mapper namespace="com.fila.app.mapper.member.MemberMapper">
 
-    <!-- 로그인 -->
-    <select id="login" resultType="com.fila.app.domain.member.MemberVO">
+    <!-- 🔹 아이디로 회원 조회 (로그인용, 비밀번호 비교 X) -->
+    <select id="findById"
+            parameterType="string"
+            resultType="com.fila.app.domain.member.MemberVO">
         SELECT
             user_number     AS userNumber,
             id,
@@ -21,11 +23,9 @@
             grade
         FROM users
         WHERE id = #{id}
-          AND password = #{pw}
-          AND status = 'ACTIVE'
     </select>
 
-    <!-- 회원가입 -->
+    <!-- 🔹 회원가입 -->
     <insert id="insert">
         INSERT INTO users (
             user_number,
@@ -57,15 +57,25 @@
             SYSDATE
         )
     </insert>
+    
+   <select id="selectIdByNameAndPhone" resultType="string">
+    SELECT id
+    FROM users
+    WHERE name = #{name}
+      AND phone = #{phone}
+      AND status = 'ACTIVE'
+</select>
 
-    <!-- 아이디 중복 체크 -->
+    
+
+    <!-- 🔹 아이디 중복 체크 -->
     <select id="isDuplicateId" resultType="int">
         SELECT COUNT(*)
         FROM users
         WHERE id = #{id}
     </select>
 
-    <!-- 비밀번호 재설정 가능 여부 -->
+    <!-- 🔹 비밀번호 재설정 가능 여부 -->
     <select id="existsByIdAndPhone" resultType="int">
         SELECT COUNT(*)
         FROM users
@@ -73,8 +83,27 @@
           AND REPLACE(phone, '-', '') = #{phone}
     </select>
 
-    <!-- 비밀번호 변경 -->
+    <!-- 🔹 비밀번호 변경 (일반) -->
     <update id="updatePassword">
+        UPDATE users
+        SET password = #{pw},
+            updated_at = SYSDATE
+        WHERE id = #{id}
+    </update>
+
+    <!-- 🔥 평문 비밀번호 회원 조회 (마이그레이션용) -->
+    <select id="findPlainPasswordUsers"
+            resultType="com.fila.app.domain.member.MemberVO">
+        SELECT
+            user_number AS userNumber,
+            id,
+            password
+        FROM users
+        WHERE password NOT LIKE '$2a$%'
+    </select>
+
+    <!-- 🔥 비밀번호 업데이트 (마이그레이션용, id 기준) -->
+    <update id="updatePasswordById">
         UPDATE users
         SET password = #{pw},
             updated_at = SYSDATE
