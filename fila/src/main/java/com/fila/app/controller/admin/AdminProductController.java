@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,9 +35,6 @@ public class AdminProductController {
     @Autowired
     private AdminProductService adminProductService;
 
-    /**
-     * 1. 상품 목록 조회
-     */
     @RequestMapping(value = "/productList.htm", method = RequestMethod.GET)
     public String productList(Model model) throws Exception {
         List<ProductVO> list = adminProductService.getProductList(); 
@@ -44,17 +42,13 @@ public class AdminProductController {
         return "product_list";
     }
 
-    /**
-     * 2. 상품 등록/수정 페이지 이동
-     */
     @RequestMapping(value = {"/createProduct.htm", "/editProduct.htm"}, method = RequestMethod.GET)
     public String productForm(HttpServletRequest request, 
-                             @RequestParam(value = "id", required = false) String productId, 
-                             Model model) throws Exception {
+                              @RequestParam(value = "id", required = false) String productId, 
+                              Model model) throws Exception {
         
         String path = request.getServletPath();
         boolean isEdit = path.contains("editProduct");
-
         adminProductService.getAdminFullFormData(request);
 
         if (isEdit && productId != null) {
@@ -73,9 +67,6 @@ public class AdminProductController {
         return "product_create";
     }
 
-    /**
-     * 3. 상품 등록/수정 처리 (POST)
-     */
     @RequestMapping(value = {"/createProduct.htm", "/editProduct.htm"}, method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> processProduct(MultipartHttpServletRequest request) {
@@ -84,22 +75,29 @@ public class AdminProductController {
         boolean isEdit = path.contains("editProduct");
 
         try {
-            // 1. 카테고리 ID 수집
             String[] categoryIds = request.getParameterValues("category_ids");
             int mainCateId = (categoryIds != null && categoryIds.length > 0) ? parseSafeInt(categoryIds[0], 0) : 0;
+            String productId = isEdit ? request.getParameter("product_id") : adminProductService.generateProductId(mainCateId);
 
-            // 2. 상품 ID 결정 (등록 시 시퀀스 선행 호출)
-            String productId;
-            if (isEdit) {
-                productId = request.getParameter("product_id");
-            } else {
-                productId = adminProductService.generateProductId(mainCateId); 
+            // 1. [수정] 삭제 로직: 물리 파일 삭제 실패해도 중단되지 않게 try-catch
+            String[] deleteImageIds = request.getParameterValues("deleteImageIds");
+            if (isEdit && deleteImageIds != null && deleteImageIds.length > 0) {
+                List<String> deletePaths = adminProductService.getImagePathsByIds(deleteImageIds);
+                for (String imgPath : deletePaths) {
+                    try {
+                        File file = new File(imgPath);
+                        if (file.exists()) {
+                            file.delete(); // 점유 중이면 false 리턴하겠지만 무시하고 진행
+                        }
+                    } catch (Exception e) {
+                        System.err.println("파일 삭제 실패(무시하고 진행): " + imgPath);
+                    }
+                }
             }
 
-            // 3. 파일 처리 (이전 Handler의 processFiles 로직 적용)
+            // 2. 새 파일 저장 (파일명에 유니크 값 추가하여 충돌 방지)
             List<CreateproductVO> imageList = processFiles(request, productId);
 
-            // 4. 나머지 파라미터 수집 (parseSafeInt 사용)
             String[] tagIds = request.getParameterValues("tag_ids");
             int price = parseSafeInt(request.getParameter("price"), 0);
             int discountRate = parseSafeInt(request.getParameter("discount_rate"), 0);
@@ -107,7 +105,6 @@ public class AdminProductController {
             int sectionId = parseSafeInt(request.getParameter("sectionId"), 0);
             int stock = parseSafeInt(request.getParameter("stock"), 10);
 
-            // 5. VO 생성
             CreateproductVO product = CreateproductVO.builder()
                     .productId(productId)
                     .categoryId(mainCateId)
@@ -117,19 +114,7 @@ public class AdminProductController {
                     .discountRate(discountRate)
                     .build();
 
-            // 6. 서비스 호출
             if (isEdit) {
-                // 물리 파일 삭제 로직
-                String[] deleteImageIds = request.getParameterValues("deleteImageIds");
-                if (deleteImageIds != null && deleteImageIds.length > 0) {
-                    List<String> deletePaths = adminProductService.getImagePathsByIds(deleteImageIds);
-                    for (String imgPath : deletePaths) {
-                        String physicalPath = imgPath.replace("/upload/", "C:\\fila_upload\\");
-                        File file = new File(physicalPath);
-                        if (file.exists()) file.delete();
-                    }
-                }
-
                 adminProductService.updateProduct(product, imageList, deleteImageIds, categoryIds, tagIds,
                         request.getParameter("gender_option"), 
                         request.getParameter("sport_option"),
@@ -153,81 +138,65 @@ public class AdminProductController {
         }
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
-        
         return new ResponseEntity<>(jsonResponse, headers, HttpStatus.OK);
     }
 
     /**
-     * 이전 Handler에서 사용하던 로직을 스프링 환경에 맞게 재구성한 파일 처리 메서드
+     * [핵심 수정] 파일 저장 로직
      */
     private List<CreateproductVO> processFiles(MultipartHttpServletRequest request, String productId) throws Exception {
-        List<CreateproductVO> imageList = new ArrayList<CreateproductVO>();
-        
-        // [중요] 경로 끝에 슬래시 확인
-        String baseDiskPath = "C:/fila_upload/product/" + productId + "/";
-        File saveDir = new File(baseDiskPath);
+        List<CreateproductVO> imageList = new ArrayList<>();
+        String rootPath = "C:/fila_upload/product/" + productId;
+        File saveDir = new File(rootPath);
+        if (!saveDir.exists()) saveDir.mkdirs();
 
-        if (!saveDir.exists()) {
-            saveDir.mkdirs();
-        }
+        String[] types = {"MAIN", "MODEL", "DETAIL"};
+        String[] paramNames = {"mainImages[]", "modelImages[]", "detailImages[]"};
 
-        java.util.Iterator<String> fileNames = request.getFileNames();
-        int currentSortOrder = 1;
-        
-        // 타입별 인덱스 초기화
-        int mainIdx = 1;
-        int modelIdx = 1;
-        int detailIdx = 1;
+        // 파일명에 쓸 시간값 (루프 밖에서 생성하여 동일 루프 내 일관성 유지 가능)
+        long timestamp = System.currentTimeMillis();
 
-        while (fileNames.hasNext()) {
-            String paramName = fileNames.next();
-            List<MultipartFile> files = request.getFiles(paramName);
+        for (int i = 0; i < types.length; i++) {
+            String type = types[i];
+            List<MultipartFile> files = request.getFiles(paramNames[i]);
+            if (files == null) continue;
+
+            int subIdx = 1; 
 
             for (MultipartFile mFile : files) {
-                // 파일이 없거나 이름이 비어있으면 스킵
-                if (mFile == null || mFile.isEmpty() || mFile.getOriginalFilename().isEmpty()) continue;
+                if (mFile == null || mFile.isEmpty()) continue;
 
-                // 타입 결정 로직 (좀 더 확실하게)
-                String type = "DETAIL"; 
-                if (paramName.toLowerCase().contains("main")) {
-                    type = "MAIN";
-                } else if (paramName.toLowerCase().contains("model")) {
-                    type = "MODEL";
-                }
-                
-                int subIdx = type.equals("MAIN") ? mainIdx++ : (type.equals("MODEL") ? modelIdx++ : detailIdx++);
-
-                // 확장자 추출
                 String originalName = mFile.getOriginalFilename();
-                String ext = "";
-                if (originalName.contains(".")) {
-                    ext = originalName.substring(originalName.lastIndexOf(".")).toLowerCase();
-                } else {
-                    ext = ".jpg"; // 확장자 없을 경우 기본값
-                }
-                // [파일명 생성] 여기서 productId가 정확히 들어가는지 다시 확인
-                String newFileName = productId + "_" + type.toLowerCase() + "_" + subIdx + ext;
+                String ext = originalName.contains(".") ? originalName.substring(originalName.lastIndexOf(".")).toLowerCase() : ".jpg";
                 
-                // 실제 파일 저장
+                // [변경] productId + 타입 + 시간값 + 인덱스 + 확장자
+                // 이렇게 하면 기존 파일명과 절대 겹칠 수 없습니다.
+                String newFileName = productId + "_" + type.toLowerCase() + "_" + timestamp + "_" + subIdx + ext;
                 File saveFile = new File(saveDir, newFileName);
-                mFile.transferTo(saveFile); 
 
-                // 리스트 추가
-                imageList.add(CreateproductVO.builder()
-                        .productId(productId)
-                        .imageUrl("C:/fila_upload/product/" + productId + "/" + newFileName) // DB 저장 경로
-                        .imageType(type)
-                        .isMain(type.equals("MAIN") && subIdx == 1 ? 1 : 0)
-                        .sortOrder(currentSortOrder++)
-                        .build());
+                try {
+                    mFile.transferTo(saveFile);
+                    System.out.println("✅ [물리 저장 성공] " + newFileName);
+
+                    imageList.add(CreateproductVO.builder()
+                            .productId(productId)
+                            .imageUrl("C:/fila_upload/product/" + productId + "/" + newFileName)
+                            .imageType(type)
+                            // isMain 로직: MAIN 타입의 루프 중 첫 번째 파일만 1
+                            .isMain(type.equals("MAIN") && subIdx == 1 ? 1 : 0)
+                            .sortOrder(subIdx)
+                            .build());
+                    
+                    subIdx++;
+                } catch (Exception e) {
+                    System.err.println("❌ [물리 저장 실패] " + e.getMessage());
+                    throw e;
+                }
             }
         }
         return imageList;
     }
 
-    /**
-     * 4. 상품 삭제 (상태 변경)
-     */
     @RequestMapping(value = "/deleteProduct.htm", method = RequestMethod.GET)
     public String deleteProduct(@RequestParam("id") String productId) {
         if (productId != null) {
@@ -236,17 +205,8 @@ public class AdminProductController {
         return "redirect:/admin/productList.htm";
     }
 
-    /**
-     * 문자열 숫자를 안전하게 변환하는 유틸리티 메서드
-     */
     private int parseSafeInt(String value, int defaultValue) {
-        if (value == null || value.trim().isEmpty()) {
-            return defaultValue;
-        }
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
+        if (value == null || value.trim().isEmpty()) return defaultValue;
+        try { return Integer.parseInt(value); } catch (NumberFormatException e) { return defaultValue; }
     }
 }

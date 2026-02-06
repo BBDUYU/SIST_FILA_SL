@@ -20,7 +20,7 @@
 								<c:forEach items="${imageList}" var="img">
 									<c:if test="${img.imageType eq 'MAIN'}">
 										<div class="img-box" id="ex-img-${img.productImageId}">
-											<img src="${pageContext.request.contextPath}${img.imageUrl}">
+											<img src="${pageContext.request.contextPath}/displayImage.do?path=${img.imageUrl}">
 											<input type="hidden" name="existing_image_ids" value="${img.productImageId}">
 											<button type="button" class="del-btn" onclick="markImageDelete('${img.productImageId}',this)">×</button>
 										</div>
@@ -41,7 +41,7 @@
 								<c:forEach items="${imageList}" var="img">
 									<c:if test="${img.imageType eq 'MODEL'}">
 										<div class="img-box" id="ex-img-${img.productImageId}">
-											<img src="${pageContext.request.contextPath}${img.imageUrl}">
+											<img src="${pageContext.request.contextPath}/displayImage.do?path=${img.imageUrl}">
 											<input type="hidden" name="existing_image_ids" value="${img.productImageId}">
 											<button type="button" class="del-btn" onclick="markImageDelete('${img.productImageId}',this)">×</button>
 										</div>
@@ -62,7 +62,7 @@
 								<c:forEach items="${imageList}" var="img">
 									<c:if test="${img.imageType eq 'DETAIL'}">
 										<div class="img-box" id="ex-img-${img.productImageId}">
-											<img src="${pageContext.request.contextPath}${img.imageUrl}">
+											<img src="${pageContext.request.contextPath}/displayImage.do?path=${img.imageUrl}">
 											<input type="hidden" name="existing_image_ids" value="${img.productImageId}">
 											<button type="button" class="del-btn" onclick="markImageDelete('${img.productImageId}',this)">×</button>
 										</div>
