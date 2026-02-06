@@ -26,14 +26,14 @@ public class QnaVO {
     
     // 날짜 포맷 지정 (프론트엔드에 보여질 형식)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    private Date created_at;
+    private Date createdAt;
     
-    private String answer_email;  // 답변 받을 이메일
-    private int is_email_notify;  // 이메일 수신 여부
+    private String answerEmail;  // 답변 받을 이메일
+    private int isEmailNotify;  // 이메일 수신 여부
     
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    private Date answered_at; // 답변 등록일
+    private Date answeredAt; // 답변 등록일
 
     // 조인용
-    private String user_id;
+    private String userId;
 }

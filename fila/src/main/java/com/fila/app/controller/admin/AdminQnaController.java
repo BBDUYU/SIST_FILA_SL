@@ -1,6 +1,10 @@
 package com.fila.app.controller.admin;
 
+import java.io.PrintWriter;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,37 +56,47 @@ public class AdminQnaController {
     /**
      * 3. 상품 문의 답변 등록 (answerQna 호출)
      */
-    @RequestMapping(value = "/productQnaAnswer.htm", method = RequestMethod.POST)
-    public String productQnaAnswer(@RequestParam("qna_id") int qnaId,
-                                   @RequestParam("answer_content") String answerContent,
-                                   RedirectAttributes rttr) {
+    @RequestMapping(value = "/saveProductAnswer.htm", method = RequestMethod.POST)
+    public void productQnaAnswer(@RequestParam("qna_id") int qnaId,
+                                 @RequestParam("answer_content") String answerContent,
+                                 HttpServletResponse response) throws Exception {
         
-        // 서비스 구현체의 메서드명으로 변경
         int result = qnaService.answerQna(qnaId, answerContent);
 
-        if (result > 0) {
-            rttr.addFlashAttribute("msg", "답변이 성공적으로 등록되었습니다.");
-        } else {
-            rttr.addFlashAttribute("msg", "답변 등록에 실패하였습니다.");
-        }
+        response.setContentType("text/html; charset=UTF-8");
+        PrintWriter out = response.getWriter();
 
-        return "redirect:/admin/productQnaDetail.htm?qna_id=" + qnaId;
+        if (result > 0) {
+            out.println("<script>");
+            out.println("alert('답변이 성공적으로 등록되었습니다.');");
+            // 상세 페이지로 다시 이동
+            out.println("location.href='productQnaDetail.htm?qna_id=" + qnaId + "';");
+            out.println("</script>");
+        } else {
+            out.println("<script>");
+            out.println("alert('답변 등록에 실패하였습니다.');");
+            out.println("history.back();"); // 실패 시 이전 입력창으로
+            out.println("</script>");
+        }
+        out.flush();
     }
 
-    /**
-     * 4. 1:1 문의 답변 등록 (AJAX 방식)
-     * 만약 1:1 문의도 동일한 로직을 사용한다면 answerQna를 재사용합니다.
-     */
-    @RequestMapping(value = "/answerInquiry.htm", method = RequestMethod.POST)
+	    /**
+	     * 4. 1:1 문의 답변 등록 (AJAX 방식)
+	     * 만약 1:1 문의도 동일한 로직을 사용한다면 answerQna를 재사용합니다.
+	     */
+    @RequestMapping(value = "/answerAction.htm", method = RequestMethod.POST)
     @ResponseBody
     public String answerInquiry(@RequestParam("inquiryId") int inquiryId,
                                 @RequestParam("content") String content) {
         try {
-            qnaService.answerQna(inquiryId, content);
-            return "success";
+            // qnaService 대신 myPageqnaService의 1:1 문의 전용 메서드 호출
+            boolean isSuccess = myPageqnaService.answerInquiry(inquiryId, content);
+            return isSuccess ? "success" : "fail";
         } catch (Exception e) {
-            return "fail";
+            e.printStackTrace();
         }
+        return "redirect:/admin/inquiryList.htm";
     }
     
     @RequestMapping("/inquiryList.htm")
