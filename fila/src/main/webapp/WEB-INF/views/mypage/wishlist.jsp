@@ -34,15 +34,15 @@
 		            <input type="checkbox"
 		                   id="${cid}"
 		                   name="checkwish"
-		                   value="${w.wishlist_id}"
+		                   value="${w.wishlistId}"
 		                   class="cb__style1 wishChk">
 		            <label for="${cid}">선택</label>
 		          </div>
 		
 		          <!-- ✅ 공홈처럼 썸네일 -->
 		          <div class="goods-thumb">
-		            <a href="${pageContext.request.contextPath}/product/product_detail.htm?product_id=${w.product_id}">
-		              <img src="${w.image_url}" alt="${w.product_name}"
+		            <a href="${pageContext.request.contextPath}/product/product_detail.htm?productId=${w.productId}">
+		              <img src="${w.imageUrl}" alt="${w.productName}"
 		                   onerror="this.src='${pageContext.request.contextPath}/images/no_image.jpg';">
 		            </a>
 		          </div>
@@ -50,8 +50,8 @@
 		          <!-- ✅ 공홈처럼 상품정보 -->
 		          <div class="goods-info">
 		            <p class="sex">FILA</p>
-		            <p class="tit">${w.product_name}</p>
-		            <p class="info">${w.size_text}</p>
+		            <p class="tit">${w.productName}</p>
+		            <p class="info">${w.sizeText}</p>
 		            <p class="price">
 		              <span class="sale"><fmt:formatNumber value="${w.price}" pattern="#,###"/>원</span>
 		            </p>
@@ -62,13 +62,13 @@
 		            <p class="ico">
 		              <button type="button"
 						      class="btn_review"
-						      onclick="openReviewFromWishlist('${w.product_id}')">
+						      onclick="openReviewFromWishlist('${w.productId}')">
 						리뷰보기
 						</button>
 		              <!-- ❗class/id 변경 금지라서 del + btnDelOne 같이 둠 -->
 		              <button type="button"
 		                      class="del btnDelOne"
-		                      data-wishid="${w.wishlist_id}">
+		                      data-wishid="${w.wishlistId}">
 		                삭제
 		              </button>
 		            </p>

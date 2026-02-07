@@ -22,7 +22,6 @@ public class LoginController {
 
     /**
      * 로그인 화면
-     * 기존 JoinFormHandler / LoginFormHandler 역할
      */
     @GetMapping("/login.htm")
     public String loginForm(
@@ -33,13 +32,11 @@ public class LoginController {
             model.addAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
         }
 
-        return "login";   // ★ tiles.xml definition name
+        return "login";
     }
 
-
     /**
-     * 로그인 처리
-     * 기존 LoginService + LoginCheckFilter 일부 역할
+     * 로그인 처리 (암호화 대응)
      */
     @PostMapping("/login.htm")
     public String loginProcess(
@@ -47,22 +44,18 @@ public class LoginController {
             @RequestParam("password") String password,
             HttpSession session) {
 
-    	 MemberVO member = memberService.login(id, password);
+        MemberVO member = memberService.login(id, password);
 
-        // 로그인 실패
         if (member == null) {
-            return "redirect:/member/login.do?error=1";
+            return "redirect:/member/login.htm?error=1";
         }
 
-        // 로그인 성공
         session.setAttribute("auth", member);
-
-        return "redirect:/"; // 메인 페이지
+        return "redirect:/";
     }
 
     /**
      * 로그아웃
-     * 기존 세션 invalidate 로직
      */
     @GetMapping("/logout.htm")
     public String logout(HttpSession session) {

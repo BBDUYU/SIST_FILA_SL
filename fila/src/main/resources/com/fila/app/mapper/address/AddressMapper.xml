@@ -10,7 +10,7 @@
     <result property="addressName" column="ADDRESS_NAME"/>
     <result property="recipientName" column="RECIPIENT_NAME"/>
     <result property="recipientPhone" column="RECIPIENT_PHONE"/>
-    <result property="zipCode" column="ZIPCODE"/>
+    <result property="zipcode" column="ZIPCODE"/>
     <result property="mainAddr" column="MAIN_ADDR"/>
     <result property="detailAddr" column="DETAIL_ADDR"/>
     <result property="isDefault" column="IS_DEFAULT"/>
@@ -23,7 +23,7 @@
   <insert id="insert">
     INSERT INTO DELIVERY_ADDRESS
     (ADDRESS_ID, USER_NUMBER, ADDRESS_NAME, RECIPIENT_NAME, RECIPIENT_PHONE, ZIPCODE, MAIN_ADDR, DETAIL_ADDR, IS_DEFAULT)
-    VALUES (DELIVERY_ADDRESS_SEQ.NEXTVAL, #{userNumber}, #{addressName}, #{recipientName}, #{recipientPhone}, #{zipCode}, #{mainAddr}, #{detailAddr}, #{isDefault})
+    VALUES (DELIVERY_ADDRESS_SEQ.NEXTVAL, #{userNumber}, #{addressName}, #{recipientName}, #{recipientPhone}, #{zipcode}, #{mainAddr}, #{detailAddr}, #{isDefault})
   </insert>
 
   <update id="update">
@@ -31,7 +31,7 @@
     SET ADDRESS_NAME=#{addressName}, 
         RECIPIENT_NAME=#{recipientName}, 
         RECIPIENT_PHONE=#{recipientPhone}, 
-        ZIPCODE=#{zipCode}, 
+        ZIPCODE=#{zipcode}, 
         MAIN_ADDR=#{mainAddr}, 
         DETAIL_ADDR=#{detailAddr}, 
         IS_DEFAULT=#{isDefault}
@@ -60,10 +60,11 @@
     DELETE FROM DELIVERY_ADDRESS WHERE ADDRESS_ID=#{addressId} AND USER_NUMBER=#{userNumber}
   </delete>
 
-  <select id="hasOrderReference" resultType="boolean">
-    SELECT 1
+  <select id="hasOrderReference" resultType="int">
+    SELECT COUNT(1)
     FROM ORDERS
-    WHERE USER_NUMBER = #{userNumber} AND ADDRESS_ID = #{addressId} AND ROWNUM = 1
+    WHERE USER_NUMBER = #{userNumber}
+      AND ADDRESS_ID = #{addressId}
   </select>
 
   <select id="selectOneById" resultMap="addressMap">

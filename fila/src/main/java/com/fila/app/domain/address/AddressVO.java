@@ -1,7 +1,5 @@
 package com.fila.app.domain.address;
 
-import com.fila.app.domain.admin.StyleImageVO;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

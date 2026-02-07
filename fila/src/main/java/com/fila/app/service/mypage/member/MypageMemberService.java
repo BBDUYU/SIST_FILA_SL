@@ -12,9 +12,17 @@ public interface MypageMemberService {
     MemberVO getMemberByUserNumber(int userNumber);
 
     // ===== security =====
-    boolean confirmPassword(String memberId, String password);
 
-    void changePassword(int memberNo, String newPassword);
+    // ❌ confirmPassword 제거 (암호화 이후 사용 안 함)
+
+    /**
+     * 내정보 변경 - 비밀번호 변경
+     * @param memberNo 로그인한 회원 번호
+     * @param currentPw 현재 비밀번호 (평문)
+     * @param newPw 새 비밀번호 (평문)
+     * @return 성공 여부
+     */
+    boolean changePassword(int memberNo, String currentPw, String newPw);
 
     void retireMember(int memberNo);
 

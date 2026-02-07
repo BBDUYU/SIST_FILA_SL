@@ -48,6 +48,7 @@
 
         closeMap();
       }
+      
     }).embed(document.getElementById('daumWrap'));
   });
 })();
