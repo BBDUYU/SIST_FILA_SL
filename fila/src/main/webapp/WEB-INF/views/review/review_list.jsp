@@ -3,17 +3,30 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+<%-- [디버깅 영역] 데이터가 아예 안 오면 빨간 박스가 뜹니다. 나중에 성공하면 이 div만 지우세요 --%>
+<c:if test="${empty reviewList}">
+    <div style="background:#fff; padding:20px; border:2px solid red; text-align:center;">
+        <h3 style="color:red;">데이터 수신 실패 혹은 0건</h3>
+        <p>현재 상품 ID: <b>${param.productId}</b></p>
+        <p>Controller에서 보낸 리스트 존재 여부: <b>${reviewList != null ? '객체는 있음' : '객체 자체가 없음(null)'}</b></p>
+        <p style="color:blue;">SQL에는 있는데 여기가 0건이면, DB의 productId에 공백이 있는지 확인해보세요.</p>
+    </div>
+</c:if>
+
 <c:choose>
+    <%-- 1. 리스트가 비었을 때 --%>
     <c:when test="${empty reviewList}">
         <div class="no-review-msg" style="text-align:center; padding:80px 0; color:#999;">
-            <p>리뷰가 없습니다.</p>
+            <p>작성된 리뷰가 없습니다.</p>
         </div>
     </c:when>
+
+    <%-- 2. 리스트가 있을 때 (진짜 디자인 시작) --%>
     <c:otherwise>
         <c:forEach var="dto" items="${reviewList}">
-             <div class="review-card" id="review_${dto.reviewId}" style="display: flex; border-bottom: 1px solid #f4f4f4; padding: 30px 0; min-height: 200px;">
+             <div class="review-card" style="display: flex; border-bottom: 1px solid #f4f4f4; padding: 30px 0; min-height: 200px;">
                 
-                 <%-- 1. 왼쪽 영역 --%>
+                 <%-- 왼쪽 영역 --%>
                  <div class="review-left" style="flex: 1; padding-right: 40px;">
                      
                      <%-- 별점 --%>
@@ -26,79 +39,57 @@
                          </c:forEach>
                      </div>
     
-                     <%-- 리뷰 텍스트 --%>
+                     <%-- 리뷰 내용 --%>
                      <div class="review-text-wrapper" style="margin-bottom: 20px;">
-                        <div class="review-text-body">${dto.content}</div>
-                        <div class="more-btn-wrap" style="display:none; text-align: right; margin-top: 5px;">
-                            <button type="button" class="more-btn" onclick="toggleReviewText(this)" 
-                                    style="font-size:13px; color:#999; text-decoration:underline; background:none; border:none; cursor:pointer; padding:0;">
-                                리뷰 더보기
-                            </button>
-                        </div>
+                        <div class="review-text-body" style="white-space: pre-wrap;">${dto.content}</div>
                      </div>
     
-                     <%-- [핵심 수정] 이미지 경로 처리 --%>
+                     <%-- 이미지 처리 (Java Scriptlet으로 백슬래시 에러 방지) --%>
                      <c:if test="${not empty dto.reviewImg}">
                         <div class="review-images" style="margin-bottom: 20px; display:flex; gap:5px;">
                             <c:set var="imgs" value="${fn:split(dto.reviewImg, ',')}" />
                             <c:forEach var="imgUrl" items="${imgs}">
-                                <%-- 
-                                    [이미지 경로 자동 보정]
-                                    DB에 'C:\fila_upload\...' 라고 저장되어 있으면 브라우저가 보안상 막아버림(Not allowed...).
-                                    그래서 'C:\fila_upload' 부분을 '/upload'로 바꿔줘야 함 (servlet-context.xml 매핑 이용)
-                                --%>
-                                <c:set var="cleanPath" value="${fn:replace(imgUrl, 'C:\\\\fila_upload', '/upload')}" />
-                                <c:set var="cleanPath" value="${fn:replace(cleanPath, 'C:\\fila_upload', '/upload')}" />
-                                <c:set var="cleanPath" value="${fn:replace(cleanPath, '\\\\', '/')}" />
-                                <c:set var="cleanPath" value="${fn:replace(cleanPath, '\\', '/')}" />
-                                
-                                <img src="${cleanPath}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 4px; cursor:pointer; border:1px solid #eee;" onclick="window.open(this.src)">
+                                <c:set var="originPath" value="${imgUrl}" />
+                                <%
+                                    String clean = (String)pageContext.getAttribute("originPath");
+                                    if(clean != null) {
+                                        clean = clean.replace("\\", "/"); 
+                                        clean = clean.replace("C:/fila_upload", "/upload");
+                                        pageContext.setAttribute("finalPath", clean);
+                                    }
+                                %>
+                                <img src="${finalPath}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px; border:1px solid #eee; cursor:pointer;" onclick="window.open(this.src)">
                             </c:forEach>
                         </div>
                      </c:if>
-    
-                     <%-- 도움 버튼 --%>
+                     
+                     <%-- 도움돼요 버튼 --%>
                      <div class="like-section" style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
-                        <button type="button" onclick="handleLike(this, ${dto.reviewId}, 1)" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; font-size: 12px; padding: 0; ${dto.myLike == 1 ? 'color:#003F96;' : 'color:#666;'}">
-                           <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 4px; fill: ${dto.myLike == 1 ? '#003F96' : '#999'};"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
-                           도움돼요 <span style="margin-left: 4px; font-weight: bold;">${dto.likeCnt}</span>
-                       </button>
-
-                       <button type="button" onclick="handleLike(this, ${dto.reviewId}, 0)" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; font-size: 12px; padding: 0; ${dto.myLike == 0 ? 'color:#003F96;' : 'color:#666;'}">
-                           <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 4px; transform: rotate(180deg); fill: ${dto.myLike == 0 ? '#003F96' : '#999'};"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
-                           도움안돼요 <span style="margin-left: 4px; font-weight: bold;">${dto.dislikeCnt}</span>
+                        <button type="button" class="like-btn" style="background:none; border:none; color:#666; font-size:12px;">
+                           도움돼요 <b>${dto.likeCnt}</b>
                         </button>
                     </div>
-                  </div>
+                 </div>
     
-                  <%-- 2. 오른쪽 영역 (ID, 날짜) --%>
-                  <div class="review-right" style="width: 150px; border-left: 1px solid #f4f4f4; padding-left: 20px; display: flex; flex-direction: column; justify-content: flex-start;">
-                      <div class="user-id" style="font-size: 13px; font-weight: bold; color: #333; margin-bottom: 8px;">
-                          <c:set var="maskId" value="${dto.userId}" />
-                          ${fn:substring(maskId, 0, 3)}****
-                      </div>
-                      <div class="created-at" style="font-size: 12px; color: #999; margin-top: auto;">
-                          <fmt:formatDate value="${dto.regdate}" pattern="yyyy. MM. dd." />
-                      </div>
-                  </div>
-    
+                 <%-- 오른쪽 영역 (아이디, 날짜) --%>
+                 <div class="review-right" style="width: 150px; border-left: 1px solid #f4f4f4; padding-left: 20px;">
+                     <div class="user-id" style="font-size: 13px; font-weight: bold; margin-bottom: 8px;">
+                         <c:out value="${fn:substring(dto.userId, 0, 3)}****" default="탈퇴회원" />
+                     </div>
+                     <div class="created-at" style="font-size: 12px; color: #999;">
+                         <fmt:formatDate value="${dto.regDate}" pattern="yyyy. MM. dd." />
+                     </div>
+                 </div>
              </div>
         </c:forEach>
     </c:otherwise>
 </c:choose>
 
-<%-- 높이 체크 스크립트 (AJAX 로드 후 실행됨) --%>
 <script>
-if (typeof checkReviewHeightLocal === 'undefined') {
-    function checkReviewHeightLocal() {
-        $(".review-text-body").each(function() {
-            if (this.scrollHeight > this.clientHeight) {
-                $(this).next(".more-btn-wrap").show();
-            } else {
-                $(this).next(".more-btn-wrap").hide();
-            }
-        });
-    }
-}
-setTimeout(checkReviewHeightLocal, 100);
+    // 더보기 버튼 자동 생성 로직
+    $(".review-text-body").each(function() {
+        if (this.scrollHeight > 110) { // 5줄 이상일 때
+            $(this).after('<div class="more-btn-wrap" style="text-align:right; margin-top:5px;"><button type="button" class="more-btn" onclick="$(this).parent().prev().css(\'max-height\', \'none\'); $(this).hide();" style="font-size:13px; color:#999; text-decoration:underline; border:none; background:none; cursor:pointer;">리뷰 더보기</button></div>');
+        }
+    });
 </script>

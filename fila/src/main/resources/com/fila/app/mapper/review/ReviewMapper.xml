@@ -12,68 +12,83 @@
         seq_review.nextval, #{productId}, #{userNumber}, #{content}, #{rating}, #{reviewImg, jdbcType=VARCHAR}, SYSDATE
     )
   </insert>
-
+  
+  <select id="checkReviewAuthority" resultType="int">
+      SELECT 
+          (SELECT COUNT(*) 
+           FROM orders o 
+           JOIN order_items oi ON o.order_id = oi.order_id 
+           WHERE o.user_number = #{userNumber} 
+             AND oi.product_id = #{productId} 
+             AND o.order_status = '배송완료')
+          - 
+          (SELECT COUNT(*) 
+           FROM review 
+           WHERE user_number = #{userNumber} 
+             AND product_id = #{productId})
+      FROM DUAL
+  </select>
+  
   <select id="selectListByFilter" resultType="com.fila.app.domain.review.ReviewVO">
-    SELECT 
-        r.review_id     AS reviewId, 
-        r.product_id    AS productId, 
-        r.user_number   AS userNumber, 
-        r.content, 
-        r.rating, 
-        r.review_img    AS reviewImg, 
-        
-        r.created_at    AS regdate, 
-
-        u.id            AS userId,
-        (SELECT COUNT(*) FROM review_like l WHERE l.review_id = r.review_id AND l.type = 1) AS likeCnt,
-        (SELECT COUNT(*) FROM review_like l WHERE l.review_id = r.review_id AND l.type = 0) AS dislikeCnt,
-        (SELECT type FROM review_like l WHERE l.review_id = r.review_id AND l.user_number = #{userNumber}) AS myLike
-    FROM review r
-    JOIN users u ON r.user_number = u.user_number
-    WHERE r.product_id = #{productId}
-    
-    <if test="ratingArr != null and ratingArr.length > 0">
-        AND r.rating IN
-        <foreach item="rate" collection="ratingArr" open="(" separator="," close=")">
-            #{rate}
-        </foreach>
-    </if>
-    
-    <if test="keyword != null and keyword != ''">
-        AND r.content LIKE '%' || #{keyword} || '%'
-    </if>
-
-    ORDER BY
-    <choose>
-        <when test="sort == 'photo'">
-            (CASE WHEN r.review_img IS NOT NULL THEN 0 ELSE 1 END) ASC, r.created_at DESC
-        </when>
-        <when test="sort == 'rate'">
-            r.rating DESC, r.created_at DESC
-        </when>
-        <otherwise>
-            r.created_at DESC
-        </otherwise>
-    </choose>
+      SELECT 
+          r.review_id     AS reviewId, 
+          r.product_id    AS productId, 
+          r.user_number   AS userNumber, 
+          r.content, 
+          r.rating, 
+          r.review_img    AS reviewImg, 
+          r.created_at    AS regDate, 
+          NVL(u.id, '비회원') AS userId,
+         
+          (SELECT COUNT(*) FROM review_like l WHERE l.review_id = r.review_id AND l.type = 1) AS likeCnt,
+          
+          (SELECT COUNT(*) FROM review_like l WHERE l.review_id = r.review_id AND l.type = 0) AS dislikeCnt,
+         
+          (SELECT type FROM review_like l WHERE l.review_id = r.review_id AND l.user_number = #{userNumber}) AS myLike
+      FROM review r
+      LEFT JOIN users u ON r.user_number = u.user_number
+      WHERE r.product_id = #{productId}
+      
+      <if test="ratingArr != null and ratingArr.length > 0">
+          AND r.rating IN
+          <foreach item="rate" collection="ratingArr" open="(" separator="," close=")">
+              #{rate}
+          </foreach>
+      </if>
+      
+      <if test="keyword != null and keyword != ''">
+          AND r.content LIKE '%' || #{keyword} || '%'
+      </if>
+  
+      ORDER BY 
+      <if test="isPhotoFirst == true">
+          (CASE WHEN r.review_img IS NOT NULL THEN 0 ELSE 1 END) ASC,
+      </if>
+      <choose>
+          <when test="sort == 'rate'"> r.rating DESC, r.created_at DESC </when>
+          <otherwise> r.created_at DESC </otherwise>
+      </choose>
   </select>
 
   <select id="getReviewSummary" resultType="map">
-    SELECT 
-        COUNT(*)               AS "total_cnt",
-        NVL(AVG(rating), 0)    AS "avg_score",
-        COUNT(CASE WHEN rating = 5 THEN 1 END) AS "best_cnt"
-    FROM review 
-    WHERE product_id = #{productId}
+      SELECT 
+          COUNT(*)                                     AS "total_cnt",
+          NVL(ROUND(AVG(rating), 1), 0)                AS "avg_score",
+
+          NVL(ROUND(COUNT(CASE WHEN rating = 5 THEN 1 END) / DECODE(COUNT(*), 0, 1, COUNT(*)) * 100), 0) AS "best_rate"
+      FROM review 
+      WHERE product_id = #{productId}
   </select>
   
   <select id="checkReviewLike" resultType="int">
-    SELECT COUNT(*) FROM review_like WHERE review_id = #{reviewId} AND user_number = #{userNumber}
-  </select>
-
-  <insert id="insertReviewLike">
-    INSERT INTO review_like (like_id, review_id, user_number, type) 
-    VALUES (seq_review_like.NEXTVAL, #{reviewId}, #{userNumber}, #{type})
-  </insert>
+       SELECT COUNT(*) FROM review_like 
+       WHERE review_id = #{reviewId} AND user_number = #{userNumber}
+   </select>
+   
+   <insert id="insertReviewLike">
+       INSERT INTO review_like (like_id, review_id, user_number, type) 
+       VALUES (seq_review_like.NEXTVAL, #{reviewId}, #{userNumber}, #{type})
+   </insert>
   
   <select id="getDeliveryCount" resultType="int">
     SELECT COUNT(*) 
