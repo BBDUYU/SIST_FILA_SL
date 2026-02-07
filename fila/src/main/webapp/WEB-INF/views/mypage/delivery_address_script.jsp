@@ -42,33 +42,33 @@ var contextPath = '${pageContext.request.contextPath}';
   /* =========================
      배송지 수정 (edit_address.jsp)
      ========================= */
-  $(document).on('click', '.modify__btn', function (e) {
-    e.preventDefault();
+     $(document).on('click', '.modify__btn', function (e) {
+     	e.preventDefault();
 
     // addrNo 추출 로직
     var addrNo = $(this).data('addr-no');
 
-    $('#EditaddModalContent').load(
-      contextPath + '/view/mypage/edit_address.jsp?addrNo=' + addrNo,
-      function () {
+    $('#EditaddModalContent').load(contextPath + '/mypage/edit_modal.htm?addrNo=' + addrNo, function(){
         showModalForce('#EditaddressModalOverlay');
-      }
-    );
-  });
+   		});
+   });
 
   /* =========================
      배송지 추가 (add_address.jsp)
      ========================= */
-  $(document).on('click', '.add-addr__btn', function (e) {
-    e.preventDefault();
+     $(document).on('click', '.add-addr__btn', function (e) {
+     	e.preventDefault();
 
-    $('#AddaddModalContent').load(
-      contextPath + '/view/mypage/add_address.jsp',
-      function () {
-        showModalForce('#AddaddressModalOverlay');
-      }
-    );
-  });
+     var targetUrl = contextPath + '/mypage/add_modal.htm'; 
+       
+     $('#AddaddModalContent').load(targetUrl, function(response, status, xhr) {
+           if (status == "error") {
+               console.error("오류 발생: " + xhr.status + " " + xhr.statusText);
+           } else {
+               showModalForce('#AddaddressModalOverlay');
+           }
+       });
+   });
 
   /* =========================
      공통 닫기

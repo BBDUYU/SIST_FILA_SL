@@ -34,8 +34,8 @@ public interface AddressMapper {
 			@Param("userNumber") int userNumber) throws SQLException;
 
 	// 주문 참조 여부
-	boolean hasOrderReference(@Param("addressId") int addressId,
-			@Param("userNumber") int userNumber) throws SQLException;
+	int hasOrderReference(@Param("addressId") int addressId,
+            @Param("userNumber") int userNumber) throws SQLException;
 
 	// 단건 조회 (본인 주소만)
 	AddressVO selectOneById(@Param("addressId") int addressId,
