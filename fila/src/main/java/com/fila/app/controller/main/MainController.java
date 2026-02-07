@@ -38,6 +38,9 @@ public class MainController {
     
     @Autowired
     private com.fila.app.service.admin.AdminStyleService adminStyleService;
+    
+    @Autowired
+    private com.fila.app.service.search.SearchService searchService;
 
     @RequestMapping("main.htm")
     public String mainPage(
@@ -45,32 +48,21 @@ public class MainController {
             HttpSession session, 
             Model model) {
 
-        // 1. 서비스로부터 메인 통합 데이터 가져오기
+        // 1. [유지] 검색어 DB 저장 로직 (이건 서비스 기능이므로 유지)
+        if (searchItem != null && !searchItem.trim().isEmpty()) {
+            searchService.saveKeyword(searchItem);
+        }
+
+        // 2. [수정] 서비스로부터 메인 컨텐츠 전용 데이터만 가져옴
+        // (이미 HeaderPreparer가 공통 데이터를 처리하므로, 여기선 본문용만 쓰면 됩니다)
         Map<String, Object> mainData = mainService.getMainData(searchItem);
 
-        // 2. 공통 데이터 (헤더/검색어 - 세션 저장)
-        session.setAttribute("categoryList", mainData.get("categoryList"));
-        session.setAttribute("popularKeywords", mainData.get("popularKeywords"));
-        session.setAttribute("recommendKeywords", mainData.get("recommendKeywords"));
-
-        // 3. 본문 전용 데이터 (배너/태그/스타일 - 모델 저장)
+        // 3. [유지] 본문 전용 데이터 (배너/태그/스타일 - 모델 저장)
         model.addAttribute("activeTags", mainData.get("activeTags"));
         model.addAttribute("activeStyles", mainData.get("activeStyles"));
         model.addAttribute("bannerList", mainData.get("bannerList"));
 
-        // 4. 추천 상품 이미지 경로 가공 (비즈니스 로직)
-        List<EventproductVO> recommendProducts = (List<EventproductVO>) mainData.get("recommendProducts");
-        if (recommendProducts != null) {
-            for (EventproductVO p : recommendProducts) {
-                String img = p.getMainImageUrl();
-                if (img != null && img.contains("path=")) {
-                    p.setMainImageUrl(img.split("path=")[1].replace("\\", "/"));
-                }
-            }
-        }
-        model.addAttribute("recommendProducts", recommendProducts);
-
-        // 5. 로그인 사용자별 위시리스트(찜) 정보 처리
+        // 4. [유지] 로그인 사용자별 위시리스트 처리
         MemberVO loginUser = (MemberVO) session.getAttribute("auth");
         if (loginUser != null) {
             Set<String> wishedSet = wishListService.getWishedSet(loginUser.getUserNumber());
@@ -79,9 +71,6 @@ public class MainController {
             model.addAttribute("wishedSet", Collections.emptySet());
         }
 
-        
-        
-        // 6. Tiles 설정 이름 리턴
         return "main"; 
     }
     

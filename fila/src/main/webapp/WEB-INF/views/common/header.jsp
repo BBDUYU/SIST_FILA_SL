@@ -76,16 +76,16 @@
 
     function searchRun2() {
         const searchItem = $("#searchItem2").val().trim();
-        if (!searchItem) { alert("검색어를 입력해주세요."); return false; }
+        if (!searchItem) { 
+            alert("검색어를 입력해주세요."); 
+            return false; 
+        }
 
-        // 1. 최근 검색어 쿠키 저장 (추가된 부분)
         setRecentSearchCookie(searchItem);
 
-        // 2. DB 저장 AJAX (기존 로직)
-        $.get("${pageContext.request.contextPath}/search/record.htm", { keyword: searchItem });
 
-        // 3. 페이지 이동
         location.href = "${pageContext.request.contextPath}/product/list.htm?searchItem=" + encodeURIComponent(searchItem);
+        
         return false;
     }
     function wordRemoveAll() {
