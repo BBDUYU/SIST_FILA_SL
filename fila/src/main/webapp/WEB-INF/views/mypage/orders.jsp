@@ -88,7 +88,7 @@
                     
                     <%-- 3. 배송중/배송완료 --%>
                     <c:otherwise>
-                        <span style="font-size: 11px; color:#00205b; font-weight:bold;">배송진행중</span>
+                        <span style="font-size: 11px; color:#00205b; font-weight:bold;"></span>
                     </c:otherwise>
                 </c:choose>
             </td>
