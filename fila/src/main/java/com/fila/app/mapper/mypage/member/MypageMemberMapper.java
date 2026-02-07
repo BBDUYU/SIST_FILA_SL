@@ -33,4 +33,12 @@ public interface MypageMemberMapper {
 
     // 자녀 정보
     List<ChildVO> selectChildList(int memberNo);
+    
+    void deleteChildren(int memberNo);
+
+    void insertChild(@Param("memberNo") int memberNo, @Param("child") ChildVO child);
+
+    void updateMarketingStatus(@Param("memberNo") int memberNo, @Param("mktId") int mktId, @Param("isAgreed") int isAgreed);
+
+    void updateEmail(@Param("memberNo") int memberNo, @Param("email") String email);
 }

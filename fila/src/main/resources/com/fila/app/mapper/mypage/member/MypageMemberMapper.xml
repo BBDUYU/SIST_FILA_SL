@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fila.app.mapper.mypage.member.MypageMemberMapper">
+
+    <select id="selectChildList" resultType="com.fila.app.domain.member.ChildVO">
+        SELECT 
+            CHILD_NAME AS childName, 
+            TO_CHAR(CHILD_BIRTH, 'YYYYMMDD') AS childBirth, 
+            CHILD_GENDER AS childGender 
+        FROM CHILD 
+        WHERE USER_NUMBER = #{memberNo} 
+        ORDER BY CHILD_BIRTH ASC
+    </select>
+
+    <select id="selectMarketingStatus" resultType="map">
+	    SELECT 
+	        NVL(MAX(CASE WHEN MARKETING_ID = 6 THEN IS_AGREED END), 0) AS "6",
+	        NVL(MAX(CASE WHEN MARKETING_ID = 7 THEN IS_AGREED END), 0) AS "7"
+	    FROM USER_MARKETING_MAP 
+	    WHERE USER_NUMBER = #{memberNo}
+	</select>
+
+    <select id="selectMemberByUserNumber" resultType="com.fila.app.domain.member.MemberVO">
+        SELECT 
+            USER_NUMBER AS userNumber, 
+            ID, NAME, EMAIL, PHONE, BIRTHDAY, GENDER, STATUS, GRADE
+        FROM USERS 
+        WHERE USER_NUMBER = #{userNumber}
+    </select>
+
+    <select id="checkPasswordByMemberNo" resultType="int">
+        SELECT COUNT(*) 
+        FROM USERS 
+        WHERE USER_NUMBER = #{memberNo} AND PASSWORD = #{currentPw}
+    </select>
+
+    <update id="updatePassword">
+        UPDATE USERS 
+        SET PASSWORD = #{newPw}, UPDATED_AT = SYSDATE 
+        WHERE USER_NUMBER = #{memberNo}
+    </update>
+
+    <update id="retireMember">
+        UPDATE USERS 
+        SET STATUS = 'INACTIVE', UPDATED_AT = SYSDATE 
+        WHERE USER_NUMBER = #{memberNo}
+    </update>
+
+	<delete id="deleteChildren">
+	    DELETE FROM CHILD WHERE USER_NUMBER = #{memberNo}
+	</delete>
+	
+	<insert id="insertChild">
+	    INSERT INTO CHILD (CHILD_ID, USER_NUMBER, CHILD_NAME, CHILD_BIRTH, CHILD_GENDER, CREATED_AT)
+	    VALUES (SEQ_CHILD.NEXTVAL, #{memberNo}, #{child.childName}, TO_DATE(#{child.childBirth}, 'YYYYMMDD'), #{child.childGender}, SYSDATE)
+	</insert>
+	
+	<update id="updateMarketingStatus">
+	    MERGE INTO USER_MARKETING_MAP m
+	    USING DUAL ON (m.USER_NUMBER = #{memberNo} AND m.MARKETING_ID = #{mktId})
+	    WHEN MATCHED THEN
+	        UPDATE SET IS_AGREED = #{isAgreed}, AGREED_AT = SYSDATE
+	    WHEN NOT MATCHED THEN
+	        INSERT (MAP_ID, USER_NUMBER, MARKETING_ID, IS_AGREED, AGREED_AT)
+	        VALUES (SEQ_MAP.NEXTVAL, #{memberNo}, #{mktId}, #{isAgreed}, SYSDATE)
+	</update>
+	
+	<update id="updateEmail">
+	    UPDATE USERS SET EMAIL = #{email}, UPDATED_AT = SYSDATE WHERE USER_NUMBER = #{memberNo}
+	</update>
+
+</mapper>

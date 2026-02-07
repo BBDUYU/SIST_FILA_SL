@@ -20,6 +20,9 @@ public interface MemberService {
     boolean resetPasswordByVerify(String id, String phone, String newPw);
     
     String findIdByNameAndPhone(String name, String phone);
+    
+    // 비밀번호 확인용
+    boolean checkCurrentPassword(String id, String rawPassword);
 
   }
 

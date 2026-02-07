@@ -156,17 +156,22 @@
         $('body').css('overflow', 'hidden');
     }
 
-    // 3. 내 정보 변경 버튼 클릭 이벤트 (모든 페이지 공통 적용)
+ // 3. 내 정보 변경 버튼 클릭 이벤트
     $(document).on('click', '.info-modify__btn', function (e) {
         e.preventDefault();
         
-        // 부모 페이지의 contextPath를 사용하거나 여기서 직접 정의
         var path = window.contextPath || '${pageContext.request.contextPath}';
         
+        // 🔥 중요: 파일 경로가 아니라 컨트롤러 URL을 호출해야 합니다.
         $('#ModifyModalContent').load(
-            path + '/view/mypage/pwd_chk.jsp', 
-            function () {
-                showModalForce('#ModifyModalOverlay'); 
+            path + '/mypage/pwCheckModal.htm',  // 수정됨
+            function (response, status, xhr) {
+                if (status == "success") {
+                    showModalForce('#ModifyModalOverlay'); 
+                } else {
+                    console.error("모달 로드 실패:", xhr.status, xhr.statusText);
+                    alert("비밀번호 확인창을 불러올 수 없습니다.");
+                }
             }
         );
     });
