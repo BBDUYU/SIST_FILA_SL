@@ -1,3 +1,4 @@
+
 package com.fila.app.controller.address;
 
 import javax.servlet.http.HttpSession;
@@ -21,31 +22,27 @@ public class AddressDeleteController {
 	
 	private final AddressMapper addressMapper;
 
-	@PostMapping(value = "/address/delete", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    @Transactional
-    public String process(HttpSession session, int addrNo) throws Exception {
+	@PostMapping(value = "/address/delete.htm")
+	@ResponseBody
+	@Transactional
+	public String process(HttpSession session, int addrNo) throws Exception {
 
-        Object auth = (session == null) ? null : session.getAttribute("auth");
-        if (auth == null) return "redirect:/login.htm";
+	    Object auth = (session == null) ? null : session.getAttribute("auth");
+	    if (auth == null) return "{\"ok\":false,\"error\":\"UNAUTHORIZED\"}";
 
-        int userNumber = ((MemberVO) auth).getUserNumber();
+	    int userNumber = ((MemberVO) auth).getUserNumber();
 
-        int isDefault = addressMapper.isDefault(addrNo, userNumber);
-        if (isDefault == 1) {
-            return "{\"ok\":false,\"error\":\"DEFAULT_CANNOT_DELETE\"}";
-        }
+	    int isDefault = addressMapper.isDefault(addrNo, userNumber);
+	    if (isDefault == 1) return "{\"ok\":false,\"error\":\"DEFAULT_CANNOT_DELETE\"}";
 
-        boolean usedInOrder = addressMapper.hasOrderReference(addrNo, userNumber);
-        if (usedInOrder) {
-            return "{\"ok\":false,\"error\":\"USED_IN_ORDER\"}";
-        }
+	    if (addressMapper.hasOrderReference(addrNo, userNumber) > 0) {
+	        return "{\"ok\":false,\"error\":\"USED_IN_ORDER\"}";
+	    }
 
-        int deleted = addressMapper.delete(addrNo, userNumber);
-        if (deleted == 0) {
-            return "{\"ok\":false,\"error\":\"NOT_FOUND\"}";
-        }
+	    int deleted = addressMapper.delete(addrNo, userNumber);
+	    if (deleted == 0) return "{\"ok\":false,\"error\":\"NOT_FOUND\"}";
 
-        return "{\"ok\":true}";
+	    return "{\"ok\":true}";
 	}
+
 }

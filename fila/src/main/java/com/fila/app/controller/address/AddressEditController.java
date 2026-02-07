@@ -2,7 +2,6 @@ package com.fila.app.controller.address;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,9 +19,9 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/mypage")
 public class AddressEditController {
 
-	private final AddressMapper addressMapper;
-	
-	@PostMapping(value = "/address/edit", produces = MediaType.APPLICATION_JSON_VALUE)
+    private final AddressMapper addressMapper;
+
+    @PostMapping(value = "/edit.htm")
     @ResponseBody
     @Transactional
     public String process(HttpSession session,
@@ -36,14 +35,13 @@ public class AddressEditController {
                           String addrDefault) throws Exception {
 
         Object auth = (session == null) ? null : session.getAttribute("auth");
-        if (auth == null) return "redirect:/login.htm";
+        if (auth == null) return "{\"ok\":false,\"error\":\"UNAUTHORIZED\"}";
 
         int userNumber = ((MemberVO) auth).getUserNumber();
 
         AddressVO dto = new AddressVO();
         dto.setAddressId(addrNo);
         dto.setUserNumber(userNumber);
-
         dto.setRecipientName(addrname);
         dto.setRecipientPhone(tel2_1);
         dto.setZipcode(zipcode);
@@ -60,9 +58,7 @@ public class AddressEditController {
         }
 
         int updated = addressMapper.update(dto);
-        if (updated == 0) {
-            return "{\"ok\":false,\"error\":\"NOT_FOUND\"}";
-        }
+        if (updated == 0) return "{\"ok\":false,\"error\":\"NOT_FOUND\"}";
 
         return "{\"ok\":true}";
     }

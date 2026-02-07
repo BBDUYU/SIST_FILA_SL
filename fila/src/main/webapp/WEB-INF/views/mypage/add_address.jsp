@@ -14,10 +14,10 @@
          <input type="hidden" name="addrNo" value="${param.addrNo}">
          <div class="addr-add-box">
             <div>
-               <input type="text" placeholder="배송지 이름" name="addressName" value="" maxlength="25" id="addrRecipient ">
+               <input type="text" placeholder="배송지 이름" name="addressName" value="" maxlength="25" id="addrRecipient">
             </div>
             <div>
-               <input type="text" placeholder="수령인" name="addrname" value="" maxlength="25" id="addrRecipient ">
+               <input type="text" placeholder="수령인" name="addrname" value="" maxlength="25" id="addrRecipient">
             </div>
 
             <div>
@@ -88,12 +88,9 @@ var contextPath = '${pageContext.request.contextPath}';
     if ($mapOverlay.length === 0) $mapOverlay = $('#MapModalOverlay');
     if ($mapContent.length === 0) $mapContent = $('#MapModalContent');
 
-    $mapContent.load(
-      contextPath + '/view/mypage/map.jsp',
-      function () {
+    $mapContent.load(contextPath + '/mypage/map_modal.htm', function () {
         $mapOverlay.css('display', 'flex').show();
-      }
-    );
+    });
   });
 
   /* =========================
@@ -112,36 +109,35 @@ var contextPath = '${pageContext.request.contextPath}';
 
 <script>
 (function($){
-  $(document).off('click.addrAdd', '#btnSaveAdd')
-             .on('click.addrAdd', '#btnSaveAdd', function(e){
-    e.preventDefault();
-
-    var $form = $('#addr');
-    $.ajax({
-      url: contextPath + '/mypage/address/add.htm',
-      type: 'POST',
-      data: $form.serialize(),
-      dataType: 'json',
-      // ✅ success는 반드시 이 '$.ajax' 중괄호 안에 있어야 합니다!
-      success: function(res){
-        if(res && res.ok){
-          alert("배송지가 추가되었습니다.");
-          if (location.pathname.indexOf("order") > -1) {
-            // 주문 페이지면 목록 로드
-            $("#AddrModalContent").load(contextPath + "/order/address_list.htm");
-          } else {
-            // 마이페이지면 새로고침
-            location.reload();
-          }
-        } else {
-          alert('저장 실패');
-        }
-      },
-      error: function(xhr){
-        alert('저장 실패 (' + xhr.status + ')');
-      }
+    // 1. 이벤트 리스너를 btnSaveAdd (추가 버튼)에 맞춤
+    $(document).off('click.addrAdd', '#btnSaveAdd')
+               .on('click.addrAdd', '#btnSaveAdd', function(e){
+        e.preventDefault();
+        
+        var $container = $(this).closest('.common__layer');
+        var $form = $container.find('form'); 
+        
+        $.ajax({
+            // 2. 컨트롤러 위치 확인 (AddressAddController의 @RequestMapping/PostMapping 조합)
+            url: contextPath + '/mypage/address/add.htm', 
+            type: 'POST',
+            data: $form.serialize(),
+            // 3. 406 에러 방지: 컨트롤러가 String을 리턴하므로 dataType은 지우거나 text로 받음
+            success: function(res){
+                // res가 문자열 "{"ok":true}"로 올 경우를 대비해 파싱
+                var data = (typeof res === 'string') ? JSON.parse(res) : res;
+                if(data && data.ok){
+                    alert("새 배송지가 추가되었습니다.");
+                    location.reload();
+                } else {
+                    alert(data.error || '추가 실패');
+                }
+            },
+            error: function(xhr){
+                alert('서버 오류 (' + xhr.status + ')');
+            }
+        });
     });
-  });
 })(jQuery);
 // ❌ 이 아래에는 아무것도 없어야 합니다.
 </script>

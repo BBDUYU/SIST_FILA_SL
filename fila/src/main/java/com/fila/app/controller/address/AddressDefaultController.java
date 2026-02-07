@@ -2,7 +2,9 @@ package com.fila.app.controller.address;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,21 +21,27 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/mypage")
 public class AddressDefaultController {
 
-	private final AddressMapper addressMapper;
+    private final AddressMapper addressMapper;
 
-    @PostMapping(value = "/address/default", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/address/default.htm")
     @ResponseBody
     @Transactional
-    public String process(HttpSession session, int addrNo) throws Exception {
+    public ResponseEntity<String> process(HttpSession session, int addrNo) throws Exception {
 
         Object auth = (session == null) ? null : session.getAttribute("auth");
-        if (auth == null) return "redirect:/login.htm"; // 핸들러 스타일 유지
+        if (auth == null) return json("{\"ok\":false,\"error\":\"UNAUTHORIZED\"}", HttpStatus.UNAUTHORIZED);
 
         int userNumber = ((MemberVO) auth).getUserNumber();
 
         addressMapper.clearDefault(userNumber);
         addressMapper.setDefault(addrNo, userNumber);
 
-        return "{\"ok\":true}";
+        return json("{\"ok\":true}", HttpStatus.OK);
+    }
+
+    private ResponseEntity<String> json(String body, HttpStatus status){
+        HttpHeaders h = new HttpHeaders();
+        h.add("Content-Type", "application/json; charset=UTF-8");
+        return new ResponseEntity<>(body, h, status);
     }
 }
