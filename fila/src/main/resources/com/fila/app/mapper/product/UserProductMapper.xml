@@ -141,4 +141,25 @@
     WHERE G.PRODUCT_ID = #{productId} AND G.MASTER_ID = #{masterId}
   </select>
 
+  <select id="selectSidebarList" resultType="com.fila.app.domain.categories.CategoriesVO">
+      SELECT 
+          C.CATEGORY_ID   AS categoryId,
+          C.NAME          AS name,
+          C.PARENT_ID     AS parentId,
+          C.DEPTH         AS depth,
+          (
+              SELECT COUNT(*) 
+              FROM PRODUCTS P 
+              WHERE P.CATEGORY_ID IN (
+                  SELECT SUB.CATEGORY_ID 
+                  FROM CATEGORIES SUB 
+                  START WITH SUB.CATEGORY_ID = C.CATEGORY_ID 
+                  CONNECT BY PRIOR SUB.CATEGORY_ID = SUB.PARENT_ID
+              )
+          ) AS productCount
+      FROM CATEGORIES C
+      WHERE C.PARENT_ID IS NOT NULL 
+      ORDER BY C.CATEGORY_ID ASC
+  </select>
+  
 </mapper>
