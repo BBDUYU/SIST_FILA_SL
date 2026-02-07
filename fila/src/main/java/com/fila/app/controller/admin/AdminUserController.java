@@ -1,8 +1,12 @@
 package com.fila.app.controller.admin;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -79,22 +83,30 @@ public class AdminUserController {
      * 4 & 5. 주문 상태 업데이트 및 재고 복구 (AJAX)
      * Map을 리턴하면 JSON 객체({})로 변환됩니다.
      */
-    @RequestMapping(value = "/orderUpdate", method = RequestMethod.POST)
+    @RequestMapping(value = "/orderUpdate.htm", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> orderUpdate(@RequestParam("orderId") String orderId, @RequestParam("status") String status) {
-        Map<String, Object> response = new HashMap<String, Object>();
+    public void orderUpdate( // 리턴 타입을 void로 변경
+            @RequestParam("orderId") String orderId, 
+            @RequestParam("status") String status,
+            HttpSession session,
+            HttpServletResponse response) throws Exception { // response 추가
         
-        // OderServiceImpl.cancelOrder 내부에 상태 업데이트 + 재고복구 로직이 포함되어 있음
         boolean isSuccess = oderService.cancelOrder(orderId, status);
         
+        // 세션 갱신 로직 (동일)
         if (isSuccess) {
-            response.put("status", "success");
-            response.put("message", "[" + status + "] 처리가 완료되었습니다.");
-        } else {
-            response.put("status", "error");
-            response.put("message", "처리 중 오류가 발생했습니다.");
+            com.fila.app.domain.member.MemberVO auth = (com.fila.app.domain.member.MemberVO) session.getAttribute("auth");
+            if (auth != null) {
+                UserInfoVO newSummary = adminUserService.getMyPageSummary(auth.getUserNumber());
+                session.setAttribute("summary", newSummary);
+            }
         }
-        
-        return response;
+
+        // 🚩 응답 직접 작성 (Content-Type 강제 지정)
+        response.setContentType("text/plain; charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.print(isSuccess ? "SUCCESS_OK" : "FAIL_ERROR");
+        out.flush();
+        out.close();
     }
 }

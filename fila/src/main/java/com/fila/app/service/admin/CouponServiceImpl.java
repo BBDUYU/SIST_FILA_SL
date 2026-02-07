@@ -2,6 +2,7 @@ package com.fila.app.service.admin;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,4 +40,7 @@ public class CouponServiceImpl implements CouponService {
         // 기존의 복잡한 예외 처리 로직이 Spring의 RuntimeException 체계로 통합되어 간결해집니다.
         return couponMapper.getUserCouponList(userNum);
     }
+   
+
+    
 }

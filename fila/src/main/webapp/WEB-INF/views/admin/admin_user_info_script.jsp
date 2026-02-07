@@ -63,26 +63,30 @@
         
         if(!confirm('주문 상태를 [' + newStatus + '](으)로 변경하시겠습니까?')) return;
 
-        // jQuery가 이미 포함되어 있다고 가정합니다.
         $.ajax({
-            url: "${pageContext.request.contextPath}/admin/updateOrder.htm",
+            // 🚩 URL을 processOrderCancel에서 쓰는 것과 동일하게 맞춥니다.
+            url: "${pageContext.request.contextPath}/admin/orderUpdate.htm", 
             type: "POST",
             data: {
                 orderId: orderId,
                 status: newStatus
             },
-            dataType: "json",
+            // 🚩 dataType: "json"을 제거하여 텍스트 응답을 받을 수 있게 합니다.
             success: function(res) {
-                if(res.status === "success") {
+                // 🚩 SUCCESS_OK 텍스트 비교 방식으로 통일
+                if(res.trim() === "SUCCESS_OK") {
                     alert("성공적으로 변경되었습니다.");
-                    location.href = location.pathname + location.search + "#order";
-                    location.reload(); // 상태 반영을 위해 새로고침
+                    
+                    // 현재 보고 있던 탭(#order)을 유지하며 새로고침
+                    const currentHash = window.location.hash || "#order";
+                    location.href = window.location.pathname + window.location.search + currentHash;
+                    location.reload(); 
                 } else {
-                    alert("실패: " + res.message);
+                    alert("변경 실패: 서버 응답이 올바르지 않습니다.");
                 }
             },
-            error: function() {
-                alert("서버 통신 중 오류가 발생했습니다.");
+            error: function(xhr) {
+                alert("서버 통신 중 오류가 발생했습니다. (상태코드: " + xhr.status + ")");
             }
         });
     }

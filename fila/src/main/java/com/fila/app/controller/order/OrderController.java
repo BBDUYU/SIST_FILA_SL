@@ -19,17 +19,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fila.app.domain.admin.UserInfoVO;
 import com.fila.app.domain.member.MemberVO;
+import com.fila.app.domain.mypage.coupon.MypageCouponVO;
 import com.fila.app.domain.order.OrderItemVO;
 import com.fila.app.domain.order.OrderVO;
 import com.fila.app.domain.product.ProductsVO;
 import com.fila.app.mapper.address.AddressMapper;
 import com.fila.app.mapper.admin.CouponMapper;
 import com.fila.app.mapper.cart.CartMapper;
-import com.fila.app.mapper.order.OderMapper;
+import com.fila.app.mapper.order.OrderMapper;
 import com.fila.app.mapper.product.UserProductMapper;
+import com.fila.app.service.admin.AdminUserService;
 import com.fila.app.service.mypage.coupon.MypageCouponService;
 
 @Controller
@@ -45,10 +48,11 @@ public class OrderController {
 	@Autowired
 	private CouponMapper couponMapper;
 	@Autowired
-	private OderMapper oderMapper;
+	private OrderMapper orderMapper;
 	@Autowired
     private MypageCouponService mypageCouponService;
-	
+	@Autowired
+	private AdminUserService adminUserService;
 	
 	// ✅ GET: 결제 페이지 (OrderHandler의 GET 로직 그대로)
     @GetMapping("/orderForm.htm")
@@ -119,8 +123,7 @@ public class OrderController {
         // 3) 포인트/쿠폰 정보 조회 (OrderHandler의 SQL 조회 부분을 Mapper 조회로 대체)
         UserInfoVO userDetail = new UserInfoVO();
 
-        // 조회 안 함
-        int myPoint = 0;          
+        int myPoint = orderMapper.getUserPointBalance(userNumber); // 🚩 실제 DB 조회
         userDetail.setBalance(myPoint);
 
         // 쿠폰은 CouponMapper에서 조회
@@ -144,31 +147,21 @@ public class OrderController {
         return "order_pay";
     }
 
-    // ✅ POST: 결제 처리 (OrderHandler의 POST 로직 그대로)
-    // 서비스 없이 컨트롤러에서 주문 삽입까지 다 하려면 트랜잭션은 여기서라도 묶어야 합니다.
-    @PostMapping(value = "/orderForm.htm", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> orderSubmit(
+    @PostMapping(value = "/processOrder.htm")
+    public String orderSubmit(
             HttpSession session,
             HttpServletRequest request,
-            @RequestParam Map<String, String> param
+            @RequestParam Map<String, String> param,
+            RedirectAttributes rttr
     ) {
-
         MemberVO authUser = (MemberVO) session.getAttribute("auth");
-        Map<String, Object> json = new HashMap<>();
-
-        if (authUser == null) {
-            json.put("status", "error");
-            json.put("message", "로그인이 필요합니다.");
-            return json;
-        }
+        if (authUser == null) return "redirect:/login.htm";
 
         int userNumber = authUser.getUserNumber();
 
         try {
-            // 1) 파라미터 수집 (OrderHandler와 동일)
-            int addressId = Integer.parseInt(param.get("address_id"));
+            // 1) 파라미터 수집
+            int addressId = Integer.parseInt(param.get("addressId"));
             int totalAmount = Integer.parseInt(param.get("OrderTotalPrice"));
             String deliveryMethod = param.get("deliveryOption");
             String deliveryRequest = param.get("OrderContents");
@@ -195,20 +188,17 @@ public class OrderController {
                     .orderStatus("결제완료")
                     .build();
 
-            // 3) 주문 아이템 구성 (OrderHandler와 동일)
+            // 3) 주문 아이템 구성
             List<OrderItemVO> items = new ArrayList<>();
-
             if (cartItemIds != null && !cartItemIds.isEmpty()) {
                 items = cartMapper.selectSelectedCartItems(cartItemIds);
             } else {
                 String pId = param.get("productId");
                 String qtyStr = param.get("quantity");
                 String cIdStr = param.get("combinationId");
-
                 if (pId != null && !pId.isEmpty()) {
                     ProductsVO product = productMapper.getProduct(pId);
                     int salePrice = product.getPrice() * (100 - product.getDiscountRate()) / 100;
-
                     items.add(OrderItemVO.builder()
                             .productId(pId)
                             .quantity(Integer.parseInt(qtyStr))
@@ -218,55 +208,61 @@ public class OrderController {
                 }
             }
 
-            // 4) 주문 처리 (OrderService 없이 컨트롤러에서 그대로 수행)
-            String orderId = oderMapper.generateOrderId();
+            // 4) DB 처리 (트랜잭션)
+            String orderId = orderMapper.generateOrderId();
             order.setOrderId(orderId);
-
-            oderMapper.insertOrder(order);
-
-            for (OrderItemVO item : items) item.setOrderId(orderId);
-            oderMapper.insertOrderItems(items);
+            orderMapper.insertOrder(order);
 
             for (OrderItemVO item : items) {
-                int stockResult = oderMapper.updateDecreaseStock(item.getCombinationId(), item.getQuantity());
+                item.setOrderId(orderId);
+                // 🚩 재고 감소 로직 추가
+                int stockResult = orderMapper.updateDecreaseStock(item.getCombinationId(), item.getQuantity());
                 if (stockResult == 0) {
-                    throw new RuntimeException("상품[" + item.getCombinationId() + "]의 재고가 부족합니다.");
+                    throw new RuntimeException("상품 재고가 부족합니다.");
                 }
             }
+            orderMapper.insertOrderItems(items);
+            orderMapper.insertPayment(orderId, order.getTotalAmount(), order.getPaymentMethod());
 
-            oderMapper.insertPayment(orderId, order.getTotalAmount(), order.getPaymentMethod());
-
-            // 포인트 처리
+            // 5) 포인트 및 쿠폰 처리
             if (order.getUsedPoint() > 0) {
-                oderMapper.insertPointHistory(order.getUserNumber(), orderId, order.getUsedPoint());
+                orderMapper.insertPointHistory(order.getUserNumber(), orderId, order.getUsedPoint());
             } else {
                 int rewardPoint = (int) (order.getTotalAmount() * 0.05);
-                if (rewardPoint > 0) {
-                    oderMapper.insertOrderPoint(order.getUserNumber(), rewardPoint, orderId);
-                }
+                if (rewardPoint > 0) orderMapper.insertOrderPoint(order.getUserNumber(), rewardPoint, orderId);
             }
 
-            // 쿠폰 사용 처리
             if (order.getUserCouponId() > 0) {
-                oderMapper.updateCouponUsed(order.getUserCouponId());
+                orderMapper.updateCouponUsed(order.getUserCouponId());
             }
 
-            // 장바구니 비우기
+            // 6) 장바구니 비우기
             if (cartItemIds != null && !cartItemIds.isEmpty()) {
                 cartMapper.deleteCartItems(cartItemIds, order.getUserNumber());
             }
 
-            // 성공 응답 (OrderHandler와 동일하게 redirect JSON)
-            json.put("status", "success");
-            json.put("redirect", request.getContextPath() + "/order/complete.htm?orderId=" + orderId);
-            return json;
+            UserInfoVO newSummary = adminUserService.getMyPageSummary(userNumber);
+            session.setAttribute("summary", newSummary);
+            
+            // 성공 시 주문완료 페이지로 리다이렉트
+            return "redirect:/order/complete.htm?orderId=" + orderId;
 
         } catch (Exception e) {
-            // @Transactional이 롤백시키게 예외 다시 던져야 하는데,
-            // 여기서는 JSON 응답을 주기 위해 RuntimeException으로 감싸서 던집니다.
             e.printStackTrace();
-            throw new RuntimeException("주문 처리 중 오류 발생: " + e.getMessage(), e);
+            rttr.addFlashAttribute("error", e.getMessage());
+            return "redirect:/order/orderForm.htm"; // 에러 시 주문폼으로 복귀
         }
+    }
+
+    @GetMapping("/complete.htm")
+    public String orderComplete(@RequestParam("orderId") String orderId, Model model) {
+        OrderVO order = orderMapper.selectOrderById(orderId);
+        if (order != null) {
+            List<OrderItemVO> items = orderMapper.selectOrderItemsDetail(orderId);
+            order.setOrderItems(items);
+            model.addAttribute("order", order);
+        }
+        return "complete";
     }
     
     @GetMapping("/address_list.htm")
@@ -294,30 +290,67 @@ public class OrderController {
         return "order/order_coupon"; 
     }
 
-    @GetMapping(value = "/api/mycoupon_ajax.htm", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public List<UserInfoVO> myCouponAjax(HttpSession session) {
-        MemberVO authUser = (MemberVO) session.getAttribute("auth");
-        if (authUser == null) return new ArrayList<>();
+ // OrderController.java
 
-        return couponMapper.getUserCouponList(authUser.getUserNumber());
-    }
-    @PostMapping(value = "/coupon_process.htm")
+    @GetMapping(value = "/api/mycoupon_ajax.htm", produces = "text/html; charset=utf-8") // 🚩 타입을 html로 변경
     @ResponseBody
-    public Map<String, Object> couponProcess(
-            HttpSession session, 
-            @RequestParam("randomNo") String serialNo) {
+    public String myCouponAjax(HttpSession session) {
+        MemberVO authUser = (MemberVO) session.getAttribute("auth");
+        if (authUser == null) return "<li>로그인이 필요합니다.</li>";
+
+        List<MypageCouponVO> list = mypageCouponService.getMyCouponList(authUser.getUserNumber());
         
-        MemberVO authUser = (MemberVO) session.getAttribute("auth");
-        Map<String, Object> result = new HashMap<>();
-
-        if (authUser == null) {
-            result.put("status", "error");
-            result.put("message", "로그인이 필요합니다.");
-            return result;
+        if (list == null || list.isEmpty()) {
+            return "<li><p class='txt1'>선택 가능한 쿠폰이 없습니다.</p></li>";
         }
 
-        return mypageCouponService.registerCoupon(authUser.getUserNumber(), serialNo);
+        StringBuilder sb = new StringBuilder();
+        for (MypageCouponVO cpn : list) {
+            String priceText = "PERCENT".equals(cpn.getDiscountType()) 
+                               ? cpn.getDiscountValue() + "%" 
+                               : String.format("%,d원", cpn.getDiscountValue());
+
+            sb.append("<li>");
+            sb.append("    <input type='radio' id='cpRd_").append(cpn.getUserCouponId()).append("' name='popupCoupon3' ");
+            sb.append("           class='rd__style1' value='").append(cpn.getUserCouponId()).append("' ");
+            sb.append("           data-name='").append(cpn.getCouponName()).append("' ");
+            sb.append("           data-type='").append(cpn.getDiscountType()).append("' ");
+            sb.append("           data-val='").append(cpn.getDiscountValue()).append("'>");
+            sb.append("    <label for='cpRd_").append(cpn.getUserCouponId()).append("'></label>");
+            sb.append("    <div style='margin-left:40px;'>");
+            sb.append("        <p class='txt1' style='font-weight:bold; color:#333;'>").append(cpn.getCouponName()).append("</p>");
+            sb.append("        <p class='txt2' style='color:#ff0000; font-size:13px;'>").append(priceText).append(" 할인 쿠폰</p>");
+            sb.append("    </div>");
+            sb.append("</li>");
+        }
+        return sb.toString();
+    }
+
+    @PostMapping("/coupon_process.htm") 
+    @ResponseBody
+    public void couponProcess(
+            HttpSession session, 
+            @RequestParam("randomNo") String serialNo,
+            javax.servlet.http.HttpServletResponse response) throws java.io.IOException {
+        
+        // 한글 깨짐 방지
+        response.setContentType("text/plain; charset=utf-8");
+        
+        MemberVO authUser = (MemberVO) session.getAttribute("auth");
+        if (authUser == null) {
+            response.getWriter().print("login_required");
+            return;
+        }
+
+        Map<String, Object> result = mypageCouponService.registerCoupon(authUser.getUserNumber(), serialNo);
+        
+        if ("success".equals(result.get("status"))) {
+        	UserInfoVO newSummary = adminUserService.getMyPageSummary(authUser.getUserNumber());
+            session.setAttribute("summary", newSummary);
+            response.getWriter().print("success");
+        } else {
+            response.getWriter().print(result.get("message"));
+        }
     }
     
 }

@@ -9,38 +9,17 @@ function toggleUserOrderDetail(orderId) {
         detailRow.hide();
     } else {
         $.ajax({
-            url: "${pageContext.request.contextPath}/admin/orderDetail.htm", // 기존 핸들러 재사용
+            // 🚩 경로를 /mypage/orderDetail.htm 으로 변경!
+            url: "${pageContext.request.contextPath}/mypage/orderDetail.htm",
             data: { orderId: orderId },
-            dataType: "json",
-            success: function(items) {
-                if(items.length === 0) {
-                    contentBox.html('<p style="padding:10px;">상세 내역이 없습니다.</p>');
-                } else {
-                    let html = '<div style="margin-bottom:10px; font-weight:bold; color:#00205b;">[주문 상품 상세 정보]</div>';
-                    html += '<table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #eee;">';
-                    html += '<tr style="background:#f4f4f4;"><th style="padding:8px;">상품명</th><th>옵션</th><th>수량</th><th>단가</th></tr>';
-                    
-                    items.forEach(item => {
-                    	const productName = item.productName || "상품명 없음";
-                        const size = (item.size && item.size !== "") ? item.size : "기본"; // 빈 문자열 처리
-                        const quantity = item.quantity || 0;
-                        const price = item.price || 0; // 현재 0으로 들어옴
-                        html += `<tr style="border-bottom:1px solid #eee; text-align:center;">
-                            <td style="padding:10px; text-align:left;">\${productName}</td>
-                            <td>\${size}</td>
-                            <td>\${quantity}</td>
-                            <td style="font-weight:bold;">
-                                \${price > 0 ? Number(price).toLocaleString() + '원' : '가격 정보 없음'}
-                            </td>
-                        </tr>`;
-                    });
-                    html += '</table>';
-                    contentBox.html(html);
-                }
+            type: "GET",
+            // 🚩 dataType: "json" 은 삭제 (HTML 문자열을 받을 것이므로)
+            success: function(res) {
+                contentBox.html(res); // 서버에서 보낸 <table> 태그를 그대로 삽입
                 detailRow.show();
             },
-            error: function() {
-                alert("주문 정보를 불러오지 못했습니다.");
+            error: function(xhr) {
+                alert("상세 내역을 불러오지 못했습니다. (에러코드: " + xhr.status + ")");
             }
         });
     }
@@ -48,28 +27,30 @@ function toggleUserOrderDetail(orderId) {
 
 function processOrderCancel(orderId, targetStatus) {
     let confirmMsg = "";
-    
-    if (targetStatus === '취소완료') {
-        confirmMsg = "즉시 취소가 가능합니다. 정말 취소하시겠습니까?";
-    } else if (targetStatus === '취소요청') {
-        confirmMsg = "취소 요청을 하시겠습니까? 관리자 확인 후 처리됩니다.";
-    } else if (targetStatus === '반품요청') {
-        confirmMsg = "반품 요청을 하시겠습니까? 고객센터에서 절차를 안내해 드릴 예정입니다.";
-    }
+    if (targetStatus === '취소완료') confirmMsg = "즉시 취소가 가능합니다. 정말 취소하시겠습니까?";
+    else if (targetStatus === '취소요청') confirmMsg = "취소 요청을 하시겠습니까? 관리자 확인 후 처리됩니다.";
+    else if (targetStatus === '반품요청') confirmMsg = "반품 요청을 하시겠습니까?";
 
     if (confirm(confirmMsg)) {
         $.ajax({
-            url: "${pageContext.request.contextPath}/admin/updateOrder.htm",
+            url: "${pageContext.request.contextPath}/admin/orderUpdate.htm",
             type: "POST",
-            data: { orderId: orderId, status: targetStatus },
-            dataType: "json",
+            data: { 
+                orderId: orderId, 
+                status: targetStatus 
+            },
+            // 🚩 dataType: "json" 은 절대 쓰지 않습니다.
             success: function(res) {
-                if (res.status === "success") {
-                    alert(targetStatus + " 처리가 정상적으로 완료되었습니다.");
-                    location.reload();
+                // 서버에서 리턴한 "SUCCESS_OK" 텍스트와 비교
+                if (res.trim() === "SUCCESS_OK") {
+                    alert("[" + targetStatus + "] 처리가 완료되었습니다.");
+                    location.reload(); // 세션이 갱신되었으므로 새로고침 시 상단 숫자도 변경됨
                 } else {
-                    alert("처리 실패: " + res.message);
+                    alert("처리 중 오류가 발생했습니다.");
                 }
+            },
+            error: function(xhr) {
+                alert("서버 통신 에러 (상태코드: " + xhr.status + ")");
             }
         });
     }

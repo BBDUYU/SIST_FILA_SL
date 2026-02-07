@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.fila.app.domain.admin.CouponVO;
 import com.fila.app.domain.mypage.coupon.MypageCouponVO;
 
 public interface MypageCouponMapper {
@@ -24,4 +25,5 @@ public interface MypageCouponMapper {
     int insertUserCoupon(@Param("couponId") int couponId,
                          @Param("userNumber") int userNumber,
                          @Param("expireDate") Date expireDate);
+    CouponVO selectCouponMasterBySerial(@Param("serialNo") String serialNo);
 }

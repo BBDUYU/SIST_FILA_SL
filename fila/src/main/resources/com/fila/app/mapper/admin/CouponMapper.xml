@@ -53,4 +53,11 @@
         WHERE USER_COUPON_ID = #{userCouponId}
     </update>
 
+
+	<update id="updateExpiredCouponsStatus">
+	    UPDATE COUPON 
+	    SET STATUS = 'N' 
+	    WHERE STATUS = 'Y' 
+	      AND EXPIRES_AT <![CDATA[ < ]]> TRUNC(SYSDATE)
+	</update>
 </mapper>

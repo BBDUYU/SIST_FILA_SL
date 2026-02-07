@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!-- 🔥 mypage layout fragment (include 전용) -->
 <link rel="icon" type="image/x-icon" href="//filacdn.styleship.com/filacontent2/favicon.ico" />
 <link href="http://localhost/SIST_FILA/css/SpoqaHanSansNeo.css" rel="stylesheet">
@@ -55,7 +56,7 @@
                         <a href="${pageContext.request.contextPath}/mypage/mycoupon.htm">
                             <dl>
                                 <dt>쿠폰</dt>
-                                <dd><span id="summary-coupon">0</span>개</dd>
+                                <dd><span id="summary-coupon">${summary.couponCount}</span>개</dd>
                             </dl>
                         </a>
                     </div>
@@ -63,7 +64,7 @@
                         <a href="${pageContext.request.contextPath}/mypage/mypoint.htm">
                             <dl>
                                 <dt>포인트</dt>
-                                <dd><span id="summary-point">0</span>P</dd>
+                                <dd><span id="summary-point"><fmt:formatNumber value="${summary.balance}" pattern="#,###"/></span>P</dd>
                             </dl>
                         </a>
                     </div>
@@ -71,7 +72,7 @@
                         <a href="${pageContext.request.contextPath}/mypage/wishlist.htm">
                             <dl>
                                 <dt>위시리스트</dt>
-                                <dd><span id="summary-wish">0</span>개</dd>
+                                <dd><span id="summary-wish">${summary.wishCount}</span>개</dd>
                             </dl>
                         </a>
                     </div>
@@ -79,7 +80,7 @@
                         <a href="${pageContext.request.contextPath}/mypage/orders.htm">
                             <dl>
                                 <dt>주문내역</dt>
-                                <dd><span id="summary-order">0</span>건</dd>
+                                <dd><span id="summary-order">${summary.orderCount}</span>건</dd>
                             </dl>
                         </a>
                     </div>
@@ -183,19 +184,19 @@
         $('body').css('overflow', 'auto');
     };
     $(document).ready(function() {
-        // 마이페이지 요약 정보를 가져오는 AJAX 호출
         $.ajax({
-            url: '${pageContext.request.contextPath}/api/mypage/summary.htm', 
+            // url을 위에서 만든 API 주소와 맞춥니다.
+            url: '${pageContext.request.contextPath}/mypage/api/summary.htm', 
             type: 'GET',
             dataType: 'json',
             success: function(data) {
-                $('#summary-coupon').text(data.couponCount);
-                $('#summary-point').text(data.pointBalance.toLocaleString()); // 천단위 콤마
-                $('#summary-wish').text(data.wishCount);
-                $('#summary-order').text(data.orderCount);
-            },
-            error: function() {
-                console.log("요약 정보를 불러오는데 실패했습니다.");
+                // VO 필드명에 맞춰서 수정 (couponCount, balance, wishCount, orderCount)
+                if(data) {
+                    $('#summary-coupon').text(data.couponCount || 0);
+                    $('#summary-point').text((data.balance || 0).toLocaleString()); 
+                    $('#summary-wish').text(data.wishCount || 0);
+                    $('#summary-order').text(data.orderCount || 0);
+                }
             }
         });
     });

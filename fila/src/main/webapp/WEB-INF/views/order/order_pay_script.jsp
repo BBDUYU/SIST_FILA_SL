@@ -3,7 +3,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 function pay_checkout() {
-    // 배송지 체크
     const addrId = $("#address_id").val();
     if (addrId == "0" || addrId == "") {
         alert("배송지 정보를 등록하거나 선택해 주세요.");
@@ -18,25 +17,11 @@ function pay_checkout() {
 
     if (!confirm("정말로 결제하시겠습니까?")) return;
 
-    const formData = $("form[name='user']").serialize();
-
-    $.ajax({
-        url: "${pageContext.request.contextPath}/order/processOrder.htm",
-        type: "POST",
-        data: formData,
-        dataType: "json",
-        success: function(res) {
-            if (res.status === "success") {
-                alert("주문이 완료되었습니다!");
-                location.href = res.redirect;
-            } else {
-                alert("오류 발생: " + res.message);
-            }
-        },
-        error: function() {
-            alert("결제 처리 중 통신 오류가 발생했습니다.");
-        }
-    });
+    // 🚩 AJAX 대신 일반 폼 전송 사용
+    const form = document.forms['user'];
+    form.action = "${pageContext.request.contextPath}/order/processOrder.htm";
+    form.method = "POST";
+    form.submit();
 }
 
 var contextPath = '${pageContext.request.contextPath}';
@@ -79,73 +64,57 @@ $(document).on('click', '.addr__list li', function() {
 });
 //4. 배송지 선택하기 (목록에서 라디오 버튼 등으로 선택했을 때)
 function addr_choice() {
- var $selected = $("input[name='addr_select']:checked");
- if($selected.length == 0) {
-     alert("배송지를 선택해주세요.");
-     return;
- }
- 
- // 데이터 추출
- var id = $selected.val();
- var name = $selected.data('name');
- var tel = $selected.data('tel');
- var zip = $selected.data('zip');
- var addr1 = $selected.data('addr1');
- var addr2 = $selected.data('addr2');
+    var $selected = $("input[name='addr_select']:checked");
+    if($selected.length == 0) {
+        alert("배송지를 선택해주세요.");
+        return;
+    }
+    
+    // 데이터 추출
+    var id = $selected.val();
+    var name = $selected.data('name');
+    var tel = $selected.data('tel');
+    var zip = $selected.data('zip');
+    var addr1 = $selected.data('addr1');
+    var addr2 = $selected.data('addr2');
 
- // 부모창(order_pay.jsp) 화면 업데이트
- $("#address_id").val(id);
- $("#dName").text(name);
- $("#dTel").text(tel);
- $("#dAddr").text("(" + zip + ") " + addr1 + " " + addr2);
+    // [수정 포인트] 모든 관련 hidden 필드를 한 번에 업데이트
+    $("#address_id").val(id);           // 상단 영역 id
+    $("#final_address_id").val(id);     // 하단 결제 버튼 영역 id
+    
+    // 배송지 정보 텍스트 업데이트
+    $("#dName").text(name);
+    $("#dTel").text(tel);
+    $("#dAddr").text("(" + zip + ") " + addr1 + " " + addr2);
 
- $("#AddaddressModalOverlay").hide();
+    // 상세 정보 hidden 필드들 업데이트 (DB 전송용)
+    $("#orderName").val(name);
+    $("input[name='OrderDTel21']").val(tel);
+    $("input[name='OrderDZip']").val(zip);
+    $("input[name='OrderDAddress1']").val(addr1);
+    $("input[name='OrderDAddress2']").val(addr2);
+
+    $("#AddaddressModalOverlay").hide();
 }
 </script>
 <script>
 //order_pay.jsp 하단 스크립트에 추가
 $(document).on('click', '.coupon__btn', function() {
-    // 1. JSP 경로 대신 컨트롤러 매핑 주소(/order/order_coupon.htm) 사용
-    $("#AddaddModalContent").load(contextPath + "/order/order_coupon.htm", function(response, status, xhr) {
-        if (status == "error") {
-            alert("쿠폰 페이지를 불러오지 못했습니다.");
-            return;
-        }
-        
-        // 2. 모달 로드 후 유저 쿠폰 목록 호출 (위에서 만든 /order/api/mycoupon_ajax.htm)
+    $("#AddaddModalContent").load(contextPath + "/order/order_coupon.htm", function() {
         $.ajax({
             url: contextPath + "/order/api/mycoupon_ajax.htm", 
             type: "GET",
-            dataType: "json",
-            success: function(data) {
-                let html = "";
-                if (data && data.length > 0) {
-                    data.forEach(function(cpn) {
-                        // DB 필드명(usercouponid, coupon_name 등)이 UserInfoVO와 일치하는지 확인
-                        let priceText = (cpn.discount_type === 'PERCENT') 
-                                        ? cpn.price + '%' 
-                                        : cpn.price.toLocaleString() + '원';
-
-                        html += '<li>';
-                        html += '    <input type="radio" id="cpRd_' + cpn.usercouponid + '" name="popupCoupon3" ';
-                        html += '           class="rd__style1" value="' + cpn.usercouponid + '" ';
-                        html += '           data-name="' + cpn.coupon_name + '" ';
-                        html += '           data-type="' + cpn.discount_type + '" ';
-                        html += '           data-val="' + cpn.price + '">';
-                        html += '    <label for="cpRd_' + cpn.usercouponid + '"></label>';
-                        html += '    <div style="margin-left:40px;">';
-                        html += '        <p class="txt1" style="font-weight:bold; color:#333;">' + cpn.coupon_name + '</p>';
-                        html += '        <p class="txt2" style="color:#ff0000; font-size:13px;">' + priceText + ' 할인 쿠폰</p>';
-                        html += '    </div>';
-                        html += '</li>';
-                    });
-                    // 쿠폰이 있으면 목록 교체
-                    $(".coupon-select-box .cn ul").html(html);
-                }
+            dataType: "html", // 🚩 dataType을 html로 변경!
+            success: function(resHtml) {
+                // 서버에서 만든 <li> 태그들을 그대로 덮어씌움
+                $(".coupon-select-box .cn ul").html(resHtml);
+                
+                $("#AddaddressModalOverlay").css('display', 'flex').show();
+            },
+            error: function() {
+                alert("쿠폰 목록을 불러오는 중 오류가 발생했습니다.");
             }
         });
-        
-        $("#AddaddressModalOverlay").css('display', 'flex').show();
     });
 });
 //order_pay.jsp 하단 스크립트에 추가
@@ -189,10 +158,10 @@ function useCouponLayer() {
 }
 
 // 쿠폰 등록 버튼 클릭 이벤트 (이벤트 위임 방식)
+// 쿠폰 등록 버튼 클릭 이벤트
 $(document).on('click', '#offlineBtn', function(e) {
     e.preventDefault();
     
-    // 변경된 ID인 #coupon_serial_input으로 값을 가져옵니다.
     const serial = $("#coupon_serial_input").val();
     
     if(!serial || serial.trim() === "") { 
@@ -205,18 +174,41 @@ $(document).on('click', '#offlineBtn', function(e) {
         url: contextPath + "/order/coupon_process.htm",
         type: "POST",
         data: { "randomNo": serial.trim() },
-        dataType: "json",
+        /* dataType: "json" 은 절대 쓰지 마세요 */
         success: function(res) {
-        	alert(res.message);
-        	if (res.status === "success") {
-                $(".coupon__btn").trigger('click'); 
+            // 서버에서 "success"라는 생 문자열이 오는지 확인
+            // 앞뒤 공백 제거를 위해 trim()을 붙여주는 것이 안전합니다.
+            const result = res.trim(); 
+            
+            if (result === "success") {
+                alert("쿠폰이 등록되었습니다.");
+                // 팝업 내의 쿠폰 리스트 새로고침 (아까 만든 HTML 조각 불러오기 함수 실행)
+                loadCouponList(); 
+            } else if (result === "login_required") {
+                alert("로그인이 필요합니다.");
+            } else {
+                alert(result); // "이미 등록된 쿠폰입니다" 등의 메시지 출력
             }
         },
-        error: function() { 
-            alert("유효하지 않은 쿠폰 번호입니다."); 
+        error: function(xhr, status, error) { 
+            console.error("Status:", status);
+            console.error("Error:", error);
+            console.error("Response:", xhr.responseText);
+            alert("서버 통신 오류가 발생했습니다. (상태코드: " + xhr.status + ")"); 
         }
     });
 });
+
+// 쿠폰 리스트만 다시 그려주는 함수 (중복 코드 방지)
+function loadCouponList() {
+    $.ajax({
+        url: contextPath + "/order/api/mycoupon_ajax.htm", 
+        type: "GET",
+        success: function(resHtml) {
+            $(".coupon-select-box .cn ul").html(resHtml);
+        }
+    });
+}
 // 1. 초기 설정 변수 (서버 데이터 매핑)
 const GOODS_TOTAL_PRICE = parseInt("${totalSalePrice}") || 0; // 할인 적용된 상품 총합
 const MY_MAX_POINT = parseInt("${user.balance}") || 0;
@@ -289,7 +281,47 @@ function todayDeliveryCheck() {
 
 // 페이지 로드 시 초기 계산 실행
 $(document).ready(function() {
-    pay_change0();
-    $("#usePoint").text(MY_MAX_POINT.toLocaleString()); // 보유 포인트 표시 업데이트
+    // 1. 서버에서 내려준 보유 포인트를 안전하게 가져오기
+    var rawBalance = "${user.balance}";
+    var balance = parseInt(rawBalance.replace(/[^0-9]/g, "")) || 0;
+    
+    // 2. 화면에 표시 (P 단위 포함)
+    $("#usePoint").text(balance.toLocaleString());
+    
+    // 3. 내부 변수 업데이트 (포인트 모두사용 버튼 등에서 사용)
+    window.MY_MAX_POINT = balance; 
+
+    pay_change0(); // 초기 금액 계산 실행
 });
+
+//배송지 팝업에서 호출할 함수 (팝업 창에서 window.opener.setAddress(...) 로 호출하게 됨)
+function setAddress(addrId, name, tel, zipcode, mainAddr, detailAddr) {
+    // 1. 화면에 보이는 텍스트 변경
+    $("#dName").text(name);
+    $("#dTel").text(tel);
+    $("#dAddr").text("(" + zipcode + ") " + mainAddr + " " + detailAddr);
+    
+    // 2. 서버로 전송할 hidden 값 변경
+    $("#address_id").val(addrId); // 상단 배송지 정보 박스의 ID
+    $("input[name='addressId']").val(addrId); 
+    
+    // 3. (필요 시) 하드코딩된 다른 필드들도 동기화
+    $("#orderName").val(name);
+    
+    // 팝업 닫기 (오버레이 방식일 경우)
+    $("#AddaddressModalOverlay").hide();
+}
+
+// 배송지 팝업 열기 함수
+function openAddressPopup() {
+    // Ajax로 address_list.htm 내용을 가져와서 모달에 넣거나, window.open 사용
+    $.ajax({
+        url: "${pageContext.request.contextPath}/order/address_list.htm",
+        type: "GET",
+        success: function(html) {
+            $("#AddaddModalContent").html(html);
+            $("#AddaddressModalOverlay").css("display", "flex");
+        }
+    });
+}
 </script>

@@ -45,7 +45,7 @@
                 <%-- 4. 만료 날짜 (EXPIRES_AT) --%>
                 <div class="form-group">
                     <label for="expires_at">쿠폰 만료일</label>
-                    <input type="date" id="expires_at" name="expires_at" class="form-control" required>
+                    <input type="date" id="expires_at" name="expiresAt" class="form-control" required>
                     <p style="font-size: 12px; color: #888; margin-top: 5px;">* 설정된 날짜가 지나면 쿠폰이 자동으로 무효화됩니다.</p>
                 </div>
 

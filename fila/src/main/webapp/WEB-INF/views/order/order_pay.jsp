@@ -80,12 +80,11 @@
 					<!-- //배송지 정보 -->
 
 					
-					<input type="hidden" placeholder ="이름" maxlength="10" name="OrderDName" id="orderName" value="지영주">
-					<input type="hidden" placeholder ="휴대폰 번호를 '-' 제외하고 숫자만 입력해주세요" name="OrderDTel21" maxlength="11" value="01012345678">
-					<input type="hidden" class="" readonly name="OrderDZip" value="06193">
-					<input type="hidden" class="" readonly maxlength="100" name="OrderDAddress1" value="서울 강남구 대치동 890-60">
-					<input type="hidden" class="" readonly maxlength="100" name="OrderDRoadAddress" value="서울 강남구 테헤란로70길 12 (대치동)">
-					<input type="hidden" class="" maxlength="100" tabindex="24" name="OrderDAddress2" value="9층, 쌍용교육센터" autocomplete="off">
+					<input type="hidden" name="OrderDName" id="orderName" value="${defaultAddr.recipientName}">
+					<input type="hidden" name="OrderDTel21" value="${defaultAddr.recipientPhone}">
+					<input type="hidden" name="OrderDZip" value="${defaultAddr.zipcode}">
+					<input type="hidden" name="OrderDAddress1" value="${defaultAddr.mainAddr}">
+					<input type="hidden" name="OrderDAddress2" value="${defaultAddr.detailAddr}">
 
 					<!-- 배송 방법 -->
 					<div class="odr-toggle-box open deliveryTypeBox">
@@ -344,7 +343,7 @@
 							    <dd><span id="display_total_price"><fmt:formatNumber value="${totalSalePrice}" pattern="#,###"/></span>원</dd>
 							</dl>
 							<input type="hidden" name="OrderTotalPrice" id="OrderTotalPrice" value="${totalGoodsPrice}" />
-							<input type="hidden" name="address_id" value="1" /> 
+							<input type="hidden" name="address_id" id="final_address_id" value="${defaultAddr.addressId}" /> 
 							
 							<dl class="_type_agree">
 								<dt>주문 내용을 확인했으며, 약관에 동의합니다.</dt>

@@ -53,13 +53,13 @@
         <put-attribute name="title" value="주문" />
         <put-attribute name="add" value="/WEB-INF/views/pay/cart_add.jsp" />
         <put-attribute name="content" value="/WEB-INF/views/pay/cart.jsp" />
-        <put-attribute name="script" value="/WEB-INF/views/order/cart_script.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/pay/cart_script.jsp" />
     </definition>
     
     <definition name="pay2" extends="base-layout">
         <put-attribute name="title" value="주문" />
         <put-attribute name="content" value="/WEB-INF/views/pay/cart2.jsp" />
-        <put-attribute name="script" value="/WEB-INF/views/order/cart2_script.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/pay/cart2_script.jsp" />
     </definition>
     
     <!-- product -->
@@ -257,7 +257,7 @@
 	</definition>
 
 	<definition name="inquiry" extends="mypage-layout">
-	    <put-attribute name="title" value="1:1문의 | FILA" />
+	    <put-attribute name="title" value="교환 취소 | FILA" />
 	    <put-attribute name="style" value="/WEB-INF/views/mypage/inquiry_style.jsp" />
 	    <put-attribute name="content" value="/WEB-INF/views/mypage/inquiry.jsp" />
 	    <put-attribute name="script" value="/WEB-INF/views/mypage/inquiry_script.jsp" />

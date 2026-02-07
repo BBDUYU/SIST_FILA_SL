@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.fila.app.domain.member.MemberVO;
 import com.fila.app.domain.order.OrderVO;
-import com.fila.app.mapper.order.OderMapper;
+import com.fila.app.mapper.order.OrderMapper;
 
 @Controller
 @RequestMapping("/order")
 public class CancelListController {
 
 	@Autowired
-    private OderMapper oderMapper;
+    private OrderMapper oderMapper;
 
     @GetMapping("/order/cancelList.htm")   // ✅ 필요하면 URL은 너 프로젝트에 맞게 바꿔도 됨
     public String cancelList(HttpSession session, Model model) {

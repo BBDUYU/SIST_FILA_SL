@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import com.fila.app.domain.order.OrderItemVO;
 import com.fila.app.domain.order.OrderVO;
 
-public interface OderMapper {
+public interface OrderMapper {
 
 	// 1. 주문번호 생성
     String generateOrderId();
@@ -19,26 +19,32 @@ public interface OderMapper {
     int insertOrderItems(@Param("items") List<OrderItemVO> items);
 
     // 4. PAYMENT INSERT
-    int insertPayment(@Param("orderId") String orderId,
-                      @Param("amount") int amount,
-                      @Param("method") String method);
-
+    void insertPayment(
+    	    @Param("orderId") String orderId, 
+    	    @Param("amount") int amount, 
+    	    @Param("paymentMethod") String paymentMethod // XML의 #{paymentMethod}와 이름을 맞춤
+    	);
     // 5. 쿠폰 사용 처리
     int updateCouponUsed(@Param("userCouponId") int userCouponId);
 
     // 포인트 사용 내역 INSERT
-    int insertPointHistory(@Param("userNumber") int userNumber,
-                           @Param("orderId") String orderId,
-                           @Param("usedAmount") int usedAmount);
-
+    void insertPointHistory(
+    	    @Param("userNumber") int userNumber, 
+    	    @Param("orderId") String orderId, 
+    	    @Param("usedPoint") int usedPoint
+    	);
+    // 주문 적립 포인트 INSERT
+    void insertOrderPoint(
+    	    @Param("userNumber") int userNumber, 
+    	    @Param("rewardPoint") int rewardPoint, 
+    	    @Param("orderId") String orderId
+    	);
     // 재고 차감
     int updateDecreaseStock(@Param("combinationId") int combinationId,
                             @Param("quantity") int quantity);
 
-    // 주문 적립 포인트 INSERT
-    int insertOrderPoint(@Param("userNumber") int userNumber,
-                         @Param("amount") int amount,
-                         @Param("orderId") String orderId);
+    int getUserPointBalance(@Param("userNumber") int userNumber);
+   
 
     // 6. 주문 목록 조회
     List<OrderVO> selectUserOrderList(@Param("userNumber") int userNumber,
@@ -60,4 +66,6 @@ public interface OderMapper {
 
     // 주문 단건 조회
     OrderVO selectOrderById(@Param("orderId") String orderId);
+    
+    List<OrderVO> getUserOrderList(@Param("userNumber") int userNumber, @Param("type") String type);
 }

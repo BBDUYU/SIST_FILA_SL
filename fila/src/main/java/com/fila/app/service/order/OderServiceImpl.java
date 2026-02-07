@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fila.app.domain.order.OrderItemVO;
 import com.fila.app.domain.order.OrderVO;
 import com.fila.app.mapper.cart.CartMapper;
-import com.fila.app.mapper.order.OderMapper;
+import com.fila.app.mapper.order.OrderMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class OderServiceImpl implements OderService {
 	
 	@Autowired
-	private OderMapper orderMapper; 
+	private OrderMapper orderMapper; 
 	@Autowired
 	private CartMapper cartMapper;
 	

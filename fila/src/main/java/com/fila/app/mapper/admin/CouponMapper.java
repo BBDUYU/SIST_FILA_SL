@@ -16,4 +16,6 @@ public interface CouponMapper {
     // [회원/마이페이지] 보유 쿠폰 관리
     List<UserInfoVO> getUserCouponList(int userNumber);
     int useUserCoupon(int userCouponId);
+    
+    int updateExpiredCouponsStatus();
 }

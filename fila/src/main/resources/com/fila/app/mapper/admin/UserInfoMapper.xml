@@ -49,8 +49,22 @@
     </select>
 
     <select id="getCouponCount" resultType="int">
-        SELECT COUNT(*) FROM USER_COUPON 
-        WHERE USER_NUMBER = #{userNum} AND IS_USED = 0 AND EXPIRED_DATE > SYSDATE
+	    SELECT COUNT(*) 
+	    FROM USER_COUPON 
+	    WHERE USER_NUMBER = #{userNumber} 
+	      AND IS_USED = 0 
+	      AND EXPIRE_DATE > SYSDATE
+	</select>
+    
+    <select id="getWishCount" resultType="int">
+        SELECT COUNT(*) 
+        FROM WISHLIST  WHERE USER_NUMBER = #{userNumber}
+    </select>
+
+    <select id="getOrderCount" resultType="int">
+        SELECT COUNT(*) 
+        FROM ORDERS 
+        WHERE USER_NUMBER = #{userNumber}
     </select>
     
     </mapper>

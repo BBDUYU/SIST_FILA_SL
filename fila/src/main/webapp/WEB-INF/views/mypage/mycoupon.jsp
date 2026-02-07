@@ -22,26 +22,26 @@
                     
                     <div class="coupon-info" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
                         <strong style="font-size:18px; display:block; margin-bottom:8px; color:#333; line-height: 1.2;">
-                            ${coupon.coupon_name}
+                            ${coupon.couponName}
                         </strong>
                         <p style="color:#666; font-size:14px; margin:0; line-height: 1;">
                             <span style="color:#ff0000; font-weight:bold;">
                                 <c:choose>
-                                    <c:when test="${coupon.discount_type eq 'PERCENT'}">${coupon.price}% 할인</c:when>
-                                    <c:when test="${coupon.discount_type eq 'AMOUNT'}"><fmt:formatNumber value="${coupon.price}" pattern="#,###"/>원 할인</c:when>
-                                    <c:when test="${coupon.discount_type eq 'DELIVERY'}">무료배송</c:when>
+                                    <c:when test="${coupon.discountType eq 'PERCENT'}">${coupon.discountValue}% 할인</c:when>
+                                    <c:when test="${coupon.discountType eq 'AMOUNT'}"><fmt:formatNumber value="${coupon.discountValue}" pattern="#,###"/>원 할인</c:when>
+                                    <c:when test="${coupon.discountType eq 'DELIVERY'}">무료배송</c:when>
                                     <c:otherwise>기타 할인</c:otherwise>
                                 </c:choose>
                             </span>
                             <span style="margin-left:10px; color:#999;">
-                                | 유효기간: <fmt:formatDate value="${coupon.expireddate}" pattern="yyyy-MM-dd"/> 까지
+                                | 유효기간: <fmt:formatDate value="${coupon.expireDate}" pattern="yyyy-MM-dd"/> 까지
                             </span>
                         </p>
                     </div>
 
                     <div class="coupon-status" style="width: 120px; display: flex; justify-content: flex-end; align-items: center;">
                         <c:choose>
-                            <c:when test="${coupon.isused eq '1'}">
+                            <c:when test="${coupon.isUsed eq '1'}">
                                 <span class="status-badge" style="display:inline-block; width:80px; height:32px; line-height:32px; text-align:center; background:#888; color:#fff; border-radius:2px; font-size:12px; font-weight:bold;">사용완료</span>
                             </c:when>
                             <c:otherwise>

@@ -59,7 +59,13 @@
             </tr>
             <tr>
                 <th>결제수단</th>
-                <td>${order.paymentMethod == 'card' ? '신용카드' : '카카오페이'}</td>
+                <td>
+			        <c:choose>
+			            <c:when test="${order.paymentMethod eq 'card'}">신용카드</c:when>
+			            <c:when test="${order.paymentMethod eq 'kakao'}">카카오페이</c:when>
+			            <c:otherwise>${order.paymentMethod}</c:otherwise>
+			        </c:choose>
+			    </td>
             </tr>
         </table>
     </div>

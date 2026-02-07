@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fila.app.domain.admin.UserInfoVO;
 import com.fila.app.domain.member.MemberVO;
+import com.fila.app.service.admin.AdminUserService;
 import com.fila.app.service.member.MemberService;
 
 @Controller
@@ -20,6 +22,9 @@ public class LoginController {
     @Autowired
     private MemberService memberService;
 
+    @Autowired
+    private AdminUserService adminUserService;
+    
     /**
      * 로그인 화면
      */
@@ -51,6 +56,10 @@ public class LoginController {
         }
 
         session.setAttribute("auth", member);
+        
+        UserInfoVO summary = adminUserService.getMyPageSummary(member.getUserNumber());
+        session.setAttribute("summary", summary);
+        
         return "redirect:/";
     }
 
