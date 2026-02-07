@@ -296,9 +296,9 @@
                                            <div class="before">
                                                <a href="${pageContext.request.contextPath}/product/detail.htm?productId=${item.productId}">
                                                    <%-- 상품별 폴더 안의 1번 메인 이미지 호출 --%>
-                                                   <img src="${item.imageUrl}" 
-                                                         alt="${item.name}" 
-                                                         onerror="this.onerror=null; this.style.display='none';">
+                                                   <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${item.productId}/${item.productId}_main_1.jpg" 
+													     alt="${item.name}" 
+													     onerror="this.onerror=null; this.style.display='none';">
                                                </a>
                                            </div>
                                        </div>
