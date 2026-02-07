@@ -118,23 +118,29 @@ var contextPath = '${pageContext.request.contextPath}';
         var $form = $container.find('form'); 
         
         $.ajax({
-            // 2. 컨트롤러 위치 확인 (AddressAddController의 @RequestMapping/PostMapping 조합)
-            url: contextPath + '/mypage/address/add.htm', 
+            url: contextPath + '/mypage/address/add.htm',
             type: 'POST',
             data: $form.serialize(),
-            // 3. 406 에러 방지: 컨트롤러가 String을 리턴하므로 dataType은 지우거나 text로 받음
-            success: function(res){
-                // res가 문자열 "{"ok":true}"로 올 경우를 대비해 파싱
-                var data = (typeof res === 'string') ? JSON.parse(res) : res;
-                if(data && data.ok){
+            dataType: 'json', // 서버에서 JSON을 줄 것이라고 명시
+            success: function(data) {
+                // data 자체가 이미 오브젝트입니다.
+                if (data && data.ok) {
                     alert("새 배송지가 추가되었습니다.");
-                    location.reload();
+                    $("#AddaddressModalOverlay").hide();
+                    
+                    if (typeof openAddressPopup === 'function') {
+                        openAddressPopup(); 
+                    } else {
+                        location.reload();
+                    }
                 } else {
-                    alert(data.error || '추가 실패');
+                    // 서버에서 보낸 에러 메시지(data.error)를 출력
+                    alert("실패 사유: " + (data.error || "알 수 없는 오류"));
                 }
             },
-            error: function(xhr){
-                alert('서버 오류 (' + xhr.status + ')');
+            error: function(xhr) {
+                console.log(xhr.responseText); // 에러 내용 상세 확인용
+                alert('서버 통신 오류 (' + xhr.status + ')');
             }
         });
     });

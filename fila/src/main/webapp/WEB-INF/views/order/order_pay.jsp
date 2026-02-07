@@ -55,12 +55,12 @@
                         </p>
                     </div>
                     
-                    <input type="hidden" name="address_id" id="address_id" value="${defaultAddr.addressId}" />
+                    <input type="hidden" name="addressId" id="address_id" value="${defaultAddr.addressId}" />
                 </c:when>
                 <c:otherwise>
                     <div class="txt-box">
                         <p class="addr">등록된 배송지가 없습니다. 배송지를 등록해 주세요.</p>
-                        <input type="hidden" name="address_id" id="address_id" value="0" />
+                        <input type="hidden" name="addressId" id="address_id" value="0" />
                     </div>
                 </c:otherwise>
             </c:choose>

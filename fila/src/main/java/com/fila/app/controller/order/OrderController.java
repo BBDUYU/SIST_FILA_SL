@@ -30,6 +30,7 @@ import com.fila.app.mapper.admin.CouponMapper;
 import com.fila.app.mapper.cart.CartMapper;
 import com.fila.app.mapper.order.OderMapper;
 import com.fila.app.mapper.product.UserProductMapper;
+import com.fila.app.service.mypage.coupon.MypageCouponService;
 
 @Controller
 @RequestMapping("/order")
@@ -45,9 +46,12 @@ public class OrderController {
 	private CouponMapper couponMapper;
 	@Autowired
 	private OderMapper oderMapper;
+	@Autowired
+    private MypageCouponService mypageCouponService;
+	
 	
 	// ✅ GET: 결제 페이지 (OrderHandler의 GET 로직 그대로)
-    @GetMapping("/order/order.htm")
+    @GetMapping("/orderForm.htm")
     public String orderPage(
             HttpSession session,
             Model model,
@@ -137,12 +141,12 @@ public class OrderController {
         model.addAttribute("totalSalePrice", totalSalePrice);
         model.addAttribute("user", userDetail);
 
-        return "/order/order_pay";
+        return "order_pay";
     }
 
     // ✅ POST: 결제 처리 (OrderHandler의 POST 로직 그대로)
     // 서비스 없이 컨트롤러에서 주문 삽입까지 다 하려면 트랜잭션은 여기서라도 묶어야 합니다.
-    @PostMapping(value = "/order/order.htm", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/orderForm.htm", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> orderSubmit(
@@ -264,4 +268,56 @@ public class OrderController {
             throw new RuntimeException("주문 처리 중 오류 발생: " + e.getMessage(), e);
         }
     }
+    
+    @GetMapping("/address_list.htm")
+    public String addressList(HttpSession session, Model model) {
+        MemberVO authUser = (MemberVO) session.getAttribute("auth");
+        if (authUser == null) return "redirect:/member/login.htm";
+
+        try {
+            List<?> addressList = addressMapper.selectListByUser(authUser.getUserNumber());
+            model.addAttribute("addressList", addressList);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // 해당 JSP 파일 경로 (views/order/address_list.jsp라고 가정)
+        return "order/order_address"; 
+    }
+    
+    @GetMapping("/addAddressForm.htm")
+    public String addAddressForm() {
+        return "mypage/add_address"; 
+    }
+    
+    @GetMapping("/order_coupon.htm")
+    public String orderCouponForm() {
+        return "order/order_coupon"; 
+    }
+
+    @GetMapping(value = "/api/mycoupon_ajax.htm", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public List<UserInfoVO> myCouponAjax(HttpSession session) {
+        MemberVO authUser = (MemberVO) session.getAttribute("auth");
+        if (authUser == null) return new ArrayList<>();
+
+        return couponMapper.getUserCouponList(authUser.getUserNumber());
+    }
+    @PostMapping(value = "/coupon_process.htm")
+    @ResponseBody
+    public Map<String, Object> couponProcess(
+            HttpSession session, 
+            @RequestParam("randomNo") String serialNo) {
+        
+        MemberVO authUser = (MemberVO) session.getAttribute("auth");
+        Map<String, Object> result = new HashMap<>();
+
+        if (authUser == null) {
+            result.put("status", "error");
+            result.put("message", "로그인이 필요합니다.");
+            return result;
+        }
+
+        return mypageCouponService.registerCoupon(authUser.getUserNumber(), serialNo);
+    }
+    
 }
