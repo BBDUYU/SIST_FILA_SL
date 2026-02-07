@@ -11,7 +11,7 @@
                 <a href="#">FAQ</a>
                 <a href="#">매장안내</a>
                 <a href="#">A/S 안내</a>
-                <a href="${pageContext.request.contextPath}/notice/list" class="on">공지사항</a>
+                <a href="${pageContext.request.contextPath}/noticeList.htm" class="on">공지사항</a>
                 <a href="${pageContext.request.contextPath}/notice/membership.htm">Membership</a>
             </div>
 
@@ -43,7 +43,7 @@
                                 <c:otherwise>
                                     <c:forEach var="notice" items="${noticeList}" varStatus="status">
                                         <li class="notice-item ${status.first ? 'active' : ''}" 
-                                            onclick="showImage(this, '${notice.image_url}')">
+                                            onclick="showImage(this, '${notice.imageUrl}')">
                                             <a href="javascript:void(0);">
                                                 <span>${notice.categoryName}</span>
                                                 <span class="date">

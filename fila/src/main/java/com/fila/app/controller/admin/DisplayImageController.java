@@ -35,7 +35,14 @@ public class DisplayImageController {
 	    }
 	    // Case C: 그 외 (파일명만 있거나 상대경로인 경우)
 	    else {
-	        localPath = "C:/fila_upload/" + (cleanPath.startsWith("/") ? cleanPath.substring(1) : cleanPath);
+	        // 1. 이미 경로에 특정 폴더(notice, style, product 등)가 포함되어 있는지 확인
+	        // 슬래시(/)가 포함되어 있다면 이미 하위 폴더 경로가 들어온 것으로 판단합니다.
+	        if (cleanPath.contains("/")) {
+	            localPath = "C:/fila_upload/" + (cleanPath.startsWith("/") ? cleanPath.substring(1) : cleanPath);
+	        } else {
+	            // 2. 폴더명 없이 "파일명.jpg"만 들어왔을 때의 기본 처리 (공지사항 등)
+	            localPath = "C:/fila_upload/notice/" + cleanPath;
+	        }
 	    }
 
 	    // 최종적으로 윈도우 파일 시스템 형식으로 변환 (중복 슬래시 제거 및 구분자 보정)

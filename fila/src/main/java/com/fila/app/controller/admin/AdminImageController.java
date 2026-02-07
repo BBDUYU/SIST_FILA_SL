@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -58,7 +60,7 @@ public class AdminImageController {
      */
     @RequestMapping(value = "/uploadImage.htm", method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public String uploadImage(@RequestParam("uploadFile") MultipartFile uploadFile) {
+    public String uploadImage(@RequestParam("uploadFile") MultipartFile uploadFile, HttpServletRequest request) {
         
         if (uploadFile.isEmpty()) {
             return "{\"error\": \"파일이 없습니다.\"}";
@@ -80,7 +82,8 @@ public class AdminImageController {
             uploadFile.transferTo(saveFile);
 
             // 4. 클라이언트에 응답할 URL 생성
-            String imageUrl = "/upload/notice/" + saveFileName;
+            String imageUrl = request.getContextPath() + "/displayImage.do?path=/upload/notice/" + saveFileName;
+           
             return "{\"url\": \"" + imageUrl + "\"}";
 
         } catch (Exception e) {

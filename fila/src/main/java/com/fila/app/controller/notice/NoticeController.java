@@ -1,9 +1,14 @@
 package com.fila.app.controller.notice;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +70,7 @@ public class NoticeController {
     // ==========================================
     // [2. 관리자 기능] NoticeManageHandler 대체
     // ==========================================
-    @GetMapping("/admin/noticeManage")
+    @GetMapping("/admin/noticeManage.htm")
     public String adminList(Model model) {
         // 관리자용 목록 조회 (전체 조회, 표 형태)
         List<NoticeVO> list = noticeService.getNoticeList(null, null); 
@@ -106,7 +111,7 @@ public class NoticeController {
     }
 
     // 글쓰기 처리 (POST)
-    @PostMapping("/admin/noticeWrite")
+    @PostMapping("/admin/noticeWrite.htm")
     public String writePro(NoticeVO notice, HttpSession session) {
         // 1. 세션에서 관리자 ID 가져오기 (방어 로직 포함)
         // (LoginController에서 세션에 "auth"나 "id"로 저장했다고 가정)
@@ -123,9 +128,9 @@ public class NoticeController {
 
         // 3. 성공/실패 페이지 이동
         if (result > 0) {
-            return "redirect:/admin/noticeManage"; // 성공 시 목록으로
+            return "redirect:/admin/noticeManage.htm"; // 성공 시 목록으로
         } else {
-            return "redirect:/admin/noticeWrite"; // 실패 시 다시 글쓰기로
+            return "redirect:/admin/noticeWrite.htm"; // 실패 시 다시 글쓰기로
         }
     }
 
@@ -144,47 +149,54 @@ public class NoticeController {
     // ==========================================
     // [6. 이미지 업로드] ImageUploadHandler 대체
     // ==========================================
-    @PostMapping("/upload/image")
-    @ResponseBody
-    public String uploadAjax(@RequestParam("uploadFile") MultipartFile uploadFile) {
+    @PostMapping(value = "/admin/imageUpload.htm")
+    public void uploadAjax(@RequestParam("uploadFile") MultipartFile uploadFile, 
+                           HttpServletRequest request, 
+                           HttpServletResponse response) throws Exception {
         
-        // 1. 저장 경로 설정 (기존과 동일하게 유지)
+        // 1. 브라우저에게 JSON으로 보낼 것이라고 강제로 설정
+        response.setContentType("application/json; charset=UTF-8");
+        PrintWriter out = response.getWriter();
+
+        if (uploadFile.isEmpty()) {
+            out.print("{\"error\": \"파일이 없습니다.\"}");
+            out.flush();
+            return;
+        }
+
         String savePath = "C:\\fila_upload\\notice";
         File uploadDir = new File(savePath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
 
         try {
-            // 2. 파일명 생성 (UUID로 중복 방지)
             String uuid = java.util.UUID.randomUUID().toString();
             String originalName = uploadFile.getOriginalFilename();
             String realFileName = uuid + "_" + originalName;
 
-            // 3. 파일 저장 (transferTo 한 줄이면 끝!)
             File saveFile = new File(savePath, realFileName);
             uploadFile.transferTo(saveFile);
 
-            // 4. 클라이언트가 접근할 URL 생성
-            // (서버 설정에서 /upload/ 경로가 C:/fila_upload/로 매핑되어 있어야 함)
-            String imageUrl = realFileName;
+            String imageUrl = request.getContextPath() + "/displayImage.do?path=" + realFileName;
 
-            // 5. JSON 문자열 리턴 {"url": "/upload/notice/..."}
-            return "{\"url\": \"" + imageUrl + "\"}";
+            out.print("{\"url\": \"" + imageUrl + "\"}");
+            out.flush();
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "{\"error\": \"upload failed\"}";
+            out.print("{\"error\": \"서버 에러 발생\"}");
+            out.flush();
         }
     }
     
     // ==========================================
     // 멤버십 안내 페이지 (단순 이동)
     // ==========================================
-    @GetMapping("/membership")
+    @GetMapping("/notice/membership.htm")
     public String membership(Model model) {
         // 사이드바나 탭 활성화를 위해 pageName 전달
         model.addAttribute("pageName", "membership");
         
-        return "notice/membership";
+        return "membership";
     }
     
 }
