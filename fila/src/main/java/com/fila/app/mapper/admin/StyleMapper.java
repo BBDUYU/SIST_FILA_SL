@@ -25,4 +25,6 @@ public interface StyleMapper {
     void deleteStyleImages(int styleId);
     void deleteStyleProducts(int styleId);
     
+    
+    
 }

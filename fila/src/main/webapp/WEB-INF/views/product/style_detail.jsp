@@ -43,9 +43,9 @@
 						<ul class="goods__list">
 							<c:forEach var="style" items="${styleList}" varStatus="status">
 								<li class="style-goods _sg">
-									<div class="photo" onclick="codiCart('${style.style_id}')">
+									<div class="photo" onclick="codiCart('${style.styleId}')">
 										<div class="before">
-											<a href="javascript:;"> <img src="${pageContext.request.contextPath}/displayImage.do?path=${style.main_image_url}" alt="${style.style_name}">
+											<a href="javascript:;"> <img src="${pageContext.request.contextPath}/displayImage.do?path=${style.mainImageUrl}" alt="${style.styleName}">
 											</a>
 										</div>
 
@@ -63,8 +63,8 @@
 												             aria-label="${imgStatus.count} / ${fn:length(style.images)}">
 												            
 												            <a href="javascript:;">
-												                <img src="${pageContext.request.contextPath}/displayImage.do?path=${img.image_url}" 
-                 alt="${not empty img.alt_text ? img.alt_text : '스타일 이미지'}">
+												                <img src="${pageContext.request.contextPath}/displayImage.do?path=${img.imageUrl}" 
+                 alt="${not empty img.altText ? img.altText : '스타일 이미지'}">
 												            </a>
 												        </div>
 												    </c:forEach>

@@ -113,4 +113,12 @@
     <delete id="deleteStyleProducts">
         DELETE FROM STYLE_PRODUCT WHERE STYLE_ID = #{styleId}
     </delete>
+    
+    <select id="getProductSizes" parameterType="string" resultType="string">
+	    SELECT v.VALUE_NAME 
+	    FROM PRODUCT_OPTION_VALUES v
+	    JOIN PRODUCT_OPTION_GROUPS g ON v.OPTION_GROUP_ID = g.OPTION_GROUP_ID
+	    WHERE g.PRODUCT_ID = #{productId} 
+	      AND g.MASTER_ID IN (4,5,6,7,8) 
+    </select>
 </mapper>

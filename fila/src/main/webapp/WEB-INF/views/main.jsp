@@ -185,7 +185,13 @@ function mainGroup(tagId, element) {
     // URL 호출
     var url = contextPath + "/main/mainGroupAjax.htm?tagId=" + tagId;
 
-    fetch(url)
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json', // "난 무조건 JSON만 받을 거야"
+            'Content-Type': 'application/json'
+        }
+    })
         .then(function(res) { 
             if(!res.ok) throw new Error("HTTP error " + res.status); // 406 에러 체크용
             return res.json(); 
@@ -215,10 +221,24 @@ function mainGroup(tagId, element) {
                 var category = prod.depth1Name || "공용"; // depth1Name으로 수정
                 var onClass = (typeof WISHED !== 'undefined' && WISHED.has(id)) ? " on" : "";
 
-                var imgPath = prod.imageUrl || ""; // image_url 아님!
-                if (imgPath.includes("path=")) imgPath = imgPath.split("path=").pop();
-                imgPath = imgPath.replace("C:", "");
-                var finalUrl = contextPath + "/displayImage.do?path=" + imgPath;
+                var imgPath = prod.imageUrl || ""; 
+
+	             // 1. "path="이 포함된 경우 뒤쪽만 추출
+	             if (imgPath.includes("path=")) {
+	                 imgPath = imgPath.split("path=").pop();
+	             }
+	
+	             // 2. 경로에서 중복되는 root 폴더명 및 C: 드라이브 문자 제거 (핵심!)
+	             // DisplayImageController가 이미 C:/fila_upload/ 를 기본으로 잡기 때문입니다.
+	             imgPath = imgPath.replace(/C:/gi, "");
+	             imgPath = imgPath.replace(/\\fila_upload\\/gi, "");
+	             imgPath = imgPath.replace(/\/fila_upload\//gi, "");
+	             imgPath = imgPath.replace(/\\/g, "/"); // 역슬래시를 슬래시로 통일
+	
+	             // 3. 앞의 시작 슬래시 제거 (서버 로직과 충돌 방지)
+	             if (imgPath.startsWith("/")) imgPath = imgPath.substring(1);
+	
+	             var finalUrl = contextPath + "/displayImage.do?path=" + encodeURIComponent(imgPath);
 
                 html += '<div class="goods swiper-slide">'
                     + '  <div class="photo">'
@@ -412,7 +432,7 @@ $(document).ready(function() {
 			<section class="goods-scroll-box _v2 _gs02">
     <div class="hd">
         <h2>추천 스타일</h2>
-        <a href="${pageContext.request.contextPath}/style/detail.htm" class="more-btn">더보기</a>
+        <a href="${pageContext.request.contextPath}/main/styleDetail.htm" class="more-btn">더보기</a>
     </div>
 
     <div class="slider-box">
@@ -422,21 +442,20 @@ $(document).ready(function() {
                 <c:forEach var="s" items="${activeStyles}" varStatus="status">
                     <div class="goods swiper-slide ${status.first ? 'swiper-slide-active' : (status.index == 1 ? 'swiper-slide-next' : '')}" 
                          role="group" aria-label="${status.count} / ${activeStyles.size()}">
-                        <div class="photo">
-                            <div class="before">
-                                <%-- 클릭 시 스타일 상세페이지로 이동 --%>
-                                <a href="${pageContext.request.contextPath}/style/detail.htm?id=${s.styleId}"> 
-                                    <c:choose>
-                                        <c:when test="${not empty s.mainImageUrl}">
-                                            <img src="${pageContext.request.contextPath}/displayImage.do?path=${s.mainImageUrl}" alt="${s.styleName}">
-                                        </c:when>
-                                        <c:otherwise>
-                                            <img src="${pageContext.request.contextPath}/images/no_image.jpg" alt="No Image">
-                                        </c:otherwise>
-                                    </c:choose>
-                                </a>
-                            </div>
-                        </div>
+                        <div class="photo" 
+						     onclick="location.href='${pageContext.request.contextPath}/main/styleDetail.htm?id=${s.styleId}';" 
+						     style="cursor:pointer;">
+						    <div class="before">
+						        <c:choose>
+						            <c:when test="${not empty s.mainImageUrl}">
+						                <img src="${pageContext.request.contextPath}/displayImage.do?path=${s.mainImageUrl}" alt="${s.styleName}">
+						            </c:when>
+						            <c:otherwise>
+						                <img src="${pageContext.request.contextPath}/images/no_image.jpg" alt="No Image">
+						            </c:otherwise>
+						        </c:choose>
+						    </div>
+						</div>
                     </div>
                 </c:forEach>
 

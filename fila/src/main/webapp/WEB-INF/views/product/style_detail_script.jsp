@@ -16,7 +16,7 @@
     // 기존 codiCart 함수 (그대로 유지하되 ajax 파라미터만 살짝 보강)
     function codiCart(styleId) {
         $.ajax({
-            url : "${pageContext.request.contextPath}/style/detail.htm",
+            url : "${pageContext.request.contextPath}/main/styleDetail.htm",
             type : "GET",
             data : { 
                 "id" : styleId,

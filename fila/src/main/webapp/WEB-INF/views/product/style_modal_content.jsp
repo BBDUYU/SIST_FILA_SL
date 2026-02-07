@@ -13,7 +13,7 @@
                     <div class="swiper-wrapper">
                         <c:forEach var="img" items="${style.images}">
                             <div class="swiper-slide">
-                                <img src="${pageContext.request.contextPath}/displayImage.do?path=${img.image_url}" alt="스타일 이미지">
+                                <img src="${pageContext.request.contextPath}/displayImage.do?path=${img.imageUrl}" alt="스타일 이미지">
                             </div>
                         </c:forEach>
                     </div>
@@ -40,19 +40,19 @@
                             <c:forEach var="item" items="${style.products}">
     <li>
         <div class="chk">
-            <input type="checkbox" id="styleGoodsChk${item.product_id}" 
+            <input type="checkbox" id="styleGoodsChk${item.productId}" 
                    class="cb__style1 checkchoice" 
-                   data-no="${item.product_id}" 
+                   data-no="${item.productId}" 
                    data-price="${item.price}" 
                    name="setCheck" 
                    onclick="totalPrc();">
-            <label for="styleGoodsChk${item.product_id}"></label>
+            <label for="styleGoodsChk${item.productId}"></label>
         </div>
 
         <div class="mid">
             <div class="photo">
-                <a href="${pageContext.request.contextPath}/product/product_detail.htm?product_id=${item.product_id}">
-                    <img src="${pageContext.request.contextPath}/displayImage.do?path=${item.product_image}" alt="${item.product_name}">
+                <a href="${pageContext.request.contextPath}/product/product_detail.htm?product_id=${item.productId}">
+                    <img src="${pageContext.request.contextPath}/displayImage.do?path=${item.productImage}" alt="${item.productName}">
                 </a>
             </div>
 
@@ -60,7 +60,7 @@
                 <div class="info-inner">
                     <p class="category"></p>
                     <div class="name-tag">
-                        <p class="name">${item.product_name}</p>
+                        <p class="name">${item.productName}</p>
                     </div>								
 
                     <div class="price">
@@ -71,7 +71,7 @@
                 </div>
 
                 <div class="option-select-box">
-				    <select id="sizeSelect${item.product_id}" onchange="optionChg(this, '${item.product_id}');">
+				    <select id="sizeSelect${item.productId}" onchange="optionChg(this, '${item.productId}');">
 				        <option value="">사이즈</option>
 				        <c:choose>
 				            <c:when test="${empty item.sizeOptions}">
@@ -88,7 +88,7 @@
             </div>
 
             <div class="btn-box">
-                <button type="button" class="wish__btn wish" data-wish="${item.product_id}">wish</button>
+                <button type="button" class="wish__btn wish" data-wish="${item.productId}">wish</button>
             </div>
         </div>
     </li>
