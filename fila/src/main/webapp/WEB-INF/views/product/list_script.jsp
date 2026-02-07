@@ -1,166 +1,94 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<script>
-        $(document).ready(function(){
-            if(typeof Swiper !== 'undefined') {
-                new Swiper('.goods__slider', {
-                    slidesPerView: 4,
-                    spaceBetween: 10,
-                    freeMode: true,
-                    scrollbar: {
-                        el: '.goods-slider-scrollbar',
-                        draggable: true,
-                    },
-                });
-            }
-        });
-</script>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <script>
-(function () {
-  // ✅ 중복 바인딩 방지
-  if (window.__WISH_LIST_BOUND) return;
-  window.__WISH_LIST_BOUND = true;
-
-  const CTX = "${pageContext.request.contextPath}";
-  const IS_LOGIN = ${empty sessionScope.auth ? "false" : "true"};
-
-  // 로그인 페이지(프로젝트에 맞게 필요하면 바꾸세요)
-  const LOGIN_URL = CTX + "/login.htm?returnUrl=" + encodeURIComponent(location.pathname + location.search);
-
-  // ✅ 리스트(동적 로딩 포함) 버튼 클릭 이벤트 위임
-  document.addEventListener("click", async function (e) {
-    const btn = e.target.closest("button.wish__btn[data-wish]");
-    if (!btn) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
-
-    if (!IS_LOGIN) {
-      location.href = LOGIN_URL;
-      return;
-    }
-
-    const productId = btn.getAttribute("data-wish");
-    if (!productId) return;
-
-    // ✅ 서버 토글 URL (너희 WishToggleHandler 매핑 주소랑 같아야 함)
-    const url = CTX + "/wishlist/toggle.htm";
-
-    // 리스트는 사이즈 선택 UI가 없으므로, sizeText는 기본으로 미전송
-    // (서버가 SIZE_REQUIRED를 주면 상세로 보내서 사이즈 선택하게 처리)
-    const body = new URLSearchParams();
-    body.append("product_id", productId);
-    
-    const body = new URLSearchParams();
-    body.append("product_id", productId);
-    
- 	// 리스트에서 눌렀다는 표시
-    body.append("from", "list");
-
-    try {
-      btn.disabled = true;
-
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-        body: body.toString(),
-      });
-
-      const text = await res.text();
-
-      if (res.status === 401) { // 로그인 필요
-        location.href = LOGIN_URL;
-        return;
-      }
-
-      let data;
-      try { data = JSON.parse(text); }
-      catch (err) { throw new Error("JSON 파싱 실패: " + text); }
-      
-	  /* 
-      // ✅ (선택) 서버가 사이즈 필요하다고 응답하게 만들었다면 여기로 처리
-      if (!res.ok && data && data.error === "SIZE_REQUIRED") {
-        alert("사이즈를 선택해야 찜할 수 있습니다. 상세페이지로 이동합니다.");
-        location.href = CTX + "/product/product_detail.htm?product_id=" + encodeURIComponent(productId);
-        return;
-      }
-       */
-
-      if (!res.ok) throw new Error("HTTP " + res.status + " / " + text);
-
-      // ✅ UI 반영 (product_detail과 동일하게 on 토글)
-      if (data.wished === true) btn.classList.add("on");
-      else btn.classList.remove("on");
-
-    } catch (err) {
-      console.error(err);
-      alert("찜 처리 실패\n" + err.message);
-    } finally {
-      btn.disabled = false;
-    }
-  }, true);
-})();
+    $(document).ready(function(){
+        if(typeof Swiper !== 'undefined') {
+            new Swiper('.goods__slider', {
+                slidesPerView: 4,
+                spaceBetween: 10,
+                freeMode: true,
+                scrollbar: {
+                    el: '.goods-slider-scrollbar',
+                    draggable: true,
+                },
+            });
+        }
+    });
 </script>
 
 <script>
 async function wishToggleFromList(e, btn) {
-  // ✅ default.js(jQuery)로 이벤트가 넘어가는 걸 차단
-  e.preventDefault();
-  e.stopPropagation();
-  if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    // 1. 기본 동작(링크 이동 등) 막기
+    e.preventDefault();
+    e.stopPropagation();
 
-  const CTX = "${pageContext.request.contextPath}";
-  const IS_LOGIN = ${empty sessionScope.auth ? "false" : "true"};
+    const CTX = "${pageContext.request.contextPath}";
+    // 로그인 여부 확인 (JSP EL 사용)
+    const IS_LOGIN = ${empty sessionScope.auth ? "false" : "true"};
 
-  if (!IS_LOGIN) {
-    location.href = CTX + "/login.htm?returnUrl=" + encodeURIComponent(location.pathname + location.search);
-    return false;
-  }
-
-  const productId = btn.getAttribute("data-wish");
-  if (!productId) return false;
-
-  try {
-    btn.disabled = true;
-
-    const body = new URLSearchParams();
-    body.append("product_id", productId);
-    body.append("from", "list"); // ✅ [추가] 서버가 list 요청인지 구분(사이즈 null 저장용)
-
-    const res = await fetch(CTX + "/wishlist/toggle.htm", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-      body: body.toString()
-    });
-
-    const text = await res.text();
-
-    if (res.status === 401) {
-      location.href = CTX + "/login.htm?returnUrl=" + encodeURIComponent(location.pathname + location.search);
-      return false;
+    // 2. 비로그인 시 로그인 페이지로 이동
+    if (!IS_LOGIN) {
+        if(confirm("로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?")) {
+            location.href = CTX + "/login.htm?returnUrl=" + encodeURIComponent(location.pathname + location.search);
+        }
+        return false;
     }
 
-    const data = JSON.parse(text);
+    // 3. 상품 ID 가져오기
+    const productId = btn.getAttribute("data-wish");
+    if (!productId) return false;
 
-    if (!res.ok) {
-      // list는 사이즈 없이 들어가야 하니까 SIZE_REQUIRED면 에러로 보지 말고 서버 로직부터 맞춰야 함
-      alert("찜 처리 실패: " + (data.error || text));
-      return false;
+    try {
+        // 중복 클릭 방지
+        btn.disabled = true;
+
+        // 4. 서버로 보낼 데이터 준비 (카멜케이스 적용: productId)
+        const body = new URLSearchParams();
+        body.append("productId", productId); // [수정] product_id -> productId
+        body.append("from", "list");         // 리스트에서 요청함 표시
+
+        // 5. 비동기 요청 (AJAX)
+        // [수정] web.xml 설정에 맞춰 .htm 유지
+        const res = await fetch(CTX + "/wishlist/toggle.htm", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+            body: body.toString()
+        });
+
+        // 6. 응답 처리
+        if (res.status === 401) { // 세션 만료 등
+            location.href = CTX + "/login.htm?returnUrl=" + encodeURIComponent(location.pathname + location.search);
+            return false;
+        }
+
+        const text = await res.text();
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (err) {
+            throw new Error("서버 응답 오류: " + text);
+        }
+
+        if (!res.ok) {
+            alert("찜 처리 실패: " + (data.error || "알 수 없는 오류"));
+            return false;
+        }
+
+        // 7. UI 변경 (하트 색칠하기/빼기)
+        if (data.wished === true) {
+            btn.classList.add("on");
+        } else {
+            btn.classList.remove("on");
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("에러가 발생했습니다.\n" + err.message);
+    } finally {
+        // 버튼 다시 활성화
+        btn.disabled = false;
     }
 
-    // ✅ UI on/off
-    if (data.wished === true) btn.classList.add("on");
-    else btn.classList.remove("on");
-
-  } catch (err) {
-    console.error(err);
-    alert("찜 처리 실패\n" + err.message);
-  } finally {
-    btn.disabled = false;
-  }
-
-  return false; // ✅ inline onclick에서 return false → 기본동작 완전 차단
+    return false; // 중요: onclick="return ..." 에서 false를 반환해야 a태그 이동 등을 막음
 }
 </script>

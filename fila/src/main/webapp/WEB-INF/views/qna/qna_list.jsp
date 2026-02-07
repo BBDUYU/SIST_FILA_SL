@@ -13,7 +13,7 @@
         <c:forEach var="dto" items="${qnaList}">
             <li style="border-bottom: 1px solid #eee;">
                 
-                <div onclick="toggleAnswer('${dto.qna_id}')" style="padding: 20px 10px; cursor: pointer; position: relative; margin-bottom: 20px; margin-top: 20px;">
+                <div onclick="toggleAnswer('${dto.qnaId}')" style="padding: 20px 10px; cursor: pointer; position: relative; margin-bottom: 20px; margin-top: 20px;">
                     <div style="font-size: 18px; color: #000; margin-bottom: 8px; display: flex; justify-content: space-between;">
                         <div>
                             <c:choose>
@@ -28,19 +28,18 @@
                             ${dto.type}
                         </div>
                         <div>
-                            ${dto.created_at}
+                            <fmt:formatDate value="${dto.createdAt}" pattern="yyyy-MM-dd"/>
                         </div>
                     </div>
 
-                    <div style="font-size: 20px; font-weight: bold; color: #000; line-height: 1.5; 
-                                white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 820px;">
+                    <div style="font-size: 20px; font-weight: bold; color: #000; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 820px;">
                         <c:choose>
-                            <c:when test="${dto.is_secret == 1 && sessionScope.auth.user_number != dto.user_number}">
+                            <c:when test="${dto.isSecret == 1 && sessionScope.auth.userNumber != dto.userNumber}">
                                 <img src="//image.fila.co.kr/fila/kr/images/common/ico_lock.png" alt="잠금" style="width: 13px; vertical-align: middle; margin-top: -3px;">
                                 비밀글입니다.
                             </c:when>
                             <c:otherwise>
-                                <c:if test="${dto.is_secret == 1}">
+                                <c:if test="${dto.isSecret == 1}">
                                     <img src="//image.fila.co.kr/fila/kr/images/common/ico_lock.png" alt="잠금" style="width: 13px; vertical-align: middle; margin-top: -3px;">
                                 </c:if>
                                 <span style="vertical-align: middle;">${dto.question}</span>
@@ -49,9 +48,9 @@
                     </div>
                 </div>
 
-                <div id="answer_area_${dto.qna_id}" style="display: none; background: #f0f0f0; padding: 30px 20px;">
+                <div id="answer_area_${dto.qnaId}" style="display: none; background: #f0f0f0; padding: 30px 20px;">
                     <c:choose>
-                        <c:when test="${dto.is_secret == 1 && sessionScope.auth.user_number != dto.user_number}">
+                        <c:when test="${dto.isSecret == 1 && sessionScope.auth.userNumber != dto.userNumber}">
                              <p style="font-size: 13px; color: #666; margin: 0; text-align:center;">비밀글은 작성자만 볼 수 있습니다.</p>
                         </c:when>
                         
@@ -69,13 +68,10 @@
                                 <div style="flex: 1;">
                                     <c:if test="${not empty dto.answer}">
                                         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                            
                                             <div style="font-size: 18px; color: #333; line-height: 1.6; white-space: pre-wrap; margin-right: 15px;">${dto.answer}</div>
-                                            
                                             <div style="font-size: 18px; color: #888; white-space: nowrap; flex-shrink: 0;">
-                                                <fmt:formatDate value="${dto.answered_at}" pattern="yyyy-MM-dd HH:mm"/>
+                                                <fmt:formatDate value="${dto.answeredAt}" pattern="yyyy-MM-dd HH:mm"/>
                                             </div>
-                                            
                                         </div>
                                     </c:if>
                                     

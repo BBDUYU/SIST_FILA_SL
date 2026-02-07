@@ -16,4 +16,6 @@ public interface ProductService {
     // 3. 검색어로 상품 찾기
     public List<ProductsVO> searchProducts(String searchItem);
 
+    public Map<String, Object> getSidebarAndTitles(int cateId);
+    
 }

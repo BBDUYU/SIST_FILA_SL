@@ -166,7 +166,7 @@
         <div class="head">
             <div class="goods-info">
                 <div class="photo">
-                    <img src="${not empty product.image_url ? product.image_url : '//filacdn.styleship.com/filaproduct2/data/productimages/a/1/FS253IP02F003_734.jpg'}" alt="상품이미지">
+                    <img src="${not empty product.imageUrl ? product.imageUrl : '//filacdn.styleship.com/filaproduct2/data/productimages/a/1/FS253IP02F003_734.jpg'}" alt="상품이미지">
                 </div>
                 <div class="info">
                     <div><p class="txt1">${product.name != null ? product.name : '상품명'}</p></div>
@@ -182,7 +182,6 @@
     </div>
 </div>
 
-
 <div class="common__layer _qna" id="qnaWriteModal" style="display:none;">
     <div class="layer-bg__wrap" onclick="closeQnaWriteModal()" style="background: rgba(0,0,0,0.6);"></div>
     
@@ -194,17 +193,18 @@
 
         <div class="con" style="padding:10px 40px 30px; flex:1; overflow-y:auto; -ms-overflow-style:none; scrollbar-width:none;">
             <div style="display:flex; align-items:flex-start; gap:15px; padding-bottom:25px; border-bottom:1px solid #000; margin-bottom:25px;">
-                <img src="${product.image_url}" style="width:50px; height:50px; object-fit:cover;">
+                <img src="${product.imageUrl}" style="width:50px; height:50px; object-fit:cover;">
                 <div>
                     <p style="font-weight:bold; font-size:14px; margin-bottom:5px; margin-top:0;">${product.name}</p>
-                    <p style="font-size:12px; color:#888; margin:0;">${product.product_id}</p>
+
+                    <p style="font-size:12px; color:#888; margin:0;">${product.productId}</p>
                 </div>
             </div>
 
             <form id="qnaForm">
-                <input type="hidden" name="productId" value="${product.product_id}">
+                <input type="hidden" name="productId" value="${product.productId}">
                 
-                <select name="qnaType">
+                <select name="type">
                     <option value="">문의유형 선택</option>
                     <option value="재고/재입고">재고/재입고</option>
                     <option value="사이즈/상품규격">사이즈/상품규격</option>
@@ -212,30 +212,31 @@
                     <option value="기타">기타</option>
                 </select>
 
-                <textarea name="qnaContent" placeholder="문의 내용을 입력해주세요...
-휴대폰 번호, 주민등록번호와 같은 개인정보의
-입력은 삼가해 주시기 바랍니다."></textarea>
+                <textarea name="question" placeholder="문의 내용을 입력해주세요..."></textarea>
                 
                 <p class="guide-txt">배송, 결제, 교환 / 반품에 관한 문의는 고객센터 1:1문의를 이용해 주세요.</p>
                 <a class="guide-link">1:1 문의 바로가기</a>
                 
                 <p class="guide-txt">문의하신 내용에 대한 답변은 해당 상품의 상세페이지에서 확인하실 수 있습니다.</p>
                 
-                <input type="text" name="memberEmail" placeholder="이메일주소" value="${sessionScope.auth.email}" style="margin-bottom:10px;">
+                <input type="text" name="answerEmail" placeholder="이메일주소" value="${sessionScope.auth.email}" style="margin-bottom:10px;">
                 
                 <div class="custom-check-wrap">
-				    <input type="checkbox" id="emailChk">
-				    <label for="emailChk" class="custom-check-label">이메일로 답변받기 (선택)</label>
-				</div>
+                    <input type="hidden" name="isEmailNotify" id="isEmailNotifyHidden" value="0">
+                    <input type="checkbox" id="emailChk" onchange="document.getElementById('isEmailNotifyHidden').value = this.checked ? 1 : 0;">
+                    <label for="emailChk" class="custom-check-label">이메일로 답변받기 (선택)</label>
+                </div>
+                
+                <%-- 비밀글 여부 추가 (기본값: 1 비밀글) --%>
+                <input type="hidden" name="isSecret" value="1">
 
                 <p class="privacy-tit">개인정보 수집 동의</p>
                 <div class="privacy-list">
                     1. 개인정보 수집 및 이용목적 : 이용자의 민원처리 답변사항 전달<br>
                     2. 개인정보 수집 항목 : 이메일<br>
-                    <b>3. 개인정보 보유 이용 기간 : 전자상거래 등에서의 소비자 보호에 관한 법률 등에서 정한 보존기간 동안 고객님의 개인 정보를 보유합니다.<br>
-                    소비자의 불만 또는 분쟁처리에 관한 기록:3년</b>
+                    <b>3. 개인정보 보유 이용 기간 : 3년</b>
                 </div>
-                <p class="privacy-desc">개인정보 수집 및 이용에 대한 동의를 거부할 수 있으나, 동의를 거부하실 경우 1:1 문의에 대한 이메일 답변이 불가할 수 있습니다.</p>
+                <p class="privacy-desc">동의를 거부하실 경우 1:1 문의에 대한 이메일 답변이 불가할 수 있습니다.</p>
                 
                 <div class="agree-btn-group">
                     <div class="agree-radio-item">
@@ -258,7 +259,7 @@
 </div>
 
 <script>
-// [1] 리스트 모달 (첫번째 창)
+// [1] 리스트 모달
 function openQnaModal() {
     $('#qnaListModal').fadeIn(200);
     $('body').addClass('no-scroll');
@@ -269,7 +270,7 @@ function closeQnaListModal() {
     $('body').removeClass('no-scroll');
 }
 
-// [2] 글쓰기 모달 (두번째 창 - 900px)
+// [2] 글쓰기 모달
 function openQnaWriteModal() {
     var isLogin = ${empty sessionScope.auth ? "false" : "true"};
     if (!isLogin) {
@@ -278,62 +279,60 @@ function openQnaWriteModal() {
         }
         return;
     }
-    // 리스트는 그대로 두고 위에 띄움
     $('#qnaWriteModal').fadeIn(200);
 }
 function closeQnaWriteModal() {
     $('#qnaWriteModal').fadeOut(200);
 }
 
-// [3] 리스트 로드
+// [3] 리스트 로드 (AJAX)
 function loadQnaList() {
-    var pid = "${product.product_id}";
+    var pid = "${product.productId}"; 
+    
     $.ajax({
-        url: "${pageContext.request.contextPath}/qna/list.htm",
+        url: "${pageContext.request.contextPath}/qna/list",
         type: "GET",
-        data: { product_id: pid },
+        data: { productId: pid }, // 파라미터명도 productId로 통일
         success: function(html) { $("#qnaListArea").html(html); }
     });
 }
 
-// [4] 등록 AJAX
 // [4] 문의 등록 (AJAX)
 function submitQnaAjax() {
-    // 1. 문의 유형 확인
-    var type = $("select[name='qnaType']").val();
+    // 1. name 속성 변경에 따른 셀렉터 수정
+    var type = $("select[name='type']").val(); // qnaType -> type
     if (!type) { alert("문의 유형을 선택해주세요."); return; }
     
-    // 2. 내용 입력 확인
-    var content = $("textarea[name='qnaContent']").val();
+    var content = $("textarea[name='question']").val(); // qnaContent -> question
     if (!content.trim()) { alert("문의 내용을 입력해주세요."); return; }
     
-    // 3. [수정됨] 개인정보 동의 확인 (동의하지 않음 '0'일 때 멘트 변경)
     var privacy = $("input[name='privacy1']:checked").val();
     if (privacy === "0") { 
         alert("개인정보 수집에 동의해 주셔야 이메일로 답변받기가 가능합니다"); 
         return; 
     }
 
-    // 4. 전송
     var formData = $("#qnaForm").serialize();
+    
     $.ajax({
-        url: "${pageContext.request.contextPath}/qna/insert.htm",
-        type: "POST", data: formData,
-        success: function() {
-            alert("등록되었습니다.");
-            closeQnaWriteModal(); 
-            loadQnaList(); 
+        url: "${pageContext.request.contextPath}/qna/write.do",
+        type: "POST", 
+        data: formData,
+        success: function(response) {
+            if (response === "success") {
+                alert("등록되었습니다.");
+                closeQnaWriteModal(); 
+                loadQnaList(); 
+            } else if (response === "login_required") {
+                alert("로그인이 필요합니다.");
+                location.href = "/login.htm";
+            } else {
+                alert("등록 실패했습니다. 다시 시도해주세요.");
+            }
         },
         error: function(xhr, status, error) {
-            // ★★★ 여기가 콘솔에 에러 찍는 부분입니다 ★★★
-            console.error("==========================================");
-            console.error("[QnA 등록 실패] 에러가 발생했습니다.");
-            console.error("1. 상태 코드(status): " + xhr.status);
-            console.error("2. 에러 메시지: " + error);
-            console.error("3. 서버 응답 내용(responseText): " + xhr.responseText);
-            console.error("==========================================");
-            
-            alert("등록 실패! F12(개발자도구) -> Console 탭에서 에러 내용을 확인해주세요.");
+            console.error("에러 발생:", error);
+            alert("등록 중 오류가 발생했습니다.");
         }
     });
 }

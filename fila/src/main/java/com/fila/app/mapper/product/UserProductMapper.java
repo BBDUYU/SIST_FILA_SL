@@ -5,39 +5,41 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+// [수정] 형님 VO 경로에 맞춰서 import
+import com.fila.app.domain.categories.CategoriesVO;
 import com.fila.app.domain.product.ProductsOptionVO;
 import com.fila.app.domain.product.ProductsVO;
 
+@Mapper
 public interface UserProductMapper {
 
-    // 1. 상품 전체 목록 조회
-    // (기존 메서드에서 Connection 파라미터가 다 사라집니다!)
-    List<ProductsVO> selectAllProducts();
+    // 1. 전체 상품 목록 조회
+    public List<ProductsVO> selectAllProducts();
 
     // 2. 카테고리별 상품 목록 조회
-    List<ProductsVO> selectProductsByCategory(int cateId);
+    public List<ProductsVO> selectProductsByCategory(int cateId);
 
-    // 3. 최상위 카테고리 이름 가져오기
-    String getRootCategoryName(int categoryId);
+    // 3. 상품 상세 조회
+    public ProductsVO getProduct(String productId);
 
-    // 4. 현재 카테고리 이름 가져오기
-    String getCategoryName(int categoryId);
+    // 4. 검색
+    public List<ProductsVO> selectProductsBySearch(@Param("searchItem") String searchItem);
 
-    // 5. 상품 상세 정보 조회
-    ProductsVO getProduct(String productId);
+    // 5. 상품 옵션 조회 (추가됨)
+    public List<ProductsOptionVO> getProductOptions(String productId);
 
-    // 6. 상품 옵션 조회
-    // (리턴 타입이 ProductsOptionVO 리스트로 바뀜)
-    List<ProductsOptionVO> getProductOptions(String productId);
+    // 6. 사이드바용 카테고리 조회 메서드들
+    
+    // (1) 단일 카테고리 정보 조회
+    public CategoriesVO selectCategory(int categoryId);
 
-    // 7. 카테고리별 상품 개수 세기
-    int getProductCount(int categoryId);
+    // (2) 메인(Depth 1) 카테고리 목록 조회
+    public List<CategoriesVO> selectMainCategories();
 
-    // 8. 상품 태그(스포츠/라이프스타일 등) 가져오기
-    // ★ 주의: 파라미터가 2개 이상일 때는 @Param을 붙여줘야 XML에서 #{이름}으로 구분 가능합니다.
-    String getProductTag(@Param("productId") String productId, @Param("masterId") int masterId);
+    // (3) 하위 카테고리 목록 조회
+    public List<CategoriesVO> selectChildCategories(int parentId);
 
-    // 9. 검색어로 상품 찾기
-    List<ProductsVO> selectProductsBySearch(String searchItem);
+    // 7. 상품 태그 조회 (추가됨)
+    public String getProductTag(@Param("productId") String productId, @Param("masterId") int masterId);
 
 }

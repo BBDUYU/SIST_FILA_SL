@@ -3,15 +3,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-
- <input type="hidden" name="bnftNm" id="bnftNm" value="" />    
+    <input type="hidden" name="bnftNm" id="bnftNm" value="" />    
     <input type="hidden" name="bnftVal" id="bnftVal" value="" />        
     <input type="hidden" name="bnftDate" id="bnftDate" value="" />    
-    <input type="hidden" name="bnftLimit" id="bnftLimit" value="" />    
+    <input type="hidden" name="bnftLimit" id="bnftLimit" value="" /> 
     
     <div id="wrap">
         
-        <div id="contents" class="goods__contents">            
+        <div id="contents" style="padding-top: 0px;" class="goods__contents">            
             <section class="goods-view-box">
                 <h2 class="hidden">상품 상세</h2>
 
@@ -23,7 +22,7 @@
                      <ul>
                        <c:forEach var="imgName" items="${mainImages}">
                               <li>
-                               <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${product.product_id}/${imgName}" 
+                               <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${product.productId}/${imgName}" 
                                     alt="${product.name}" 
                                     onerror="$(this).parent('li').hide();">
                               </li>
@@ -36,7 +35,7 @@
                                <div class="swiper-wrapper">
                                    <c:forEach var="imgName" items="${mainImages}">
                                        <div class="swiper-slide">
-                                           <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${product.product_id}/${imgName}" alt="">
+                                           <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${product.productId}/${imgName}" alt="">
                                        </div>
                                    </c:forEach>
                                </div>
@@ -72,7 +71,7 @@
                                          <div class="swiper-wrapper">
                                              <c:forEach var="mImg" items="${modelImages}">
                                                  <div class="swiper-slide">
-                                                     <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${product.product_id}/${mImg}" alt="">
+                                                     <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${product.productId}/${mImg}" alt="">
                                                  </div>
                                              </c:forEach>
                                          </div>
@@ -94,8 +93,8 @@
                             <c:forEach var="dImg" items="${detailImages}">
                          <div class="top-img-box">
                              <div class="img">
-                                 <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${product.product_id}/${dImg}" 
-                                      alt="" style="width:100%;">
+                                 <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${product.productId}/${dImg}" 
+                                       alt="" style="width:100%;">
                              </div>
                          </div>
                      </c:forEach>
@@ -125,7 +124,7 @@
                             <Script>$(".goods-setup-box").hide()</Script>
 
                         </div>
-                        <div class="crema-fit-product-combined-detail" data-product-code="${product.product_id}"></div>
+                        <div class="crema-fit-product-combined-detail" data-product-code="${product.productId}"></div>
 
                     </div>
                     <div class="goods-info-box">
@@ -136,10 +135,10 @@
                                     <p>
                                 <c:choose>
                                     <%-- 여성 카테고리 대역일 때 --%>
-                                    <c:when test="${product.category_id >= 1000 && product.category_id < 2000 || product.category_id == 10}">FEMALE</c:when>
+                                    <c:when test="${product.categoryId >= 1000 && product.categoryId < 2000 || product.categoryId == 10}">FEMALE</c:when>
                                     <%-- 남성 카테고리 대역일 때 --%>
-                                    <c:when test="${product.category_id >= 2000 && product.category_id < 3000 || product.category_id == 20}">MALE</c:when>
-                                    <c:when test="${product.category_id >= 3000 && product.category_id < 4000 || product.category_id == 30}">KIDS</c:when>
+                                    <c:when test="${product.categoryId >= 2000 && product.categoryId < 3000 || product.categoryId == 20}">MALE</c:when>
+                                     <c:when test="${product.categoryId >= 3000 && product.categoryId < 4000 || product.categoryId == 30}">KIDS</c:when>
                                     <c:otherwise>FILA</c:otherwise>
                                 </c:choose>
                             </p>
@@ -151,11 +150,11 @@
 
                                 <div class="price">
                                     <c:choose>
-                                        <c:when test="${product.discount_rate > 0}">
-                                            <p class="sale"><fmt:formatNumber value="${finalPrice}" pattern="#,###" />원</p>
-                                            <p class="normal _sale"><fmt:formatNumber value="${product.price}" pattern="#,###" />원</p>
-                                            <p class="percent">${product.discount_rate}% 할인</p>
-                                        </c:when>
+                                        <c:when test="${product.discountRate > 0}">
+                                             <p class="sale"><fmt:formatNumber value="${finalPrice}" pattern="#,###" />원</p>
+                                             <p class="normal _sale"><fmt:formatNumber value="${product.price}" pattern="#,###" />원</p>
+                                             <p class="percent">${product.discountRate}% 할인</p>
+                                         </c:when>
                                         <c:otherwise>
                                             <p class="sale"><fmt:formatNumber value="${product.price}" pattern="#,###" />원</p>
                                         </c:otherwise>
@@ -166,7 +165,7 @@
                                 </div>
                                 <div class="goods-material">
                                     <p>
-                                        <b>상품코드</b> <br>${product.product_id}
+                                        <b>상품코드</b> <br>${product.productId}
                                     </p>
                                 </div>
                                 <div class="info-btn-box">
@@ -174,7 +173,7 @@
                                 </div>
                                 
                                 <div class="share-box">
-                                    <button type="button" class="share__btn" data-path="/product/view.asp?ProductNo=61125">share</button>
+                                    <button type="button" class="share__btn"data-path="/product/detail.htm?productId=${product.productId}">share</button>
                                 </div>
                             </div>
                         </div>
@@ -182,7 +181,7 @@
                             <div class="scroll-box">
 
                                 <div class="option-choice-box">
-                                    <c:if test="${not empty sizeOption}">
+                                    <c:if test="${not empty sizeOptions}">
                                         <div class="_size">
                                   <p class="tit">사이즈</p>
                                   <div class="size__slider swiper size">
@@ -223,20 +222,20 @@
 							            <%-- [WISH 추가] 로그인 상태면 add로, 아니면 login으로 --%>
 										<%-- ✅ WISH: add/delete 베이스 URL (returnUrl은 JS에서 붙임) --%>
 										<c:url var="wishAddUrl" value="/mypage/wish/add.htm">
-										  <c:param name="product_id" value="${product.product_id}" />
-										</c:url>
+										  <c:param name="productId" value="${product.productId}" />
+                                        </c:url>
 										
 										<c:url var="wishDeleteUrl" value="/mypage/wish/deleteByProduct.htm">
-										  <c:param name="product_id" value="${product.product_id}" />
-										</c:url>
+										  <c:param name="productId" value="${product.productId}" />
+                                        </c:url>
 										
 										<button type="button"
-										        class="wish__btn${wished ? ' on' : ''}"
-										        id="wishBtn"
-										        data-wish="${param.product_id}"
-										        onclick="goWishToggle(event);">
-										  wish
-										</button>
+                                                class="wish__btn${wished ? ' on' : ''}"
+                                                id="wishBtn"
+                                                data-wish="${product.productId}"
+                                                onclick="goWishToggle(event);">
+                                          wish
+                                        </button>
 										
 								        <button type="button" class="cart__btn" id="cartBtn" onclick="goCartAdd();">카트담기</button>
 								    </div>
@@ -256,27 +255,27 @@
                                         <div>
                                             <button type="button" class="review-more__btn" onclick="openReviewModal()">
                                              상품 리뷰
-                                             <span class="crema-product-reviews-count" data-product-code="${product.product_id}">
-										        ${fn:length(reviewList)}
-										    </span>
+                                             <span class="crema-product-reviews-count" data-product-code="${product.productId}">
+                                                 ${fn:length(reviewList)}
+                                             </span>
                                          	</button>
                                         </div>
                                         
                                         <div>
 										    <button type="button" class="qna-more__btn" onclick="openQnaModal()">
 										        상품 문의
-										        <span class="qna-product-reviews-count" data-product-code="${product.product_id}">
-										            ${not empty qnaList ? fn:length(qnaList) : 0}
-										        </span>
+										        <span class="qna-product-reviews-count" data-product-code="${product.productId}">
+                                                    ${not empty qnaList ? fn:length(qnaList) : 0}
+                                                </span>
 										    </button>
 										</div>
                                     </div>
 
                                     <div class="lyr__style2">
-                                        <div><button type="button" class="delivery-info__btn" data-size="F" data-no="${product.product_id}">배송 정보</button></div>
-                                        <div><button type="button" class="return-info__btn" data-size="F" data-no="${product.product_id}">교환 및 반품</button></div>
-                                        <div><button type="button" class="clean-info__btn" data-size="F" data-no="${product.product_id}" data-text="101/1">세탁방법</button></div>
-                                        <div><button type="button" class="as-info__btn" data-size="F" data-no="${product.product_id}">A/S</button></div>
+                                        <div><button type="button" class="delivery-info__btn" data-size="F" data-no="${product.productId}">배송 정보</button></div>
+                                        <div><button type="button" class="return-info__btn" data-size="F" data-no="${product.productId}">교환 및 반품</button></div>
+                                        <div><button type="button" class="clean-info__btn" data-size="F" data-no="${product.productId}" data-text="101/1">세탁방법</button></div>
+                                        <div><button type="button" class="as-info__btn" data-size="F" data-no="${product.productId}">A/S</button></div>
                                     </div>
                                 </div>
                                 </div>
@@ -295,18 +294,18 @@
                                    <div class="goods swiper-slide">
                                        <div class="photo">
                                            <div class="before">
-                                               <a href="${pageContext.request.contextPath}/product/product_detail.htm?product_id=${item.product_id}">
+                                               <a href="${pageContext.request.contextPath}/product/detail.htm?productId=${item.productId}">
                                                    <%-- 상품별 폴더 안의 1번 메인 이미지 호출 --%>
-                                                   <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${item.product_id}/${item.product_id}_main_1.jpg" 
-                                                        alt="${item.name}" 
-                                                        onerror="this.src='${pageContext.request.contextPath}/images/no_image.jpg';">
+                                                   <img src="${item.imageUrl}" 
+                                                         alt="${item.name}" 
+                                                         onerror="this.onerror=null; this.style.display='none';">
                                                </a>
                                            </div>
                                        </div>
                
                                        <div class="info">
-                                           <a href="${pageContext.request.contextPath}/product/view.htm?product_id=${item.product_id}">
-                                               <div class="top">
+                                           <a href="${pageContext.request.contextPath}/product/detail.htm?productId=${item.productId}">
+                                                <div class="top">
                                                    <p class="category">공용</p>
                                                    <div class="tag">
                                                        <%-- 상세페이지에서 가져온 styleTag 재사용 --%>
@@ -319,19 +318,19 @@
                                                <div class="price">
                                                    <%-- 할인가 계산 및 콤마 표시 --%>
                                                    <p class="sale">
-                                                       <fmt:formatNumber value="${item.price * (100 - item.discount_rate) / 100}" type="number"/>원
-                                                   </p>
-                                                   <c:if test="${item.discount_rate > 0}">
+                                                        <fmt:formatNumber value="${item.price * (100 - item.discountRate) / 100}" type="number"/>원
+                                                    </p>
+                                                   <c:if test="${item.discountRate > 0}">
                                                        <p class="normal _sale"><fmt:formatNumber value="${item.price}" type="number"/>원</p>
-                                                       <p class="percent">${item.discount_rate}% 할인</p>
+                                                       <p class="percent">${item.discountRate}% 할인</p>
                                                    </c:if>
                                                </div>
                                            </a>
                
-                                           <button type="button" class="wish__btn wish" data-wish="${item.product_id}">wish</button>
+                                           <button type="button" class="wish__btn wish" data-wish="${item.productId}">wish</button>
                                        </div>
                                
-                                       <button type="button" class="cart__btn btn_sld__gr" onclick="wish_Cart_action('${item.product_id}');">장바구니 담기</button>
+                                       <button type="button" class="cart__btn btn_sld__gr" onclick="wish_Cart_action('${item.productId}');">장바구니 담기</button>
                                    </div>
                                </c:forEach>
                
