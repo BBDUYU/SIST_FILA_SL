@@ -75,5 +75,12 @@ public class MemberServiceImpl implements MemberService {
         return memberMapper.selectIdByNameAndPhone(name, phone);
     }
     
+    @Override
+    public boolean checkCurrentPassword(String id, String rawPassword) {
+        MemberVO member = memberMapper.findById(id);
+        if (member == null) return false;
+
+        return passwordEncoder.matches(rawPassword, member.getPassword());
+    }
     
 }

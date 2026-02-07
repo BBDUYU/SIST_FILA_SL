@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <script>
 $(document).ready(function() {
     // 모델컷 슬라이더
@@ -126,7 +127,7 @@ function goBuyNow() {
     var isLogin = ${empty sessionScope.auth ? "false" : "true"};
     if (!isLogin) {
         alert("로그인이 필요한 서비스입니다.");
-        location.href = "${pageContext.request.contextPath}/login.htm?returnUrl=" + encodeURIComponent(location.href);
+        location.href = "${pageContext.request.contextPath}/member/login.htm?returnUrl=" + encodeURIComponent(location.href);
         return;
     }
 

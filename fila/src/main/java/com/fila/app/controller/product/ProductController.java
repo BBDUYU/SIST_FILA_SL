@@ -94,14 +94,29 @@ public class ProductController {
      */
     @RequestMapping(value = "/detail.htm", method = RequestMethod.GET)
     public String detail(@RequestParam("productId") String productId, Model model) {
-        
         Map<String, Object> map = productService.getProductDetail(productId);
         
         if (map != null) {
-            model.addAllAttributes(map);
+            // map에 담긴 각각의 데이터를 꺼내서 model에 개별적으로 등록합니다.
+            model.addAllAttributes(map); 
+            
+            // 만약 위 코드가 작동하지 않는 버전이라면 아래처럼 직접 넣어주세요.
+            /*
+            model.addAttribute("product", map.get("product"));
+            model.addAttribute("mainImages", map.get("mainImages"));
+            model.addAttribute("modelImages", map.get("modelImages"));
+            model.addAttribute("detailImages", map.get("detailImages"));
+            model.addAttribute("sizeOptions", map.get("sizeOptions"));
+            model.addAttribute("relatedList", map.get("relatedList"));
+            model.addAttribute("styleTag", map.get("styleTag"));
+            */
+            
+            // 추가 계산이 필요한 값들 (JSP에서 사용 중인 변수들)
+            ProductsVO product = (ProductsVO) map.get("product");
+            double finalPrice = product.getPrice() * (100 - product.getDiscountRate()) / 100.0;
+            model.addAttribute("finalPrice", (int)finalPrice);
         }
         
-        // ★ [경로 주의] 이것도 폴더 구조 확인해주세요. (product/product_detail 인지 product_detail 인지)
         return "product_detail";
     }
 }

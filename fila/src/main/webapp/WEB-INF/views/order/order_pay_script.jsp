@@ -52,15 +52,19 @@ function openAddressPopup() {
     });
 }
 
-// 2. 신규 배송지 추가 모달 열기 (기존 코드 수정)
 $(document).on('click', '.addr-add__btn', function() {
-    console.log("신규 추가 버튼 클릭됨"); // 작동 여부 확인용
-    var targetUrl = contextPath + "/view/mypage/add_address.jsp"; 
+    console.log("신규 추가 버튼 클릭됨");
+    
+    // .jsp 직접 호출이 아니라 컨트롤러 매핑 주소 사용
+    var targetUrl = contextPath + "/order/addAddressForm.htm"; 
     
     $("#AddaddModalContent").load(targetUrl, function(response, status, xhr) {
         if (status == "error") {
             console.log("에러 발생: " + xhr.status + " " + xhr.statusText);
-            alert("신규 배송지 페이지를 불러올 수 없습니다.");
+            alert("신규 배송지 페이지를 불러올 수 없습니다. (에러코드: " + xhr.status + ")");
+        } else {
+            // 성공 시 혹시 모달이 안 보인다면 명시적으로 show
+            $("#AddaddressModalOverlay").css('display', 'flex').show();
         }
     });
 });
@@ -101,48 +105,43 @@ function addr_choice() {
 <script>
 //order_pay.jsp 하단 스크립트에 추가
 $(document).on('click', '.coupon__btn', function() {
-    // 1. 쿠폰 모달 레이아웃 로드
-    $("#AddaddModalContent").load(contextPath + "/view/order/order_coupon.jsp", function() {
+    // 1. JSP 경로 대신 컨트롤러 매핑 주소(/order/order_coupon.htm) 사용
+    $("#AddaddModalContent").load(contextPath + "/order/order_coupon.htm", function(response, status, xhr) {
+        if (status == "error") {
+            alert("쿠폰 페이지를 불러오지 못했습니다.");
+            return;
+        }
         
-        // 2. 모달이 로드된 후 유저의 쿠폰 목록 AJAX 호출
+        // 2. 모달 로드 후 유저 쿠폰 목록 호출 (위에서 만든 /order/api/mycoupon_ajax.htm)
         $.ajax({
-            url: contextPath + "/api/mypage/mycoupon_ajax.htm", // 유저 쿠폰 목록을 JSON으로 주는 URL
+            url: contextPath + "/order/api/mycoupon_ajax.htm", 
             type: "GET",
             dataType: "json",
             success: function(data) {
                 let html = "";
                 if (data && data.length > 0) {
                     data.forEach(function(cpn) {
-                        // 미사용(isused='0')인 쿠폰만 표시
-                        if (cpn.isused === '0') {
-                            // 금액 포맷팅 (JS 방식)
-                            let priceText = (cpn.discount_type === 'PERCENT') 
-                                            ? cpn.price + '%' 
-                                            : cpn.price.toLocaleString() + '원';
+                        // DB 필드명(usercouponid, coupon_name 등)이 UserInfoVO와 일치하는지 확인
+                        let priceText = (cpn.discount_type === 'PERCENT') 
+                                        ? cpn.price + '%' 
+                                        : cpn.price.toLocaleString() + '원';
 
-                            html += '<li>';
-                            html += '    <input type="radio" id="cpRd_' + cpn.usercouponid + '" name="popupCoupon3" ';
-                            html += '           class="rd__style1" value="' + cpn.usercouponid + '" ';
-                            html += '           data-name="' + cpn.coupon_name + '" ';
-                            html += '           data-type="' + cpn.discount_type + '" ';
-                            html += '           data-val="' + cpn.price + '">';
-                            html += '    <label for="cpRd_' + cpn.usercouponid + '"></label>';
-                            html += '    <div style="margin-left:40px;">';
-                            html += '        <p class="txt1" style="font-weight:bold; color:#333;">' + cpn.coupon_name + '</p>';
-                            html += '        <p class="txt2" style="color:#ff0000; font-size:13px;">' + priceText + ' 할인 쿠폰</p>';
-                            html += '    </div>';
-                            html += '</li>';
-                        }
+                        html += '<li>';
+                        html += '    <input type="radio" id="cpRd_' + cpn.usercouponid + '" name="popupCoupon3" ';
+                        html += '           class="rd__style1" value="' + cpn.usercouponid + '" ';
+                        html += '           data-name="' + cpn.coupon_name + '" ';
+                        html += '           data-type="' + cpn.discount_type + '" ';
+                        html += '           data-val="' + cpn.price + '">';
+                        html += '    <label for="cpRd_' + cpn.usercouponid + '"></label>';
+                        html += '    <div style="margin-left:40px;">';
+                        html += '        <p class="txt1" style="font-weight:bold; color:#333;">' + cpn.coupon_name + '</p>';
+                        html += '        <p class="txt2" style="color:#ff0000; font-size:13px;">' + priceText + ' 할인 쿠폰</p>';
+                        html += '    </div>';
+                        html += '</li>';
                     });
-                }
-                
-                // 만약 사용 가능한 쿠폰이 하나도 없다면 기본 메시지 유지
-                if(html !== "") {
+                    // 쿠폰이 있으면 목록 교체
                     $(".coupon-select-box .cn ul").html(html);
                 }
-            },
-            error: function() {
-                console.log("쿠폰 목록을 불러오는 중 오류가 발생했습니다.");
             }
         });
         
@@ -203,7 +202,7 @@ $(document).on('click', '#offlineBtn', function(e) {
     }
 
     $.ajax({
-        url: contextPath + "/mypage/coupon_process.htm",
+        url: contextPath + "/order/coupon_process.htm",
         type: "POST",
         data: { "randomNo": serial.trim() },
         dataType: "json",

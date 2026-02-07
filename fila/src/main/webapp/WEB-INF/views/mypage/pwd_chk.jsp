@@ -30,7 +30,6 @@
 <script>
 // 모달 안에서 동작할 전용 스크립트
 $('#btnConfirmPw').on('click', function(e) {
-    // 1. 폼의 기본 제출 동작(새로고침)을 강제로 막음
     e.preventDefault(); 
 
     var pw = $('#confirmPassword').val();
@@ -39,31 +38,29 @@ $('#btnConfirmPw').on('click', function(e) {
         return;
     }
 
-    // 2. contextPath 변수가 없다면 JSP 엘리먼트로 직접 치환
-    var urlAddr = "${pageContext.request.contextPath}/mypage/confirmPassword.htm";
-    var nextAddr = "${pageContext.request.contextPath}/mypage/modifyInfo.htm";
-
     $.ajax({
-        url: urlAddr,
+        url: "${pageContext.request.contextPath}/mypage/confirmPassword.htm",
         type: 'POST',
         data: { memberPassword: pw },
-        dataType: 'json',
-        success: function(res) {
-            console.log("응답 결과:", res); // 디버깅용
+        // dataType: 'json'을 삭제하거나 주석 처리하세요. 
+        // 삭제하면 브라우저가 Accept 헤더를 까다롭게 따지지 않습니다.
+        success: function(data) {
+            // 응답이 문자열로 올 경우를 대비해 파싱 처리
+            var res = (typeof data === 'string') ? JSON.parse(data) : data;
+            
             if(res.ok) {
-                // 성공 시 이동
-                location.href = nextAddr;
+                location.href = "${pageContext.request.contextPath}/mypage/modifyInfo.htm";
             } else {
-                alert(res.message || "비밀번호가 일치하지 않습니다.");
+                alert(res.message);
             }
         },
-        error: function(xhr, status, error) {
-            console.error("에러 발생:", error);
-            alert("통신 중 오류가 발생했습니다.");
+        error: function(xhr) {
+            // 406 에러가 난다면 여기서 xhr.status를 찍어볼 수 있습니다.
+            console.log("Error Status: " + xhr.status);
+            alert("통신 에러가 발생했습니다. 다시 시도해주세요.");
         }
     });
 });
-
 // 엔터키 대응
 $('#confirmPassword').on('keypress', function(e) {
     if(e.keyCode == 13) {

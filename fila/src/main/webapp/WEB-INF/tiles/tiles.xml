@@ -277,9 +277,9 @@
 	
 	<definition name="modifyInfo" extends="mypage-layout">
 	    <put-attribute name="title" value="내 정보 | FILA" />
-	    <put-attribute name="script" value="/WEB-INF/views/mypage/modifyInfo_script.jsp" />
-	    <put-attribute name="content" value="/WEB-INF/views/mypage/modifyInfo.jsp" />
 	    <put-attribute name="style" value="/WEB-INF/views/mypage/modifyInfo_style.jsp" />
+	    <put-attribute name="content" value="/WEB-INF/views/mypage/modifyInfo.jsp" />
+	    <put-attribute name="script" value="/WEB-INF/views/mypage/modifyInfo_script.jsp" />
 	</definition>  
 	 
 	
