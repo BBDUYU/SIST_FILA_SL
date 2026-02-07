@@ -92,7 +92,6 @@ public class ReviewController {
         model.addAttribute("reviewList", list);
         model.addAttribute("reviewSummary", summary);
         
-        // JSP 조각 파일(Fragment)을 리턴해서 화면 일부분만 갱신
-        return "review/review_list_fragment"; 
+        return "review_list"; 
     }
 }

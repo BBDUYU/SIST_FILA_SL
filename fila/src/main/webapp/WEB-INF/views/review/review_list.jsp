@@ -26,12 +26,9 @@
                          </c:forEach>
                      </div>
     
-                     <%-- 리뷰 텍스트 + 더보기 버튼 --%>
+                     <%-- 리뷰 텍스트 --%>
                      <div class="review-text-wrapper" style="margin-bottom: 20px;">
-                        <%-- 본문 --%>
                         <div class="review-text-body">${dto.content}</div>
-                        
-                        <%-- 더보기 버튼 --%>
                         <div class="more-btn-wrap" style="display:none; text-align: right; margin-top: 5px;">
                             <button type="button" class="more-btn" onclick="toggleReviewText(this)" 
                                     style="font-size:13px; color:#999; text-decoration:underline; background:none; border:none; cursor:pointer; padding:0;">
@@ -40,12 +37,22 @@
                         </div>
                      </div>
     
-                     <%-- 이미지 --%>
+                     <%-- [핵심 수정] 이미지 경로 처리 --%>
                      <c:if test="${not empty dto.reviewImg}">
                         <div class="review-images" style="margin-bottom: 20px; display:flex; gap:5px;">
                             <c:set var="imgs" value="${fn:split(dto.reviewImg, ',')}" />
                             <c:forEach var="imgUrl" items="${imgs}">
-                                <img src="${imgUrl}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 4px; cursor:pointer;" onclick="window.open(this.src)">
+                                <%-- 
+                                    [이미지 경로 자동 보정]
+                                    DB에 'C:\fila_upload\...' 라고 저장되어 있으면 브라우저가 보안상 막아버림(Not allowed...).
+                                    그래서 'C:\fila_upload' 부분을 '/upload'로 바꿔줘야 함 (servlet-context.xml 매핑 이용)
+                                --%>
+                                <c:set var="cleanPath" value="${fn:replace(imgUrl, 'C:\\\\fila_upload', '/upload')}" />
+                                <c:set var="cleanPath" value="${fn:replace(cleanPath, 'C:\\fila_upload', '/upload')}" />
+                                <c:set var="cleanPath" value="${fn:replace(cleanPath, '\\\\', '/')}" />
+                                <c:set var="cleanPath" value="${fn:replace(cleanPath, '\\', '/')}" />
+                                
+                                <img src="${cleanPath}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 4px; cursor:pointer; border:1px solid #eee;" onclick="window.open(this.src)">
                             </c:forEach>
                         </div>
                      </c:if>
@@ -80,19 +87,18 @@
     </c:otherwise>
 </c:choose>
 
+<%-- 높이 체크 스크립트 (AJAX 로드 후 실행됨) --%>
 <script>
-// 높이 체크 함수 (AJAX 로딩 후 즉시 실행)
-function checkReviewHeightLocal() {
-    $(".review-text-body").each(function() {
-        var scrollHeight = this.scrollHeight; // 전체 높이
-        var clientHeight = this.clientHeight; // 보여지는 높이
-        
-        if (scrollHeight > clientHeight) {
-            $(this).next(".more-btn-wrap").show();
-        } else {
-            $(this).next(".more-btn-wrap").hide();
-        }
-    });
+if (typeof checkReviewHeightLocal === 'undefined') {
+    function checkReviewHeightLocal() {
+        $(".review-text-body").each(function() {
+            if (this.scrollHeight > this.clientHeight) {
+                $(this).next(".more-btn-wrap").show();
+            } else {
+                $(this).next(".more-btn-wrap").hide();
+            }
+        });
+    }
 }
 setTimeout(checkReviewHeightLocal, 100);
 </script>
