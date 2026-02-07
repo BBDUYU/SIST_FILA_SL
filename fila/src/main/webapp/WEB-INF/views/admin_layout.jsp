@@ -4,6 +4,8 @@
 <html>
 
 <head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <meta charset="UTF-8">
     <title><tiles:insertAttribute name="title" ignore="true" /></title>
     <%-- 스타일 --%>

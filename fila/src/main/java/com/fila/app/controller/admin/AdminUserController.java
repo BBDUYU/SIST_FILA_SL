@@ -40,7 +40,7 @@ public class AdminUserController {
         // 싱글톤(getInstance) 대신 주입된 서비스 사용
         List<UserInfoVO> userList = adminUserService.getUserList();
         model.addAttribute("userList", userList);
-        return "admin/admin_user";
+        return "admin_user";
     }
 
     /**
@@ -60,7 +60,7 @@ public class AdminUserController {
         user.setOrderList(oderService.getUserOrderList(userNum));
         
         model.addAttribute("user", user);
-        return "admin/admin_user_info";
+        return "admin_user_info";
     }
 
     /**

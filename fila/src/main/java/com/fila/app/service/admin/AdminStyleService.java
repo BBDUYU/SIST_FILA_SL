@@ -22,4 +22,6 @@ public interface AdminStyleService {
     
     // 상태 변경 (사용여부 토글)
     boolean updateStyleStatus(int id, int status);
+    
+    int registerStyleMaster(StyleVO styleVo);
 }

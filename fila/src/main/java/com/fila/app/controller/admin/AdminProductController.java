@@ -1,14 +1,20 @@
 package com.fila.app.controller.admin;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,29 +35,20 @@ public class AdminProductController {
     @Autowired
     private AdminProductService adminProductService;
 
-    /**
-     * 1. 상품 목록 조회
-     */
     @RequestMapping(value = "/productList.htm", method = RequestMethod.GET)
     public String productList(Model model) throws Exception {
-        // ProductVO 리스트를 가져와서 목록 화면에 전달
         List<ProductVO> list = adminProductService.getProductList(); 
         model.addAttribute("productList", list);
         return "product_list";
     }
 
-    /**
-     * 2. 상품 등록/수정 페이지 이동
-     */
     @RequestMapping(value = {"/createProduct.htm", "/editProduct.htm"}, method = RequestMethod.GET)
     public String productForm(HttpServletRequest request, 
-                             @RequestParam(value = "id", required = false) String productId, 
-                             Model model) throws Exception {
+                              @RequestParam(value = "id", required = false) String productId, 
+                              Model model) throws Exception {
         
         String path = request.getServletPath();
         boolean isEdit = path.contains("editProduct");
-
-        // 공통 폼 데이터(옵션 리스트, 스타일 리스트 등) 로드
         adminProductService.getAdminFullFormData(request);
 
         if (isEdit && productId != null) {
@@ -70,66 +67,136 @@ public class AdminProductController {
         return "product_create";
     }
 
-    /**
-     * 3. 상품 등록/수정 처리 (AJAX)
-     */
     @RequestMapping(value = {"/createProduct.htm", "/editProduct.htm"}, method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> processProduct(MultipartHttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> processProduct(MultipartHttpServletRequest request) {
         Map<String, Object> jsonResponse = new HashMap<String, Object>();
         String path = request.getServletPath();
         boolean isEdit = path.contains("editProduct");
 
         try {
-            // 1. 기본 파라미터 수집
-            String productId = isEdit ? request.getParameter("product_id") : "TEMP_" + System.currentTimeMillis();
             String[] categoryIds = request.getParameterValues("category_ids");
-            String[] tagIds = request.getParameterValues("tag_ids");
-            
-            // 2. 파일 처리 (MultipartFile 이용)
-            List<CreateproductVO> imageList = handleFileUpload(request, productId);
+            int mainCateId = (categoryIds != null && categoryIds.length > 0) ? parseSafeInt(categoryIds[0], 0) : 0;
+            String productId = isEdit ? request.getParameter("product_id") : adminProductService.generateProductId(mainCateId);
 
-            // 3. VO 생성 및 기본 데이터 세팅
+            // 1. [수정] 삭제 로직: 물리 파일 삭제 실패해도 중단되지 않게 try-catch
+            String[] deleteImageIds = request.getParameterValues("deleteImageIds");
+            if (isEdit && deleteImageIds != null && deleteImageIds.length > 0) {
+                List<String> deletePaths = adminProductService.getImagePathsByIds(deleteImageIds);
+                for (String imgPath : deletePaths) {
+                    try {
+                        File file = new File(imgPath);
+                        if (file.exists()) {
+                            file.delete(); // 점유 중이면 false 리턴하겠지만 무시하고 진행
+                        }
+                    } catch (Exception e) {
+                        System.err.println("파일 삭제 실패(무시하고 진행): " + imgPath);
+                    }
+                }
+            }
+
+            // 2. 새 파일 저장 (파일명에 유니크 값 추가하여 충돌 방지)
+            List<CreateproductVO> imageList = processFiles(request, productId);
+
+            String[] tagIds = request.getParameterValues("tag_ids");
+            int price = parseSafeInt(request.getParameter("price"), 0);
+            int discountRate = parseSafeInt(request.getParameter("discount_rate"), 0);
+            int styleId = parseSafeInt(request.getParameter("styleId"), 0);
+            int sectionId = parseSafeInt(request.getParameter("sectionId"), 0);
+            int stock = parseSafeInt(request.getParameter("stock"), 10);
+
             CreateproductVO product = CreateproductVO.builder()
-                    .productId(isEdit ? productId : null) // 신규등록시 Service에서 ID 생성 로직 탈 수 있게 null 처리 가능
+                    .productId(productId)
+                    .categoryId(mainCateId)
                     .name(request.getParameter("name"))
                     .description(request.getParameter("description"))
-                    .price(Integer.parseInt(request.getParameter("price")))
-                    .discountRate(Integer.parseInt(request.getParameter("discount_rate")))
+                    .price(price)
+                    .discountRate(discountRate)
                     .build();
 
-            // 4. 서비스 호출
             if (isEdit) {
-                String[] deleteImageIds = request.getParameterValues("deleteImageIds");
                 adminProductService.updateProduct(product, imageList, deleteImageIds, categoryIds, tagIds,
-                        request.getParameter("gender_option"), request.getParameter("sport_option"),
+                        request.getParameter("gender_option"), 
+                        request.getParameter("sport_option"),
                         request.getParameterValues("size_options"), 
-                        Integer.parseInt(request.getParameter("styleId")), 
-                        Integer.parseInt(request.getParameter("sectionId")), 
-                        Integer.parseInt(request.getParameter("stock")));
+                        styleId, sectionId, stock);
             } else {
                 adminProductService.createProduct(product, categoryIds, tagIds,
-                        request.getParameter("gender_option"), request.getParameter("sport_option"),
-                        request.getParameterValues("size_options"), imageList, 
-                        Integer.parseInt(request.getParameter("styleId")), 
-                        Integer.parseInt(request.getParameter("sectionId")), 
-                        Integer.parseInt(request.getParameter("stock")));
+                        request.getParameter("gender_option"), 
+                        request.getParameter("sport_option"),
+                        request.getParameterValues("size_options"), 
+                        imageList, styleId, sectionId, stock);
             }
 
             jsonResponse.put("status", "success");
-            jsonResponse.put("redirect", request.getContextPath() + "productList.htm");
+            jsonResponse.put("redirect", request.getContextPath() + "/admin/productList.htm");
 
         } catch (Exception e) {
             e.printStackTrace();
             jsonResponse.put("status", "error");
             jsonResponse.put("message", "처리 실패: " + e.getMessage());
         }
-        return jsonResponse;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+        return new ResponseEntity<>(jsonResponse, headers, HttpStatus.OK);
     }
 
     /**
-     * 4. 상품 삭제 (상태 변경)
+     * [핵심 수정] 파일 저장 로직
      */
+    private List<CreateproductVO> processFiles(MultipartHttpServletRequest request, String productId) throws Exception {
+        List<CreateproductVO> imageList = new ArrayList<>();
+        String rootPath = "C:/fila_upload/product/" + productId;
+        File saveDir = new File(rootPath);
+        if (!saveDir.exists()) saveDir.mkdirs();
+
+        String[] types = {"MAIN", "MODEL", "DETAIL"};
+        String[] paramNames = {"mainImages[]", "modelImages[]", "detailImages[]"};
+
+        // 파일명에 쓸 시간값 (루프 밖에서 생성하여 동일 루프 내 일관성 유지 가능)
+        long timestamp = System.currentTimeMillis();
+
+        for (int i = 0; i < types.length; i++) {
+            String type = types[i];
+            List<MultipartFile> files = request.getFiles(paramNames[i]);
+            if (files == null) continue;
+
+            int subIdx = 1; 
+
+            for (MultipartFile mFile : files) {
+                if (mFile == null || mFile.isEmpty()) continue;
+
+                String originalName = mFile.getOriginalFilename();
+                String ext = originalName.contains(".") ? originalName.substring(originalName.lastIndexOf(".")).toLowerCase() : ".jpg";
+                
+                // [변경] productId + 타입 + 시간값 + 인덱스 + 확장자
+                // 이렇게 하면 기존 파일명과 절대 겹칠 수 없습니다.
+                String newFileName = productId + "_" + type.toLowerCase() + "_" + timestamp + "_" + subIdx + ext;
+                File saveFile = new File(saveDir, newFileName);
+
+                try {
+                    mFile.transferTo(saveFile);
+                    System.out.println("✅ [물리 저장 성공] " + newFileName);
+
+                    imageList.add(CreateproductVO.builder()
+                            .productId(productId)
+                            .imageUrl("C:/fila_upload/product/" + productId + "/" + newFileName)
+                            .imageType(type)
+                            // isMain 로직: MAIN 타입의 루프 중 첫 번째 파일만 1
+                            .isMain(type.equals("MAIN") && subIdx == 1 ? 1 : 0)
+                            .sortOrder(subIdx)
+                            .build());
+                    
+                    subIdx++;
+                } catch (Exception e) {
+                    System.err.println("❌ [물리 저장 실패] " + e.getMessage());
+                    throw e;
+                }
+            }
+        }
+        return imageList;
+    }
+
     @RequestMapping(value = "/deleteProduct.htm", method = RequestMethod.GET)
     public String deleteProduct(@RequestParam("id") String productId) {
         if (productId != null) {
@@ -138,42 +205,8 @@ public class AdminProductController {
         return "redirect:/admin/productList.htm";
     }
 
-    /**
-     * 파일 업로드 유틸리티 (Spring MultipartFile 방식)
-     */
-    private List<CreateproductVO> handleFileUpload(MultipartHttpServletRequest request, String productId) throws Exception {
-        List<CreateproductVO> imageList = new ArrayList<CreateproductVO>();
-        String baseDiskPath = "C:/fila_upload/product/" + productId + "/";
-        File saveDir = new File(baseDiskPath);
-        if (!saveDir.exists()) saveDir.mkdirs();
-
-        Map<String, MultipartFile> fileMap = request.getFileMap();
-        int sortOrder = 1;
-        
-        for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
-            MultipartFile mFile = entry.getValue();
-            if (mFile.isEmpty()) continue;
-
-            String paramName = entry.getKey();
-            String type = paramName.toLowerCase().contains("main") ? "MAIN" : 
-                          (paramName.toLowerCase().contains("model") ? "MODEL" : "DETAIL");
-            
-            String originalName = mFile.getOriginalFilename();
-            String ext = originalName.substring(originalName.lastIndexOf("."));
-            String newFileName = productId + "_" + type.toLowerCase() + "_" + System.currentTimeMillis() + ext;
-
-            // 물리적 파일 저장
-            mFile.transferTo(new File(baseDiskPath + newFileName));
-
-            // VO에 이미지 정보 담기
-            imageList.add(CreateproductVO.builder()
-                    .productId(productId)
-                    .imageUrl("/upload/product/" + productId + "/" + newFileName) // 웹에서 접근 가능한 경로로 저장 권장
-                    .imageType(type)
-                    .is_main(type.equals("MAIN") ? 1 : 0)
-                    .sortOrder(sortOrder++)
-                    .build());
-        }
-        return imageList;
+    private int parseSafeInt(String value, int defaultValue) {
+        if (value == null || value.trim().isEmpty()) return defaultValue;
+        try { return Integer.parseInt(value); } catch (NumberFormatException e) { return defaultValue; }
     }
 }

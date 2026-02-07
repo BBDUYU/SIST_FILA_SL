@@ -27,7 +27,7 @@ public class AdminTagController {
     public String tagList(Model model) {
         List<CategoriesVO> list = adminTagService.getTagList();
         model.addAttribute("tagList", list);
-        return "admin/tag_list";
+        return "tag_list";
     }
 
     /**
@@ -51,6 +51,23 @@ public class AdminTagController {
         return adminTagService.getProductsByTag(tagId);
     }
     
-    // 참고: 기존 핸들러에 있던 수정/상태변경 로직은 
-    // 서비스 인터페이스에 해당 메서드가 정의되어 있다면 추가 구현이 가능합니다.
+    /**
+     * 4. 태그 수정
+     */
+    @RequestMapping(value = "/editTag.htm", method = RequestMethod.POST)
+    public String editTag(@RequestParam("categoryId") int categoryId, 
+                          @RequestParam("tagName") String tagName) {
+        adminTagService.updateTag(categoryId, tagName);
+        return "redirect:/admin/tagList.htm";
+    }
+
+    /**
+     * 5. 태그 상태 변경 (사용/중지)
+     */
+    @RequestMapping(value = "/toggleTag.htm", method = RequestMethod.GET)
+    public String toggleTag(@RequestParam("id") int categoryId, 
+                            @RequestParam("status") int status) {
+        adminTagService.updateTagStatus(categoryId, status);
+        return "redirect:/admin/tagList.htm";
+    }
 }

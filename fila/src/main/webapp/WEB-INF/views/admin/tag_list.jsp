@@ -44,14 +44,14 @@
 						        <c:when test="${tag.useYn eq 1}">
 						            <%-- 현재 사용 중이면 '중지' 버튼 노출 --%>
 						            <button class="small-btn btn-delete" 
-						                onclick="if(confirm('#${tag.name} 태그를 비활성화하시겠습니까?')) { location.href='toggleTag.htm?id=${tag.categoryId}&status=0'; }">
+						                onclick="if(confirm('#${tag.name} 태그를 비활성화하시겠습니까?')) { location.href='${pageContext.request.contextPath}/admin/toggleTag.htm?id=${tag.categoryId}&status=0'; }">
 						                중지
 						            </button>
 						        </c:when>
 						        <c:otherwise>
 						            <%-- 현재 중지 상태면 '사용' 버튼 노출 (파란색 계열 스타일 권장) --%>
 						            <button class="small-btn" style="background-color: #2ecc71 !important; border-color: #2ecc71 !important;"
-						                onclick="if(confirm('#${tag.name} 태그를 활성화하시겠습니까?')) { location.href='toggleTag.htm?id=${tag.categoryId}&status=1'; }">
+						                onclick="if(confirm('#${tag.name} 태그를 활성화하시겠습니까?')) { location.href='${pageContext.request.contextPath}/admin/toggleTag.htm?id=${tag.categoryId}&status=1'; }">
 						                사용
 						            </button>
 						        </c:otherwise>

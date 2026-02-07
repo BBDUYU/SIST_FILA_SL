@@ -21,7 +21,7 @@
                     <div class="col">
                         <div class="form-group">
                             <label for="discount_type">할인 종류</label>
-                            <select id="discount_type" name="discount_type" class="form-control" onchange="toggleUnit()">
+                            <select id="discount_type" name="discountType" class="form-control" onchange="toggleUnit()">
                                 <option value="AMOUNT">정액 할인 (원)</option>
                                 <option value="PERCENT">정율 할인 (%)</option>
                                 <option value="DELIVERY">무료배송</option>
@@ -34,7 +34,7 @@
                         <div class="form-group">
                             <label for="discount_value">할인 혜택</label>
                             <div class="input-wrapper">
-                                <input type="number" id="discount_value" name="discount_value" class="form-control" 
+                                <input type="number" id="discount_value" name="discountValue" class="form-control" 
                                        placeholder="0" required min="1">
                                 <span id="unit-text" class="input-unit">원</span>
                             </div>

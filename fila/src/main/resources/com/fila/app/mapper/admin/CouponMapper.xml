@@ -4,14 +4,14 @@
 
     <select id="selectList" resultType="com.fila.app.domain.admin.CouponVO">
         SELECT 
-            COUPON_ID      AS coupon_id,
+            COUPON_ID      AS couponId,
             NAME,
-            DISCOUNT_TYPE  AS discount_type,
-            DISCOUNT_VALUE AS discount_value,
-            EXPIRES_AT     AS expires_at,
-            CREATED_AT     AS created_at,
+            DISCOUNT_TYPE  AS discountType,
+            DISCOUNT_VALUE AS discountValue,
+            EXPIRES_AT     AS expiresAt,
+            CREATED_AT     AS createdAt,
             STATUS,
-            SERIAL_NUMBER  AS serial_number
+            SERIAL_NUMBER  AS serialNumber
         FROM COUPON 
         ORDER BY CREATED_AT DESC
     </select>
@@ -21,21 +21,21 @@
             COUPON_ID, NAME, DISCOUNT_TYPE, DISCOUNT_VALUE, 
             SERIAL_NUMBER, EXPIRES_AT, CREATED_AT
         ) VALUES (
-            SEQ_COUPON.NEXTVAL, #{name}, #{discount_type}, #{discount_value}, 
-            #{serial_number}, #{expires_at, jdbcType=DATE}, SYSDATE
+            SEQ_COUPON.NEXTVAL, #{name}, #{discountType}, #{discountValue}, 
+            #{serialNumber}, #{expiresAt, jdbcType=DATE}, SYSDATE
         )
     </insert>
 
     <select id="getUserCouponList" resultType="com.fila.app.domain.admin.UserInfoVO">
         SELECT 
-            uc.USER_COUPON_ID AS usercouponid, 
-            c.NAME           AS coupon_name, 
-            c.DISCOUNT_TYPE  AS discount_type, 
+            uc.USER_COUPON_ID AS userCouponId, 
+            c.NAME           AS couponName, 
+            c.DISCOUNT_TYPE  AS discountType, 
             c.DISCOUNT_VALUE AS price, 
-            uc.IS_USED       AS isused, 
-            uc.USED_AT       AS usedat, 
-            uc.EXPIRE_DATE   AS expireddate, 
-            uc.RECEIVED_AT   AS receivedat, 
+            uc.IS_USED       AS isUsed, 
+            uc.USED_AT       AS usedAt, 
+            uc.EXPIRE_DATE   AS expiredDate, 
+            uc.RECEIVED_AT   AS receivedAt, 
             c.STATUS
         FROM USER_COUPON uc 
         JOIN COUPON c ON uc.COUPON_ID = c.COUPON_ID 

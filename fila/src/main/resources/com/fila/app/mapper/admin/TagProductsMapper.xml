@@ -4,13 +4,13 @@
 
     <select id="selectProductsByTag" resultType="com.fila.app.domain.admin.ProductVO">
         SELECT 
-            P.PRODUCT_ID, 
+            P.PRODUCT_ID    AS productId, 
             P.NAME, 
             P.PRICE, 
-            P.DISCOUNT_RATE, 
+            P.DISCOUNT_RATE AS discountRate, 
             P.STATUS, 
-            P.CATEGORY_ID, 
-            NVL(I.IMAGE_URL, '//filacdn.styleship.com/filaproduct2/data/productimages/a/1/FS261FT01X001_234.jpg') AS IMAGE_URL
+            P.CATEGORY_ID   AS categoryId, 
+            NVL(I.IMAGE_URL, '//filacdn.styleship.com/filaproduct2/data/productimages/a/1/FS261FT01X001_234.jpg') AS imageUrl
         FROM PRODUCTS P
         LEFT JOIN PRODUCT_IMAGE I ON P.PRODUCT_ID = I.PRODUCT_ID AND I.IS_MAIN = 1
         WHERE P.PRODUCT_ID IN (

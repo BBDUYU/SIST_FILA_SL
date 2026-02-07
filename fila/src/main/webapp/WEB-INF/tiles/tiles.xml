@@ -16,6 +16,8 @@
     <definition name="main" extends="base-layout">
         <put-attribute name="title" value="FILA 메인" />
         <put-attribute name="content" value="/WEB-INF/views/main.jsp" />
+        <put-attribute name="bodyClass" value="hd__style1 _style_main" />
+        
     </definition>
     
     <!-- notice -->
@@ -216,12 +218,14 @@
         <put-attribute name="title" value="FILA 관리자 - 스타일 등록" />
         <put-attribute name="style" value="/WEB-INF/views/admin/style_create_style.jsp" />
         <put-attribute name="content" value="/WEB-INF/views/admin/style_create.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/admin/style_create_script.jsp" />
     </definition>
     
     <definition name="style_edit" extends="admin-layout">
         <put-attribute name="title" value="FILA 관리자 - 스타일 수정" />
         <put-attribute name="style" value="/WEB-INF/views/admin/style_edit_style.jsp" />
         <put-attribute name="content" value="/WEB-INF/views/admin/style_edit.jsp" />
+        <put-attribute name="script" value="/WEB-INF/views/admin/style_edit_script.jsp" />
     </definition>
     
     <definition name="style_list" extends="admin-layout">

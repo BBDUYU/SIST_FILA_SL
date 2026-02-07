@@ -4,14 +4,12 @@
 
     <select id="selectProductList" resultType="com.fila.app.domain.admin.ProductVO">
         SELECT 
-            p.PRODUCT_ID    AS productid, 
-            p.NAME, 
+            p.PRODUCT_ID    AS productId,   p.NAME, 
             c.NAME          AS categoryName, 
             p.PRICE, 
             p.DISCOUNT_RATE AS discountRate,
             p.STATUS, 
-            p.CREATED_AT,
-            (SELECT SUM(STOCK) 
+            p.CREATED_AT    AS createdAt,   (SELECT SUM(STOCK) 
              FROM PRODUCT_OPTION_STOCK pos 
              JOIN PRODUCT_OPTION_COMBINATIONS poc ON pos.COMBINATION_ID = poc.COMBINATION_ID 
              WHERE poc.PRODUCT_ID = p.PRODUCT_ID) AS totalStock,

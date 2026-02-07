@@ -175,21 +175,31 @@
 function mainGroup(tagId, element) {
     console.log("mainGroup 실행 - tagId:", tagId);
     const contextPath = '${pageContext.request.contextPath}';
+    
     if (element) {
         var buttons = document.querySelectorAll('.groupBtn');
         for (var i = 0; i < buttons.length; i++) buttons[i].classList.remove('on');
         element.classList.add('on');
     }
 
-    var url = contextPath + "/mainGroupAjax.htm?tagId=" + tagId;
+    // URL 호출
+    var url = contextPath + "/main/mainGroupAjax.htm?tagId=" + tagId;
 
-    fetch(url)
-        .then(function(res) { return res.json(); })
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json', // "난 무조건 JSON만 받을 거야"
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(function(res) { 
+            if(!res.ok) throw new Error("HTTP error " + res.status); // 406 에러 체크용
+            return res.json(); 
+        })
         .then(function(data) {
             var listWrapper = document.getElementById('groupList');
             var swiperContainer = document.querySelector('.goods__slider');
             
-            // 슬라이더 초기화
             if (swiperContainer && swiperContainer.swiper) {
                 swiperContainer.swiper.destroy(true, true);
             }
@@ -203,22 +213,33 @@ function mainGroup(tagId, element) {
             var html = "";
             for (var i = 0; i < data.length; i++) {
                 var prod = data[i];
-                var id = prod.product_id;
-                var onClass = (typeof WISHED !== 'undefined' && WISHED.has(id)) ? " on" : "";
+                
+                // --- [변수명 수정 핵심: VO의 필드명과 일치시켜야 함] ---
+                var id = prod.productId;      // product_id 아님!
                 var name = prod.name;
                 var price = (prod.price || 0).toLocaleString() + "원";
-                var category = prod.category_name || "공용";
+                var category = prod.depth1Name || "공용"; // depth1Name으로 수정
+                var onClass = (typeof WISHED !== 'undefined' && WISHED.has(id)) ? " on" : "";
 
-                // --- [이미지 주소 처리 핵심] ---
-                var imgPath = prod.image_url || "";
-                // 1. 이미 서블릿 주소가 붙어있다면 진짜 경로만 추출
-                if (imgPath.includes("path=")) imgPath = imgPath.split("path=").pop();
-                // 2. 톰캣 차단 방지를 위해 C: 제거
-                imgPath = imgPath.replace("C:", "");
-                // 3. 최종 서블릿 호출 주소
-                var finalUrl = contextPath + "/displayImage.do?path=" + imgPath;
+                var imgPath = prod.imageUrl || ""; 
 
-                // --- [필라 오리지널 레이아웃 구조] ---
+	             // 1. "path="이 포함된 경우 뒤쪽만 추출
+	             if (imgPath.includes("path=")) {
+	                 imgPath = imgPath.split("path=").pop();
+	             }
+	
+	             // 2. 경로에서 중복되는 root 폴더명 및 C: 드라이브 문자 제거 (핵심!)
+	             // DisplayImageController가 이미 C:/fila_upload/ 를 기본으로 잡기 때문입니다.
+	             imgPath = imgPath.replace(/C:/gi, "");
+	             imgPath = imgPath.replace(/\\fila_upload\\/gi, "");
+	             imgPath = imgPath.replace(/\/fila_upload\//gi, "");
+	             imgPath = imgPath.replace(/\\/g, "/"); // 역슬래시를 슬래시로 통일
+	
+	             // 3. 앞의 시작 슬래시 제거 (서버 로직과 충돌 방지)
+	             if (imgPath.startsWith("/")) imgPath = imgPath.substring(1);
+	
+	             var finalUrl = contextPath + "/displayImage.do?path=" + encodeURIComponent(imgPath);
+
                 html += '<div class="goods swiper-slide">'
                     + '  <div class="photo">'
                     + '    <div class="before">'
@@ -231,15 +252,10 @@ function mainGroup(tagId, element) {
                     + '    <a href="' + contextPath + '/product/product_detail.htm?productId=' + id + '">'
                     + '      <div class="top">'
                     + '        <p class="category">' + category + '</p>'
-                    + '        <div class="tag">'
-                    + '          <p>라이프스타일</p>'
-                    + '          <p>SEMI-OVER핏</p>'
-                    + '        </div>'
+                    + '        <div class="tag"><p>라이프스타일</p><p>SEMI-OVER핏</p></div>'
                     + '      </div>'
                     + '      <p class="name">' + name + '</p>'
-                    + '      <div class="price">'
-                    + '        <p class="sale">' + price + '</p>'
-                    + '      </div>'
+                    + '      <div class="price"><p class="sale">' + price + '</p></div>'
                     + '    </a>'
                     + '    <button type="button" class="wish__btn wish' + onClass + '" data-wish="' + id + '">wish</button>'
                     + '  </div>'
@@ -248,18 +264,19 @@ function mainGroup(tagId, element) {
 
             listWrapper.innerHTML = html;
 
-            // Swiper 재시작
             setTimeout(function() {
-                goodsSlider = new Swiper('.goods__slider', {
+                new Swiper('.goods__slider', {
                     slidesPerView: 'auto',
                     freeMode: true,
                     spaceBetween: 10,
                     observer: true,
                     observeParents: true
                 });
-            }, 50);
+            }, 100);
         })
-        .catch(function(err) { console.error("에러:", err); });
+        .catch(function(err) { 
+            console.error("AJAX 에러 발생:", err); 
+        });
 }
 $(document).ready(function() {
     const firstBtn = document.querySelector('.groupBtn');
@@ -415,7 +432,7 @@ $(document).ready(function() {
 			<section class="goods-scroll-box _v2 _gs02">
     <div class="hd">
         <h2>추천 스타일</h2>
-        <a href="${pageContext.request.contextPath}/style/detail.htm" class="more-btn">더보기</a>
+        <a href="${pageContext.request.contextPath}/main/styleDetail.htm" class="more-btn">더보기</a>
     </div>
 
     <div class="slider-box">
@@ -425,21 +442,20 @@ $(document).ready(function() {
                 <c:forEach var="s" items="${activeStyles}" varStatus="status">
                     <div class="goods swiper-slide ${status.first ? 'swiper-slide-active' : (status.index == 1 ? 'swiper-slide-next' : '')}" 
                          role="group" aria-label="${status.count} / ${activeStyles.size()}">
-                        <div class="photo">
-                            <div class="before">
-                                <%-- 클릭 시 스타일 상세페이지로 이동 --%>
-                                <a href="${pageContext.request.contextPath}/style/detail.htm?id=${s.styleId}"> 
-                                    <c:choose>
-                                        <c:when test="${not empty s.mainImageUrl}">
-                                            <img src="${pageContext.request.contextPath}/displayImage.do?path=${s.mainImageUrl}" alt="${s.styleName}">
-                                        </c:when>
-                                        <c:otherwise>
-                                            <img src="${pageContext.request.contextPath}/images/no_image.jpg" alt="No Image">
-                                        </c:otherwise>
-                                    </c:choose>
-                                </a>
-                            </div>
-                        </div>
+                        <div class="photo" 
+						     onclick="location.href='${pageContext.request.contextPath}/main/styleDetail.htm?id=${s.styleId}';" 
+						     style="cursor:pointer;">
+						    <div class="before">
+						        <c:choose>
+						            <c:when test="${not empty s.mainImageUrl}">
+						                <img src="${pageContext.request.contextPath}/displayImage.do?path=${s.mainImageUrl}" alt="${s.styleName}">
+						            </c:when>
+						            <c:otherwise>
+						                <img src="${pageContext.request.contextPath}/images/no_image.jpg" alt="No Image">
+						            </c:otherwise>
+						        </c:choose>
+						    </div>
+						</div>
                     </div>
                 </c:forEach>
 

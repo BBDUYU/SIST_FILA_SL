@@ -3,7 +3,7 @@
 <mapper namespace="com.fila.app.mapper.admin.UserInfoMapper">
 
     <resultMap id="UserDetailMap" type="com.fila.app.domain.admin.UserInfoVO">
-        <id property="usernumber" column="USER_NUMBER" />
+        <id property="userNumber" column="USER_NUMBER" />
         <result property="name" column="NAME" />
         <result property="id" column="ID" />
         <result property="email" column="EMAIL" />
@@ -20,7 +20,7 @@
     </resultMap>
 
     <select id="selectUserList" resultType="com.fila.app.domain.admin.UserInfoVO">
-        SELECT USER_NUMBER AS usernumber, ID, NAME, EMAIL, PHONE, GRADE, STATUS, CREATED_AT AS createAt
+        SELECT USER_NUMBER AS userNumber, ID, NAME, EMAIL, PHONE, GRADE, STATUS, CREATED_AT AS createAt
         FROM USERS 
         ORDER BY CREATED_AT DESC
     </select>
@@ -34,14 +34,14 @@
     </select>
 
     <select id="selectChildList" resultType="com.fila.app.domain.admin.UserInfoVO">
-        SELECT CHILD_NAME AS childname, CHILD_BIRTH AS childbirth, CHILD_GENDER AS childgender 
+        SELECT CHILD_NAME AS childName, CHILD_BIRTH AS childBirth, CHILD_GENDER AS childGender 
         FROM CHILD 
         WHERE USER_NUMBER = #{userNum} 
         ORDER BY CHILD_BIRTH ASC
     </select>
 
     <select id="selectPointList" resultType="com.fila.app.domain.admin.UserInfoVO">
-        SELECT POINT_ID AS pointid, ORDER_ID AS orderid, POINT_TYPE AS type, 
+        SELECT POINT_ID AS pointId, ORDER_ID AS orderId, POINT_TYPE AS type, 
                AMOUNT AS amout, BALANCE, DESCRIPTION, CREATED_AT AS createAt
         FROM USERPOINTS 
         WHERE USER_NUMBER = #{userNum}
@@ -50,15 +50,7 @@
 
     <select id="getCouponCount" resultType="int">
         SELECT COUNT(*) FROM USER_COUPON 
-        WHERE USER_NUMBER = #{userNum} AND IS_USED = 0 AND EXPIRE_DATE > SYSDATE
+        WHERE USER_NUMBER = #{userNum} AND IS_USED = 0 AND EXPIRED_DATE > SYSDATE
     </select>
-
-    <select id="getWishCount" resultType="int">
-        SELECT COUNT(*) FROM WISHLIST WHERE USER_NUMBER = #{userNum}
-    </select>
-
-    <select id="getOrderCount" resultType="int">
-        SELECT COUNT(*) FROM ORDERS WHERE USER_NUMBER = #{userNum}
-    </select>
-
-</mapper>
+    
+    </mapper>

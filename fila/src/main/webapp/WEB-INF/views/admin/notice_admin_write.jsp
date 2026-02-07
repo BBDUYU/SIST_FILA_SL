@@ -14,7 +14,7 @@
                     <tr>
                         <th>카테고리</th>
                         <td>
-                            <select name="category_name" class="input-sel" required>
+                            <select name="categoryName" class="input-sel" required>
                                 <option value="브랜드">브랜드</option>
                                 <option value="E-SHOP">E-SHOP</option>
                                 <option value="이벤트">이벤트</option>
@@ -32,7 +32,7 @@
 					    <td>
 					        <input type="file" id="imageFile" class="input-text" style="width: auto;" onchange="uploadImage()">
 					        
-					        <input type="hidden" name="image_url" id="image_url">
+					        <input type="hidden" name="imageUrl" id="image_url">
 					        
 					        <p id="uploadStatus" style="color: #001E62; font-size: 12px; margin: 5px 0 0 0; font-weight:bold;"></p>
 					        

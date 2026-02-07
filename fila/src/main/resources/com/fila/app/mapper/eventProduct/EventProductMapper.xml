@@ -3,14 +3,19 @@
 <mapper namespace="com.fila.app.mapper.eventProduct.EventProductMapper">
 
     <select id="selectActiveEventKeywords" resultType="com.fila.app.domain.eventProduct.EventproductVO">
-        SELECT EVENT_NAME, SLUG, EVENT_ID 
+        SELECT 
+            EVENT_NAME AS eventName, 
+            SLUG, 
+            EVENT_ID   AS eventId 
         FROM EVENT 
         WHERE IS_ACTIVE = 1 
         ORDER BY EVENT_ID DESC
     </select>
 
     <select id="selectRecommendProductKeywords" resultType="com.fila.app.domain.eventProduct.EventproductVO">
-        SELECT NAME, PRODUCT_ID 
+        SELECT 
+            NAME, 
+            PRODUCT_ID AS productId
         FROM (
             SELECT p.NAME, p.PRODUCT_ID 
             FROM EVENT_PRODUCT ep 
@@ -20,10 +25,14 @@
 
     <select id="selectRecommendProducts" resultType="com.fila.app.domain.eventProduct.EventproductVO">
         SELECT * FROM (
-            SELECT p.PRODUCT_ID, p.NAME, p.PRICE, p.DISCOUNT_RATE,
-                   (SELECT IMAGE_URL FROM PRODUCT_IMAGE pi 
-                    WHERE pi.PRODUCT_ID = p.PRODUCT_ID 
-                      AND pi.IMAGE_TYPE = 'MAIN' AND ROWNUM = 1) as mainImageUrl
+            SELECT 
+                p.PRODUCT_ID    AS productId, 
+                p.NAME, 
+                p.PRICE, 
+                p.DISCOUNT_RATE AS discountRate,
+                (SELECT IMAGE_URL FROM PRODUCT_IMAGE pi 
+                 WHERE pi.PRODUCT_ID = p.PRODUCT_ID 
+                   AND pi.IMAGE_TYPE = 'MAIN' AND ROWNUM = 1) AS mainImageUrl
             FROM EVENT_PRODUCT ep 
             JOIN PRODUCTS p ON ep.PRODUCT_ID = p.PRODUCT_ID 
             ORDER BY p.PRODUCT_ID DESC

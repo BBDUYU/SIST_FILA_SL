@@ -11,7 +11,7 @@ $(document).ready(function() {
         $firstNotice.trigger("click"); 
         
         // 3. 만약 trigger로 안 되면 강제로 함수 호출
-        var firstImgUrl = "${noticeList[0].image_url}";
+        var firstImgUrl = "${noticeList[0].imageUrl}";
         if(firstImgUrl && firstImgUrl !== 'null') {
             showImage($firstNotice[0], firstImgUrl);
         }
@@ -20,20 +20,26 @@ $(document).ready(function() {
     }
 });
 
+//notice_list.jsp (또는 해당 스크립트 부분) 수정
 function showImage(li, imgUrl) {
-    // 1. 밑줄 효과 처리
     $(".notice-item").removeClass("active");
     $(li).addClass("active");
 
     var $imgView = $("#noticeImgView");
     var $emptyMsg = $("#emptyMsg");
 
-    // 2. 이미지 주소 처리
     if (imgUrl && imgUrl !== 'null' && imgUrl !== '') {
-        var displayUrl = "${pageContext.request.contextPath}/imageDisplay.htm?fileName=" + encodeURIComponent(imgUrl);
+
+        var finalUrl = imgUrl;
         
-        // src를 먼저 바꾸고 나서 show()를 해야 바로 뜨는 느낌이 납니다.
-        $imgView.attr("src", displayUrl);
+        if(imgUrl.startsWith("${pageContext.request.contextPath}")) {
+            finalUrl = imgUrl;
+        } else if(!imgUrl.startsWith("http") && !imgUrl.startsWith("/")) {
+             // 파일명만 들어있는 경우를 대비한 안전장치
+             finalUrl = "${pageContext.request.contextPath}/displayImage.do?path=" + encodeURIComponent(imgUrl);
+        }
+
+        $imgView.attr("src", finalUrl);
         $imgView.show();
         $emptyMsg.hide();
     } else {
@@ -48,7 +54,7 @@ function searchNotice() {
     var keyword = $("#keyword").val();
     
     // 2. 서버 경로 설정
-    var url = "${pageContext.request.contextPath}/noticeList.htm";
+    var url = "${pageContext.request.contextPath}/notice/list";
     
     // 3. 파라미터 조합 (값이 있을 때만 깔끔하게 보냄)
     url += "?category=" + encodeURIComponent(category);

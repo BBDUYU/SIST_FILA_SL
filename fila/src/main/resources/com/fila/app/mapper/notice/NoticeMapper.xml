@@ -7,7 +7,12 @@
 
   <select id="selectList" resultType="com.fila.app.domain.notice.NoticeVO">
     SELECT 
-        notice_id, category_name, title, created_id, created_at, image_url
+        notice_id    AS noticeId, 
+        category_name AS categoryName, 
+        title, 
+        created_id   AS createdId, 
+        created_at   AS createdAt, 
+        image_url    AS imageUrl
     FROM notice
     WHERE 1=1
     
@@ -23,7 +28,14 @@
   </select>
 
   <select id="selectOne" resultType="com.fila.app.domain.notice.NoticeVO">
-    SELECT * FROM notice 
+    SELECT 
+        notice_id    AS noticeId, 
+        category_name AS categoryName, 
+        title, 
+        created_id   AS createdId, 
+        created_at   AS createdAt, 
+        image_url    AS imageUrl
+    FROM notice 
     WHERE notice_id = #{noticeId}
   </select>
 
@@ -31,7 +43,7 @@
     INSERT INTO notice (
         notice_id, category_name, title, created_id, created_at, image_url
     ) VALUES (
-        SEQ_NOTICE_ID.NEXTVAL, #{category_name}, #{title}, #{created_id}, SYSDATE, #{image_url}
+        SEQ_NOTICE_ID.NEXTVAL, #{categoryName}, #{title}, #{createdId}, SYSDATE, #{imageUrl}
     )
   </insert>
 

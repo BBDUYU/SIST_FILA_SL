@@ -2,20 +2,52 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fila.app.mapper.tag.TagMapper">
 
-    <select id="selectTagList" resultType="com.fila.app.domain.categories.CategoriesVO">
-        SELECT category_id, name 
+   <select id="selectTagList" resultType="com.fila.app.domain.categories.CategoriesVO">
+        <![CDATA[
+        SELECT 
+            category_id AS categoryId, 
+            name,
+            use_yn AS useYn,
+            updated_at AS updatedAt 
         FROM CATEGORIES 
-        WHERE CATEGORY_ID >= 9000 
+        WHERE CATEGORY_ID >= 4000 AND CATEGORY_ID < 5000 
         ORDER BY CATEGORY_ID ASC
+        ]]>
     </select>
 
     <select id="getMaxTagId" resultType="int">
-        SELECT NVL(MAX(CATEGORY_ID), 9000) FROM CATEGORIES
+        <![CDATA[
+        SELECT NVL(MAX(CATEGORY_ID), 3999) 
+        FROM CATEGORIES 
+        WHERE CATEGORY_ID < 5000
+        ]]>
     </select>
 
     <insert id="insertTag">
         INSERT INTO CATEGORIES (CATEGORY_ID, NAME)
-        VALUES (#{category_id}, #{name})
+        VALUES (#{categoryId}, #{name})
     </insert>
+
+	<select id="selectProductsByTag" resultType="com.fila.app.domain.product.ProductsVO">
+    SELECT 
+        productId, name, price, discountRate, imageUrl, depth1Name
+    FROM (
+        SELECT DISTINCT 
+            p.PRODUCT_ID AS productId, 
+            p.NAME, 
+            p.PRICE, 
+            p.DISCOUNT_RATE AS discountRate, 
+            pi.IMAGE_URL AS imageUrl, 
+            (SELECT NAME FROM CATEGORIES WHERE CATEGORY_ID = p.CATEGORY_ID) AS depth1Name,
+            p.CREATED_AT 
+        FROM PRODUCTS p 
+        JOIN PRODUCT_CATEGORY_REL pc ON p.PRODUCT_ID = pc.PRODUCT_ID 
+        JOIN PRODUCT_IMAGE pi ON p.PRODUCT_ID = pi.PRODUCT_ID 
+        WHERE pc.CATEGORY_ID = #{tagId} 
+          AND pi.IS_MAIN = 1 
+          AND p.STATUS IN ('NORMAL', 'SALE')
+    )
+    ORDER BY CREATED_AT DESC
+</select>
 
 </mapper>

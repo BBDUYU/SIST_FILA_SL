@@ -34,9 +34,9 @@ public class CartListController {
         int userNumber = ((MemberVO) auth).getUserNumber();
 
         List<CartItemVO> cartList = cartService.selectAll(userNumber);
-        request.setAttribute("cartList", cartList);
-
+        request.setAttribute("activeTab", "normal");
         return "pay";
+
     }
 
     @PostMapping("/cart/add.htm")
@@ -104,4 +104,19 @@ public class CartListController {
         cartService.updateItemOption(cartItemId, size, qty);
         return "redirect:/pay/cart.htm";
     }
+    
+    @GetMapping("/cart2.htm")
+    public String cart2Page(HttpSession session, HttpServletRequest request) throws Exception {
+
+        Object auth = (session == null) ? null : session.getAttribute("auth");
+        if (auth == null) return "redirect:/login.htm";
+
+        int userNumber = ((MemberVO) auth).getUserNumber();
+
+        List<CartItemVO> cartList = cartService.selectAll(userNumber); // 우선 임시: 전체
+        request.setAttribute("activeTab", "today");
+        return "pay2";
+
+    }
+
 }

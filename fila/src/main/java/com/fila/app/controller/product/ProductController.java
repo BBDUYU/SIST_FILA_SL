@@ -36,13 +36,15 @@ public class ProductController {
     @Autowired
     private WishListService wishListService;
 
+    @Autowired // [추가] 검색어 저장을 위해 주입
+    private com.fila.app.service.search.SearchService searchService;
+    
     /**
      * 상품 목록 및 검색 처리 (*.htm)
      */
     @RequestMapping(value = "/list.htm", method = RequestMethod.GET)
     public String list(
-            // String으로 들어오는 category 파라미터를 int로 자동 형변환합니다.
-            // 만약 값이 없거나 숫자가 아니면 defaultValue인 0이 들어갑니다.
+
             @RequestParam(value = "category", required = false, defaultValue = "0") int category, 
             @RequestParam(value = "searchItem", required = false) String searchItem,
             HttpServletRequest request,
@@ -51,30 +53,19 @@ public class ProductController {
 
         // 1. 검색 로직
         if (searchItem != null && !searchItem.trim().isEmpty()) {
+        	searchService.saveKeyword(searchItem);
             List<ProductsVO> productList = productService.searchProducts(searchItem);
             model.addAttribute("productList", productList);
             model.addAttribute("mainTitle", "SEARCH");
             model.addAttribute("subTitle", "'" + searchItem + "' 검색 결과");
         } 
-        // 2. 카테고리 로직 (이제 int category를 그대로 던지면 됩니다!)
         else {
-            // 이제 타입이 int이므로 ProductService.getProductList(int)와 일치합니다.
             List<ProductsVO> productList = productService.getProductList(category);
             
-            // 가져온 리스트를 model에 담아 JSP로 보냅니다.
             model.addAttribute("productList", productList);
         }
 
-        // 3. 인기 검색어 세션 갱신 (헤더용)
-        try {
-            // MainService가 빈으로 등록되어 있어야 합니다.
-            Map<String, Object> mainData = mainService.getMainData(null); 
-            session.setAttribute("popularKeywords", mainData.get("popularKeywords"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        // 4. 찜 목록(WishList) 처리
         MemberVO loginUser = (MemberVO) session.getAttribute("auth");
         if (loginUser != null) {
             Set<String> wishedSet = wishListService.getWishedSet(loginUser.getUserNumber());
@@ -83,7 +74,6 @@ public class ProductController {
             model.addAttribute("wishedSet", Collections.emptySet());
         }
 
-        // servlet-context.xml의 ViewResolver에 의해 /view/product/list.jsp 등으로 연결
         return "list"; 
     }
 

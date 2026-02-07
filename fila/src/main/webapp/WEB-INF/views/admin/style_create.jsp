@@ -2,19 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>FILA Admin - 스타일 등록</title>
-
-</head>
-<body>
-	<jsp:include page="../common/sidebar.jsp">
-		<jsp:param name="currentPage" value="style" />
-	</jsp:include>
-
-	<div class="admin-section">
+<div class="admin-section">
 		<h3 class="section-title">신규 스타일 등록</h3>
 
 		<form id="styleForm">
@@ -84,7 +72,3 @@
 			</div>
 		</form>
 	</div>
-
-	
-</body>
-</html>

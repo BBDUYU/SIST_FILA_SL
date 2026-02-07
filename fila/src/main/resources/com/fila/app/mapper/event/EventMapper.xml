@@ -30,12 +30,12 @@
             </collection>
 
             <collection property="products" ofType="com.fila.app.domain.product.ProductsVO">
-                <id property="product_id" column="PRODUCT_ID"/>
+                <id property="productId" column="PRODUCT_ID"/>
                 <result property="name" column="NAME"/>
                 <result property="price" column="PRICE"/>
-                <result property="view_count" column="VIEW_COUNT"/>
+                <result property="viewCount" column="VIEW_COUNT"/>
                 <result property="status" column="STATUS"/>
-                <result property="discount_rate" column="DISCOUNT_RATE"/>
+                <result property="discountRate" column="DISCOUNT_RATE"/>
             </collection>
         </collection>
     </resultMap>

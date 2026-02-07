@@ -1,24 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<title>회원가입 완료</title>
-
-<!-- ✅ 공통 CSS -->
-<link rel="stylesheet" href="<%=request.getContextPath()%>/resource/css/common.css">
-<link rel="stylesheet" href="<%=request.getContextPath()%>/resource/css/layout.css">
-<link rel="stylesheet" href="<%=request.getContextPath()%>/resource/css/sub.css">
-<link rel="stylesheet" href="<%=request.getContextPath()%>/resource/css/opt-default.css">
-<link rel="stylesheet" href="<%=request.getContextPath()%>/resource/css/product.css">
-<link rel="stylesheet" href="<%=request.getContextPath()%>/resource/css/normalize.css">
-</head>
-
-<body>
-
-<!-- HEADER -->
-<jsp:include page="../common/header.jsp" />
 
 <div id="contents" class="mbr__contents">
 
@@ -69,8 +50,4 @@
   </section>
 </div>
 
-<!-- FOOTER -->
-<jsp:include page="../common/footer.jsp" />
 
-</body>
-</html>

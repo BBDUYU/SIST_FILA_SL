@@ -33,10 +33,23 @@ cartList size = ${fn:length(cartList)}
 	
 			<!-- cart tab -->
 			<ul class="odr-tab">
-				<li><a href="${pageContext.request.contextPath}/view/pay/cart.jsp" id="normalli" >일반배송 <sup>0</sup></a></li> <!-- 활성화 class "on" -->
-				<input type="checkbox" id="todayDeliView" onclick="todayDeliViewAll();void(0);" style="display:none"/>
-				<li><a href="${pageContext.request.contextPath}/view/pay/cart2.jsp" id="todayli" class="on"><label for="" >오늘도착 <sup id="todayCnt">0</sup></label></a></li>
+			  <li>
+			    <a href="${pageContext.request.contextPath}/pay/cart.htm"
+			       id="normalli"
+			       class="${activeTab eq 'normal' ? 'on' : ''}">
+			      일반배송 <sup>${fn:length(cartList)}</sup>
+			    </a>
+			  </li>
+			
+			  <li>
+			    <a href="${pageContext.request.contextPath}/pay/cart2.htm"
+			       id="todayli"
+			       class="${activeTab eq 'today' ? 'on' : ''}">
+			      오늘도착 <sup id="todayCnt">0</sup>
+			    </a>
+			  </li>
 			</ul>
+			
 
 			<!-- //cart tab -->
 			<!-- // 일반배송일 경우 display: none처리 / 오늘도착 일 경우 block 처리 -->
@@ -115,10 +128,12 @@ cartList size = ${fn:length(cartList)}
 			              </div>
 			
 			              <div class="goods-thumb">
-			                <a href="<c:url value='/product/view.do?productId=${item.productId}'/>">
+			               <a href="${pageContext.request.contextPath}/product/product_detail.htm?productId=${item.productId}">
 			                  <c:choose>
 			                    <c:when test="${not empty item.mainImageUrl}">
-			                      <img src="${item.mainImageUrl}" alt="${item.productName}">
+			                      <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${item.productId}/${item.productId}_main_1.jpg"
+			                      		alt="${item.productName}" 
+			                      		onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/images/no_image.jpg';">
 			                    </c:when>
 			                    <c:otherwise>
 			                      <img src="<c:url value='/images/noimage.png'/>" alt="no image">
@@ -149,7 +164,7 @@ cartList size = ${fn:length(cartList)}
 			              <div class="goods-etc">
 			                <p class="ico">
 			                  <button type="button" class="wish">위시</button>
-			                  <button type="button" class="del">삭제</button>
+			                  <button type="button" class="del" onclick="deleteItem(${item.cartItemId})">삭제</button>
 			                </p>
 			                <p class="btn-box">
 			                  <button type="button" class="btn_sld__gr">옵션 변경</button>

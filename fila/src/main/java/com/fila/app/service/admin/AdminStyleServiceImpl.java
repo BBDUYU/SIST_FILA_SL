@@ -31,24 +31,20 @@ public class AdminStyleServiceImpl implements AdminStyleService {
     @Override
     @Transactional
     public boolean registerStyle(StyleVO styleVo, List<StyleImageVO> imageList, List<StyleProductVO> productList) {
-        // 1. 스타일 마스터 등록 (selectKey 등으로 생성된 ID가 VO에 담김)
-        int result = styleMapper.insertStyle(styleVo);
-        int styleId = styleVo.getStyleId();
 
-        if (result > 0) {
-            // 2. 이미지 정보 저장
-            for (StyleImageVO img : imageList) {
-                img.setStyleId(styleId);
-                styleMapper.insertStyleImage(img);
-            }
-            // 3. 연관 상품 저장
-            for (StyleProductVO prod : productList) {
-                prod.setStyleId(styleId);
-                styleMapper.insertStyleProduct(prod);
-            }
-            return true;
+        if (styleVo.getStyleId() == 0) {
+            styleMapper.insertStyle(styleVo);
         }
-        return false;
+
+        for (StyleImageVO img : imageList) {
+            styleMapper.insertStyleImage(img); 
+        }
+
+        for (StyleProductVO prod : productList) {
+            styleMapper.insertStyleProduct(prod);
+        }
+
+        return true;
     }
 
     @Override
@@ -96,6 +92,12 @@ public class AdminStyleServiceImpl implements AdminStyleService {
             style.setProducts(products);
         }
         return style;
+    }
+    
+    @Override
+    public int registerStyleMaster(StyleVO styleVo) {
+        styleMapper.insertStyle(styleVo); 
+        return styleVo.getStyleId();
     }
 
     // 단순 위임 메서드들

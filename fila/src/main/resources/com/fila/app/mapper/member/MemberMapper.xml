@@ -20,7 +20,9 @@
             gender,
             status,
             role,
-            grade
+            grade,
+            created_at      AS createdAt,
+            updated_at      AS updatedAt
         FROM users
         WHERE id = #{id}
     </select>

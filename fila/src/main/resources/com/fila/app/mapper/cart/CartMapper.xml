@@ -4,31 +4,20 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fila.app.mapper.cart.CartMapper">
 
-	<!-- =========================================
-    CartItemVO 매핑 (alias 없는 SELECT용)
-    ========================================= -->
   <resultMap id="cartItemMap" type="com.fila.app.domain.cart.CartItemVO">
-    <id property="cartItemId" column="cart_item_id"/>
-    <result property="userNumber" column="user_number"/>
-    <result property="productId" column="product_id"/>
-
-    <result property="productName" column="product_name"/>
-
-    <result property="originUnitPrice" column="origin_unit_price"/>
-    <result property="discountRate" column="discount_rate"/>
-    <result property="saleUnitPrice" column="sale_unit_price"/>
-
-    <result property="quantity" column="quantity"/>
-    <result property="lineAmount" column="line_amount"/>
-
-    <result property="mainImageUrl" column="main_image_url"/>
-    <result property="size" column="option_size"/>
+    <id property="cartItemId" column="CART_ITEM_ID"/>
+    <result property="userNumber" column="USER_NUMBER"/>
+    <result property="productId" column="PRODUCT_ID"/>
+    <result property="productName" column="PRODUCT_NAME"/>
+    <result property="originUnitPrice" column="ORIGIN_UNIT_PRICE"/>
+    <result property="discountRate" column="DISCOUNT_RATE"/>
+    <result property="saleUnitPrice" column="SALE_UNIT_PRICE"/>
+    <result property="quantity" column="QUANTITY"/>
+    <result property="lineAmount" column="LINE_AMOUNT"/>
+    <result property="mainImageUrl" column="MAIN_IMAGE_URL"/>
+    <result property="size" column="OPTION_SIZE"/>
   </resultMap>
 
-
-  <!-- =========================================================
-  [1] 전체 조회 (너가 올린 SELECT 그대로)
-  ========================================================= -->
   <select id="selectAll" resultType="com.fila.app.domain.cart.CartItemVO">
     SELECT
       ci.cart_item_id AS cartItemId,
@@ -46,93 +35,43 @@
     JOIN products p ON ci.product_id = p.product_id
   </select>
 
-
-  <!-- =========================================================
-  [2] 주문 전환용 조회 (너가 올린 SELECT 그대로)
-  ========================================================= -->
   <select id="selectCartForOrder" resultType="com.fila.app.domain.order.OrderItemVO">
     SELECT
-      ci.PRODUCT_ID, p.NAME, ci.COMBINATION_ID, ci.QUANTITY,
-      ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) AS PRICE
+      ci.PRODUCT_ID AS productId, 
+      p.NAME AS name, 
+      ci.COMBINATION_ID AS combinationId, 
+      ci.QUANTITY AS quantity,
+      ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) AS price
     FROM CART_ITEMS ci
     JOIN PRODUCTS p ON ci.PRODUCT_ID = p.PRODUCT_ID
     WHERE ci.USER_NUMBER = #{userNumber}
   </select>
 
-
-  <!-- =========================================================
-  [3] 장바구니 비우기 (주문 후)
-  ========================================================= -->
-  <delete id="deleteCartAfterOrder">
-    DELETE FROM CART_ITEMS WHERE USER_NUMBER = #{userNumber}
-  </delete>
-
-
-  <!-- =========================================================
-  [4] 수량 변경
-  ========================================================= -->
-  <update id="updateQuantity">
-    UPDATE cart_items
-    SET quantity = #{quantity}
-    WHERE cart_item_id = #{cartItemId}
-  </update>
-
-
-  <!-- =========================================================
-  [5] 선택 구매용 조회 (너가 올린 SELECT 그대로)
-  ========================================================= -->
   <select id="selectSelectedCartItems" resultType="com.fila.app.domain.order.OrderItemVO">
-    SELECT ci.PRODUCT_ID, p.NAME, ci.COMBINATION_ID, ci.QUANTITY,
-           p.PRICE AS ORIGINAL_PRICE,
-           ROUND(p.PRICE * (100 - NVL(p.DISCOUNT_RATE, 0)) / 100) AS SALE_PRICE
+    SELECT ci.PRODUCT_ID AS productId, 
+           p.NAME AS name, 
+           ci.COMBINATION_ID AS combinationId, 
+           ci.QUANTITY AS quantity,
+           p.PRICE AS originalPrice,
+           ROUND(p.PRICE * (100 - NVL(p.DISCOUNT_RATE, 0)) / 100) AS salePrice
     FROM CART_ITEMS ci
     JOIN PRODUCTS p ON ci.PRODUCT_ID = p.PRODUCT_ID
     WHERE ci.CART_ITEM_ID IN (${ids})
   </select>
 
-
-  <!-- =========================================================
-  [6] 선택 삭제 (너가 올린 형태 유지)
-  ========================================================= -->
-  <delete id="deleteCartItems">
-    DELETE FROM CART_ITEMS
-    WHERE USER_NUMBER = #{userNumber}
-      AND CART_ITEM_ID IN (${cartItemIds})
-  </delete>
-
-
-  <!-- =========================================================
-  [7] 장바구니 담기
-  ========================================================= -->
-  <insert id="insertCart">
-    INSERT INTO CART_ITEMS (CART_ITEM_ID, USER_NUMBER, PRODUCT_ID, COMBINATION_ID, QUANTITY, ADDED_AT)
-    VALUES (
-      (SELECT NVL(MAX(CART_ITEM_ID), 0) + 1 FROM CART_ITEMS),
-      #{userNumber},
-      #{productId},
-      <choose>
-        <when test="combinationId != null and combinationId &gt; 0">#{combinationId}</when>
-        <otherwise>NULL</otherwise>
-      </choose>,
-      #{quantity},
-      SYSDATE
-    )
-  </insert>
-
-
-  <!-- =========================================================
-  [8] 유저 장바구니 조회(화면용) - 너 서비스에서 쓰던 SELECT 그대로
-      (SELECT 안 바꾸고 resultMap으로만 맞춤)
-  ========================================================= -->
   <select id="selectAllByUser" resultMap="cartItemMap">
     SELECT 
-      ci.cart_item_id, ci.user_number, ci.product_id, p.name AS product_name, 
-      p.price AS origin_unit_price, NVL(p.discount_rate, 0) AS discount_rate, 
-      ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) AS sale_unit_price, 
-      ci.quantity, 
-      (ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) * ci.quantity) AS line_amount, 
-      (SELECT MAX(pi.image_url) FROM product_image pi WHERE pi.product_id = p.product_id AND pi.is_main = 1) AS main_image_url, 
-      ovm.value_name AS option_size 
+      ci.cart_item_id AS CART_ITEM_ID, 
+      ci.user_number AS USER_NUMBER, 
+      ci.product_id AS PRODUCT_ID, 
+      p.name AS PRODUCT_NAME, 
+      p.price AS ORIGIN_UNIT_PRICE, 
+      NVL(p.discount_rate, 0) AS DISCOUNT_RATE, 
+      ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) AS SALE_UNIT_PRICE, 
+      ci.quantity AS QUANTITY, 
+      (ROUND(p.price * (100 - NVL(p.discount_rate,0)) / 100) * ci.quantity) AS LINE_AMOUNT, 
+      (SELECT MAX(pi.image_url) FROM product_image pi WHERE pi.product_id = p.product_id AND pi.is_main = 1) AS MAIN_IMAGE_URL, 
+      ovm.value_name AS OPTION_SIZE 
     FROM cart_items ci 
     JOIN products p ON p.product_id = ci.product_id 
     LEFT JOIN product_option_combinations poc ON ci.combination_id = poc.combination_id 
@@ -143,44 +82,4 @@
     ORDER BY ci.added_at DESC
   </select>
 
-
-  <!-- =========================================================
-  [9] 전체 삭제
-  ========================================================= -->
-  <delete id="deleteAllItems">
-    DELETE FROM cart_items WHERE user_number = #{userNumber}
-  </delete>
-
-
-  <!-- =========================================================
-  [10] 옵션변경: cartItemId -> productId
-  ========================================================= -->
-  <select id="getProductIdByCartItemId" resultType="string">
-    SELECT product_id FROM cart_items WHERE cart_item_id = #{cartItemId}
-  </select>
-
-
-  <!-- =========================================================
-  [11] 옵션변경: productId + size -> combinationId (너 서비스에서 쓰던 SQL 그대로)
-  ========================================================= -->
-  <select id="findCombinationIdBySize" resultType="int">
-    SELECT poc.combination_id
-    FROM product_option_combinations poc
-    JOIN product_option_combi_values pocv ON poc.combination_id = pocv.combination_id
-    JOIN product_option_values pov ON pocv.value_id = pov.value_id
-    WHERE poc.product_id = #{productId}
-      AND TRIM(pov.value_name) = #{size}
-  </select>
-
-
-  <!-- =========================================================
-  [12] 옵션 + 수량 업데이트
-  ========================================================= -->
-  <update id="updateItemOption">
-    UPDATE cart_items
-    SET combination_id = #{combinationId},
-        quantity = #{quantity}
-    WHERE cart_item_id = #{cartItemId}
-  </update>
-
-</mapper>
+  </mapper>

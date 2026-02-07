@@ -32,7 +32,17 @@
     </update>
 
     <select id="selectByUser" resultType="com.fila.app.domain.mypage.qna.MypageQnaVO">
-        SELECT i.*, c.CATEGORY_NAME AS categoryName
+        SELECT 
+            i.INQUIRY_ID    AS inquiryId,
+            i.USER_NUMBER   AS userNumber,
+            i.CATEGORY_ID   AS categoryId,
+            i.TITLE,
+            i.CONTENT,
+            i.STATUS,
+            i.CREATED_AT    AS createdAt,
+            i.REPLY_CONTENT AS replyContent,
+            i.REPLY_AT      AS replyAt,
+            c.CATEGORY_NAME AS categoryName
         FROM INQUIRY i
         JOIN INQUIRY_CATEGORY c ON i.CATEGORY_ID = c.CATEGORY_ID
         WHERE i.USER_NUMBER = #{userNumber}
@@ -40,7 +50,17 @@
     </select>
 
     <select id="selectByUserAndStatus" resultType="com.fila.app.domain.mypage.qna.MypageQnaVO">
-        SELECT i.*, c.CATEGORY_NAME AS categoryName
+        SELECT 
+            i.INQUIRY_ID    AS inquiryId,
+            i.USER_NUMBER   AS userNumber,
+            i.CATEGORY_ID   AS categoryId,
+            i.TITLE,
+            i.CONTENT,
+            i.STATUS,
+            i.CREATED_AT    AS createdAt,
+            i.REPLY_CONTENT AS replyContent,
+            i.REPLY_AT      AS replyAt,
+            c.CATEGORY_NAME AS categoryName
         FROM INQUIRY i
         JOIN INQUIRY_CATEGORY c ON i.CATEGORY_ID = c.CATEGORY_ID
         WHERE i.USER_NUMBER = #{userNumber}
@@ -49,12 +69,22 @@
     </select>
 
     <select id="selectAllInquiries" resultType="com.fila.app.domain.mypage.qna.MypageQnaVO">
-        SELECT i.*, c.CATEGORY_NAME AS categoryName, u.NAME AS userName
-        FROM INQUIRY i
-        JOIN INQUIRY_CATEGORY c ON i.CATEGORY_ID = c.CATEGORY_ID
-        JOIN USERS u ON i.USER_NUMBER = u.USER_NUMBER
-        ORDER BY i.CREATED_AT DESC
-    </select>
+    SELECT 
+        i.INQUIRY_ID    AS inquiryId,
+        i.USER_NUMBER   AS userNumber,
+        i.TITLE,
+        i.CONTENT,
+        i.STATUS,
+        i.CREATED_AT    AS createdAt,
+        i.REPLY_CONTENT AS replyContent,
+        i.REPLY_AT      AS replyAt,      
+        c.CATEGORY_NAME AS categoryName, 
+        u.NAME          AS userName
+	    FROM INQUIRY i
+	    JOIN INQUIRY_CATEGORY c ON i.CATEGORY_ID = c.CATEGORY_ID
+	    JOIN USERS u ON i.USER_NUMBER = u.USER_NUMBER
+	    ORDER BY i.CREATED_AT DESC
+	</select>
 
     <update id="updateReply">
         UPDATE INQUIRY 
@@ -66,7 +96,17 @@
     </update>
 
     <select id="selectInquiryDetail" resultType="com.fila.app.domain.mypage.qna.MypageQnaVO">
-        SELECT i.*, c.CATEGORY_NAME AS categoryName, u.NAME AS userName
+        SELECT 
+            i.INQUIRY_ID    AS inquiryId,
+            i.USER_NUMBER   AS userNumber,
+            i.TITLE,
+            i.CONTENT,
+            i.STATUS,
+            i.CREATED_AT    AS createdAt,
+            i.REPLY_CONTENT AS replyContent,
+            i.REPLY_AT      AS replyAt,
+            c.CATEGORY_NAME AS categoryName, 
+            u.NAME          AS userName
         FROM INQUIRY i
         JOIN INQUIRY_CATEGORY c ON i.CATEGORY_ID = c.CATEGORY_ID
         JOIN USERS u ON i.USER_NUMBER = u.USER_NUMBER

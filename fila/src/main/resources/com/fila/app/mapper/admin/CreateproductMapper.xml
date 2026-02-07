@@ -3,7 +3,14 @@
 <mapper namespace="com.fila.app.mapper.admin.CreateproductMapper">
 
     <select id="generateProductId" resultType="string">
-        SELECT 'PROD' || ${sequenceName}.NEXTVAL FROM DUAL
+        SELECT 
+	    <choose>
+	        <when test="mainCateId == 1"> 'PROD' || seq_prod_men.NEXTVAL </when>
+	        <when test="mainCateId == 2"> 'PROD' || seq_prod_women.NEXTVAL </when>
+	        <when test="mainCateId == 3"> 'PROD' || seq_prod_kids.NEXTVAL </when>
+	        <otherwise> 'PROD' || seq_prod_men.NEXTVAL </otherwise>
+	    </choose>
+	    FROM DUAL
     </select>
 
     <insert id="insertProduct">
@@ -11,13 +18,13 @@
             product_id, category_id, name, description, price, 
             view_count, created_at, updated_at, status, discount_rate
         ) VALUES (
-            #{product_id}, #{category_id}, #{name}, #{description, jdbcType=VARCHAR}, #{price}, 
+            #{productId}, #{categoryId}, #{name}, #{description, jdbcType=VARCHAR}, #{price}, 
             0, SYSDATE, SYSDATE, 
             <choose>
-                <when test="discount_rate > 0">'SALE'</when>
+                <when test="discountRate > 0">'SALE'</when>
                 <otherwise>'NORMAL'</otherwise>
             </choose>, 
-            #{discount_rate}
+            #{discountRate}
         )
     </insert>
 
@@ -26,19 +33,30 @@
         SET name = #{name}, 
             description = #{description, jdbcType=VARCHAR}, 
             price = #{price}, 
-            discount_rate = #{discount_rate},
+            discount_rate = #{discountRate},
             updated_at = SYSDATE
-        WHERE product_id = #{product_id}
+        WHERE product_id = #{productId}
     </update>
 
     <select id="selectProductById" resultType="com.fila.app.domain.admin.CreateproductVO">
-        SELECT p.*, 
-            (SELECT STYLE_ID FROM STYLE_PRODUCT WHERE PRODUCT_ID = p.PRODUCT_ID AND ROWNUM = 1) as style_id, 
-            (SELECT SECTION_ID FROM EVENT_PRODUCT WHERE PRODUCT_ID = p.PRODUCT_ID AND ROWNUM = 1) as section_id, 
-            c.NAME as gender_name, c.CATEGORY_ID as gender_option_id, 
-            (SELECT NAME FROM CATEGORIES WHERE CATEGORY_ID = (SELECT PARENT_ID FROM CATEGORIES WHERE CATEGORY_ID = p.CATEGORY_ID)) as category_type, 
-            (SELECT SUM(STOCK) FROM PRODUCT_OPTION_STOCK pos JOIN PRODUCT_OPTION_COMBINATIONS poc ON pos.COMBINATION_ID = poc.COMBINATION_ID WHERE poc.PRODUCT_ID = p.PRODUCT_ID) as stock, 
-            (SELECT POV.V_MASTER_ID FROM PRODUCT_OPTION_VALUES POV JOIN PRODUCT_OPTION_GROUPS POG ON POV.OPTION_GROUP_ID = POG.OPTION_GROUP_ID WHERE POG.PRODUCT_ID = p.PRODUCT_ID AND POG.MASTER_ID = 2 AND ROWNUM = 1) as sport_option_id 
+        SELECT 
+            p.PRODUCT_ID    AS productId, 
+            p.CATEGORY_ID   AS categoryId,
+            p.NAME, 
+            p.DESCRIPTION, 
+            p.PRICE,
+            p.VIEW_COUNT    AS viewCount,
+            p.CREATED_AT    AS createdAt,
+            p.UPDATED_AT    AS updatedAt,
+            p.STATUS,
+            p.DISCOUNT_RATE AS discountRate,
+            (SELECT STYLE_ID FROM STYLE_PRODUCT WHERE PRODUCT_ID = p.PRODUCT_ID AND ROWNUM = 1) AS styleId, 
+            (SELECT SECTION_ID FROM EVENT_PRODUCT WHERE PRODUCT_ID = p.PRODUCT_ID AND ROWNUM = 1) AS sectionId, 
+            c.NAME          AS genderName, 
+            c.CATEGORY_ID   AS genderOptionId, 
+            (SELECT NAME FROM CATEGORIES WHERE CATEGORY_ID = (SELECT PARENT_ID FROM CATEGORIES WHERE CATEGORY_ID = p.CATEGORY_ID)) AS categoryType, 
+            (SELECT SUM(STOCK) FROM PRODUCT_OPTION_STOCK pos JOIN PRODUCT_OPTION_COMBINATIONS poc ON pos.COMBINATION_ID = poc.COMBINATION_ID WHERE poc.PRODUCT_ID = p.PRODUCT_ID) AS stock, 
+            (SELECT POV.V_MASTER_ID FROM PRODUCT_OPTION_VALUES POV JOIN PRODUCT_OPTION_GROUPS POG ON POV.OPTION_GROUP_ID = POG.OPTION_GROUP_ID WHERE POG.PRODUCT_ID = p.PRODUCT_ID AND POG.MASTER_ID = 2 AND ROWNUM = 1) AS sportOptionId 
         FROM PRODUCTS p 
         JOIN CATEGORIES c ON p.CATEGORY_ID = c.CATEGORY_ID 
         WHERE p.PRODUCT_ID = #{productId}
@@ -50,11 +68,20 @@
 
     <insert id="insertProductImage">
         INSERT INTO product_image (product_image_id, product_id, image_url, image_type, is_main, sort_order) 
-        VALUES (prod_img_seq.NEXTVAL, #{product_id}, #{image_url}, #{image_type}, #{is_main}, #{sort_order})
+        VALUES (prod_img_seq.NEXTVAL, #{productId}, #{imageUrl}, #{imageType}, #{isMain}, #{sortOrder})
     </insert>
 
     <select id="selectImagesByProductId" resultType="com.fila.app.domain.admin.CreateproductVO">
-        SELECT * FROM PRODUCT_IMAGE WHERE PRODUCT_ID = #{productId} ORDER BY SORT_ORDER ASC
+        SELECT 
+            product_image_id AS productImageId,
+            product_id       AS productId,
+            image_url        AS imageUrl,
+            image_type       AS imageType,
+            is_main          AS isMain,
+            sort_order       AS sortOrder
+        FROM PRODUCT_IMAGE 
+        WHERE PRODUCT_ID = #{productId} 
+        ORDER BY SORT_ORDER ASC
     </select>
 
     <select id="getImagePathsByIds" resultType="string">
@@ -82,7 +109,7 @@
     </insert>
 
     <select id="selectProductCategories" resultType="map">
-        SELECT CATEGORY_ID FROM PRODUCT_CATEGORY_REL WHERE PRODUCT_ID = #{productId}
+        SELECT CATEGORY_ID AS "categoryId" FROM PRODUCT_CATEGORY_REL WHERE PRODUCT_ID = #{productId}
     </select>
 
     <delete id="deleteCategoryRelations">
@@ -90,13 +117,13 @@
     </delete>
 
     <select id="selectAllOptions" resultType="map">
-	    SELECT 
-	        MASTER_ID    AS "masterId", 
-	        V_MASTER_ID  AS "vMasterId", 
-	        VALUE_NAME   AS "valueName"
-	    FROM OPTION_VALUE_MASTERS 
-	    ORDER BY MASTER_ID, V_MASTER_ID
-	</select>
+        SELECT 
+            MASTER_ID    AS "masterId", 
+            V_MASTER_ID  AS "vMasterId", 
+            VALUE_NAME   AS "valueName"
+        FROM OPTION_VALUE_MASTERS 
+        ORDER BY MASTER_ID, V_MASTER_ID
+    </select>
 
     <select id="selectProductSizeIds" resultType="int">
         SELECT POV.V_MASTER_ID 
@@ -107,26 +134,46 @@
     </select>
 
     <select id="selectActiveEventSections" resultType="map">
-        SELECT e.EVENT_NAME, s.SECTION_ID 
-        FROM EVENT e JOIN EVENT_SECTION s ON e.EVENT_ID = s.EVENT_ID 
-        WHERE e.IS_ACTIVE = 1 ORDER BY e.EVENT_ID, s.SORT_ORDER
-    </select>
+	    SELECT 
+	        s.SECTION_ID AS "sectionId",
+	        (e.EVENT_NAME || ' - 섹션 ' || s.SECTION_ID) AS "name"
+	    FROM EVENT e 
+	    JOIN EVENT_SECTION s ON e.EVENT_ID = s.EVENT_ID
+	    WHERE e.IS_ACTIVE = 1 
+	    ORDER BY e.EVENT_ID, s.SORT_ORDER
+	</select>
 
-    <insert id="insertOptionGroup" useGeneratedKeys="true" keyProperty="optionGroupId">
-        <selectKey keyProperty="optionGroupId" resultType="long" order="BEFORE">
-            SELECT SEQ_OPTION_GROUP.NEXTVAL FROM DUAL
-        </selectKey>
-        INSERT INTO PRODUCT_OPTION_GROUPS (OPTION_GROUP_ID, PRODUCT_ID, MASTER_ID, OPTION_NAME) 
-        VALUES (#{optionGroupId}, #{productId}, #{masterId}, #{optionName})
-    </insert>
+	<select id="selectAllCategories" resultType="map">
+	    SELECT 
+	        CATEGORY_ID AS "categoryId", 
+	        NAME        AS "name", 
+	        PARENT_ID   AS "parentId", 
+	        DEPTH       AS "depth"
+	    FROM CATEGORIES
+	    ORDER BY DEPTH, CATEGORY_ID
+	</select>
+
+    <insert id="insertOptionGroup" parameterType="map">
+	    <selectKey keyProperty="optionGroupId" resultType="long" order="BEFORE">
+	        SELECT SEQ_OPTION_GROUP.NEXTVAL FROM DUAL
+	    </selectKey>
+	    INSERT INTO PRODUCT_OPTION_GROUPS (OPTION_GROUP_ID, PRODUCT_ID, MASTER_ID, OPTION_NAME)
+	    VALUES (#{optionGroupId}, #{productId}, #{masterId}, 
+	            (SELECT OPTION_NAME FROM OPTION_MASTERS WHERE MASTER_ID = #{masterId}))
+	</insert>
 
     <insert id="insertOptionValue" useGeneratedKeys="true" keyProperty="valueId">
-        <selectKey keyProperty="valueId" resultType="long" order="BEFORE">
-            SELECT SEQ_OPTION_VALUE.NEXTVAL FROM DUAL
-        </selectKey>
-        INSERT INTO PRODUCT_OPTION_VALUES (VALUE_ID, OPTION_GROUP_ID, V_MASTER_ID, VALUE_NAME) 
-        VALUES (#{valueId}, #{optionGroupId}, #{vMasterId}, #{valueName})
-    </insert>
+    <selectKey keyProperty="valueId" resultType="long" order="BEFORE">
+        SELECT SEQ_OPTION_VALUE.NEXTVAL FROM DUAL
+    </selectKey>
+    INSERT INTO PRODUCT_OPTION_VALUES (VALUE_ID, OPTION_GROUP_ID, V_MASTER_ID, VALUE_NAME) 
+    VALUES (
+        #{valueId}, 
+        #{optionGroupId}, 
+        #{vMasterId}, 
+        (SELECT VALUE_NAME FROM OPTION_VALUE_MASTERS WHERE V_MASTER_ID = #{vMasterId})
+    )
+</insert>
 
     <insert id="insertCombination" useGeneratedKeys="true" keyProperty="combinationId">
         <selectKey keyProperty="combinationId" resultType="long" order="BEFORE">
@@ -142,7 +189,7 @@
     </insert>
 
     <insert id="insertCombiValue">
-        INSERT INTO PRODUCT_OPTION_COMBI_VALUES (VALUE_ID, COMBINATION_ID) VALUES (#{valueId}, #{combiId})
+        INSERT INTO PRODUCT_OPTION_COMBI_VALUES (VALUE_ID, COMBINATION_ID) VALUES (#{valueId}, #{combinationId})
     </insert>
 
     <insert id="insertStyleProduct">
@@ -186,36 +233,38 @@
 
     <select id="selectAdminProductList" resultType="com.fila.app.domain.admin.ProductVO">
         SELECT 
-            p.PRODUCT_ID as productId, 
+            p.PRODUCT_ID    AS productId, 
             p.NAME, 
             p.PRICE, 
-            p.DISCOUNT_RATE as discountRate, 
+            p.DISCOUNT_RATE AS discountRate, 
             p.STATUS, 
-            p.CREATED_AT as createdAt,
+            p.CREATED_AT    AS createdAt,
             (SELECT SUM(STOCK) 
              FROM PRODUCT_OPTION_STOCK pos 
              JOIN PRODUCT_OPTION_COMBINATIONS poc ON pos.COMBINATION_ID = poc.COMBINATION_ID 
-             WHERE poc.PRODUCT_ID = p.PRODUCT_ID) as totalStock,
+             WHERE poc.PRODUCT_ID = p.PRODUCT_ID) AS totalStock,
             (SELECT IMAGE_URL 
              FROM product_image 
-             WHERE product_id = p.PRODUCT_ID AND is_main = 1 AND ROWNUM = 1) as mainImageUrl
+             WHERE product_id = p.PRODUCT_ID AND is_main = 1 AND ROWNUM = 1) AS mainImageUrl
         FROM PRODUCTS p
         WHERE p.STATUS != 'DELETED'
         ORDER BY p.CREATED_AT DESC
     </select>
     
-	<select id="getProductOptionsDetail" resultType="map">
-	    SELECT DISTINCT 
-	        POC.COMBINATION_ID AS "combinationId", 
-	        OVM.VALUE_NAME     AS "optionValue", 
-	        NVL(POS.STOCK, 0)  AS "stock"
-	    FROM PRODUCT_OPTION_COMBINATIONS POC
-	    JOIN PRODUCT_OPTION_COMBI_VALUES POCV ON POC.COMBINATION_ID = POCV.COMBINATION_ID
-	    JOIN PRODUCT_OPTION_VALUES POV ON POCV.VALUE_ID = POV.VALUE_ID
-	    JOIN OPTION_VALUE_MASTERS OVM ON POV.V_MASTER_ID = OVM.V_MASTER_ID
-	    LEFT JOIN PRODUCT_OPTION_STOCK POS ON POC.COMBINATION_ID = POS.COMBINATION_ID
-	    WHERE POC.PRODUCT_ID = #{productId}
-	      AND OVM.MASTER_ID NOT IN (1, 2, 3)
-	    ORDER BY OVM.VALUE_NAME ASC
-	</select>
+    <select id="getProductOptionsDetail" resultType="map">
+        SELECT DISTINCT 
+            POC.COMBINATION_ID AS "combinationId", 
+            OVM.VALUE_NAME     AS "optionValue", 
+            NVL(POS.STOCK, 0)  AS "stock"
+        FROM PRODUCT_OPTION_COMBINATIONS POC
+        JOIN PRODUCT_OPTION_COMBI_VALUES POCV ON POC.COMBINATION_ID = POCV.COMBINATION_ID
+        JOIN PRODUCT_OPTION_VALUES POV ON POCV.VALUE_ID = POV.VALUE_ID
+        JOIN OPTION_VALUE_MASTERS OVM ON POV.V_MASTER_ID = OVM.V_MASTER_ID
+        LEFT JOIN PRODUCT_OPTION_STOCK POS ON POC.COMBINATION_ID = POS.COMBINATION_ID
+        WHERE POC.PRODUCT_ID = #{productId}
+          AND OVM.MASTER_ID NOT IN (1, 2, 3)
+        ORDER BY OVM.VALUE_NAME ASC
+    </select>
+    
+    
 </mapper>

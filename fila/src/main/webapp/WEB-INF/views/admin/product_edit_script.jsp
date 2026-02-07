@@ -1,22 +1,49 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <script>
     let selectedCategories = new Map(); 
     let currentPath = { d1: "", d2: "" };
 
     window.onload = function() {
-        // 1. 기존 선택된 카테고리 태그들 복원
-        <c:forEach items="${productCategories}" var="pc">
-            <c:if test="${pc.categoryId < 4000}">
-                selectedCategories.set("${pc.categoryId}", "${not empty pc.fullPath ? pc.fullPath : pc.name}");
-            </c:if>
+        // 1. 화면의 모든 카테고리 데이터를 JS 객체로 변환 (ID를 키로 사용)
+        let allCateData = {};
+        <c:forEach items="${list}" var="c">
+            allCateData["${c.categoryId}"] = {
+                name: "${c.name}",
+                parent: "${c.parentId}",
+                depth: ${c.depth}
+            };
         </c:forEach>
+
+        // 2. 선택된 ID들 중 depth가 3인 것(최하위)만 골라서 경로 조립
+        <c:forEach items="${productCategories}" var="pc">
+            (function() {
+                const cid = "${not empty pc.categoryId ? pc.categoryId : pc.CATEGORY_ID}";
+                const cate = allCateData[cid];
+
+                // 4000 미만이고, depth가 3인 경우만 태그로 표시
+                if (cate && cate.depth === 3) {
+                    const d3Name = cate.name;
+                    const d2 = allCateData[cate.parent];
+                    const d2Name = d2 ? d2.name : "";
+                    const d1 = d2 ? allCateData[d2.parent] : null;
+                    const d1Name = d1 ? d1.name : "";
+
+                    // 경로 조립: FEMALE > NewFeatured > 신상품
+                    const fullPath = d1Name + " > " + d2Name + " > " + d3Name;
+                    selectedCategories.set(cid, fullPath);
+                }
+            })();
+        </c:forEach>
+
         renderCategoryUI();
         
-        // 2. 사이즈 영역 복원
+        // 나머지 복원 로직 (기존과 동일)
         const gName = "${product.genderName}"; 
         const cType = "${product.categoryType}"; 
-        restoreSizeDisplay(gName, cType);
+        if(gName && cType) restoreSizeDisplay(gName, cType);
+        if(document.getElementById('depth1')) document.getElementById('depth1').style.display = 'block';
     };
 
     function restoreSizeDisplay(gName, cType) {
