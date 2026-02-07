@@ -1,20 +1,31 @@
 package com.fila.app.service.member;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fila.app.domain.member.MemberVO;
 import com.fila.app.mapper.member.MemberMapper;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-    @Autowired
-    private MemberMapper memberMapper;
+    private final MemberMapper memberMapper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public MemberVO login(String id, String pw) {
-        return memberMapper.login(id, pw);
+
+        MemberVO member = memberMapper.findById(id);
+        if (member == null) return null;
+
+        if (!passwordEncoder.matches(pw, member.getPassword())) {
+            return null;
+        }
+
+        return member;
     }
 
     @Override
@@ -24,12 +35,16 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void join(MemberVO dto) {
+
+        dto.setPassword(
+            passwordEncoder.encode(dto.getPassword())
+        );
+
         dto.setRole("USER");
         dto.setStatus("ACTIVE");
         dto.setGrade("BASIC");
 
         memberMapper.insert(dto);
-   
     }
 
     @Override
@@ -37,8 +52,28 @@ public class MemberServiceImpl implements MemberService {
         return memberMapper.existsByIdAndPhone(id, phone) > 0;
     }
 
+    /**
+     * 비밀번호 찾기 (비로그인)
+     */
     @Override
-    public void resetPassword(String id, String newPw) {
-        memberMapper.updatePassword(id, newPw);
+    public boolean resetPasswordByVerify(String id, String phone, String newPw) {
+
+        int exists = memberMapper.existsByIdAndPhone(id, phone);
+        if (exists == 0) {
+            return false;
+        }
+
+        memberMapper.updatePassword(
+            id,
+            passwordEncoder.encode(newPw)
+        );
+
+        return true;
     }
+    @Override
+    public String findIdByNameAndPhone(String name, String phone) {
+        return memberMapper.selectIdByNameAndPhone(name, phone);
+    }
+    
+    
 }

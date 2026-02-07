@@ -1,4 +1,4 @@
-package com.fila.app.controller.login;
+	package com.fila.app.controller.login;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,19 +19,19 @@ public class PasswordController {
 
     /**
      * 비밀번호 찾기 화면
-     * (JSP 없어도 매핑만 먼저)
      */
-    @GetMapping("/pw-find.do")
+    @GetMapping("/pw-find.htm")
     public String pwFindForm() {
-        // 나중에 pw_find.jsp
-        return "pw_find";
+        return "user/SearchIdPw";
     }
 
+
     /**
-     * 비밀번호 재설정 가능 여부 확인 (id + phone)
-     * → AJAX 용도로도 많이 씀
+     * 본인 확인 (id + phone)
+     * - AJAX 호출
+     * - true / false 반환
      */
-    @PostMapping("/pw-check.do")
+    @PostMapping("/pw-check.htm")
     @ResponseBody
     public boolean canResetPassword(
             @RequestParam("id") String id,
@@ -41,16 +41,20 @@ public class PasswordController {
     }
 
     /**
-     * 비밀번호 재설정 처리
+     * 비밀번호 재설정
+     * - AJAX 호출
+     * - "OK" / "FAIL" 문자열 반환
      */
-    @PostMapping("/pw-reset.do")
+    @PostMapping("/pw-reset.htm")
+    @ResponseBody
     public String resetPassword(
             @RequestParam("id") String id,
+            @RequestParam("phone") String phone,
             @RequestParam("newPw") String newPw) {
 
-        memberService.resetPassword(id, newPw);
+        boolean success =
+            memberService.resetPasswordByVerify(id, phone, newPw);
 
-        // 나중에 완료 페이지로 이동
-        return "redirect:/member/login.do";
+        return success ? "OK" : "FAIL";
     }
 }

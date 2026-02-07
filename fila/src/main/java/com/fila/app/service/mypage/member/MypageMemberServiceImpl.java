@@ -25,13 +25,17 @@ public class MypageMemberServiceImpl implements MypageMemberService {
 
     // ===== security =====
     @Override
-    public boolean confirmPassword(String memberId, String password) {
-        return mapper.checkPassword(memberId, password) == 1;
-    }
+    public boolean changePassword(int memberNo, String currentPw, String newPw) {
 
-    @Override
-    public void changePassword(int memberNo, String newPassword) {
-        mapper.updatePassword(memberNo, newPassword);
+        // 1️⃣ 현재 비밀번호 검증
+        int cnt = mapper.checkPasswordByMemberNo(memberNo, currentPw);
+        if (cnt != 1) {
+            return false;
+        }
+
+        // 2️⃣ 새 비밀번호 변경
+        mapper.updatePassword(memberNo, newPw);
+        return true;
     }
 
     @Override
