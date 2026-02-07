@@ -256,12 +256,13 @@
 	    <put-attribute name="script" value="/WEB-INF/views/mypage/delivery_address_script.jsp" />
 	</definition>
 
-	<definition name="inquiry" extends="mypage-layout">
-	    <put-attribute name="title" value="1:1문의 | FILA" />
-	    <put-attribute name="style" value="/WEB-INF/views/mypage/inquiry_style.jsp" />
-	    <put-attribute name="content" value="/WEB-INF/views/mypage/inquiry.jsp" />
-	    <put-attribute name="script" value="/WEB-INF/views/mypage/inquiry_script.jsp" />
-	</definition>
+	<definition name="claim" extends="mypage-layout">
+    <put-attribute name="title" value="교환·취소·반품 조회 | FILA" />
+    <put-attribute name="style" value="/WEB-INF/views/mypage/inquiry_style.jsp" />
+    <put-attribute name="content" value="/WEB-INF/views/mypage/inquiry.jsp" />
+    <put-attribute name="script" value="/WEB-INF/views/mypage/inquiry_script.jsp" />
+</definition>
+
 	 
 	<definition name="lgmanage" extends="mypage-layout">
 	    <put-attribute name="title" value="로그인 | FILA" />
@@ -301,8 +302,9 @@
 	    <put-attribute name="script" value="/WEB-INF/views/mypage/orders_script.jsp" />
 	</definition> 
 	
+	
 	<definition name="qna" extends="mypage-layout">
-	    <put-attribute name="title" value="1:1 | FILA" />
+	    <put-attribute name="title" value="1:1 문의 | FILA" />
 	    <put-attribute name="add" value="/WEB-INF/views/mypage/qna_add.jsp" />
 	    <put-attribute name="content" value="/WEB-INF/views/mypage/qna.jsp" />
 	    <put-attribute name="script" value="/WEB-INF/views/mypage/qna_script.jsp" />

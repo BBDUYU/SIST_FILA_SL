@@ -1,25 +1,51 @@
 package com.fila.app.mapper.mypage.qnaMapper;
 
 import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.fila.app.domain.mypage.qna.MypageQnaCategoryVO;
-import com.fila.app.domain.mypage.qna.MypageQnaVO; // ë°˜ë“œì‹œ ì´ VOë¥¼ ì„í¬íŠ¸
+import com.fila.app.domain.mypage.qna.MypageQnaVO;
 
 @Mapper
 public interface MypageQnaMapper {
-    // 1. ì¹´í…Œê³ ë¦¬
+
+    /* =========================
+       [°øÅë] QnA Ä«Å×°í¸®
+    ========================= */
     List<MypageQnaCategoryVO> selectCategoryList();
 
-    // 2. ì‚¬ìš©ì ê¸°ëŠ¥
-    int insertInquiry(MypageQnaVO vo); 
-    void updatePrivacyAgree(@Param("userNumber") long userNumber, @Param("isAgreed") int isAgreed);
-    List<MypageQnaVO> selectByUser(@Param("userNumber") long userNumber);
-    List<MypageQnaVO> selectByUserAndStatus(@Param("userNumber") long userNumber, @Param("status") String status);
+    /* =========================
+       [»ç¿ëÀÚ] 1:1 ¹®ÀÇ
+    ========================= */
+    int insertInquiry(MypageQnaVO vo);
 
-    // 3. ê´€ë¦¬ì ê¸°ëŠ¥
+    void updatePrivacyAgree(
+        @Param("userNumber") long userNumber,
+        @Param("isAgreed") int isAgreed
+    );
+
+    List<MypageQnaVO> selectByUser(
+        @Param("userNumber") long userNumber
+    );
+
+    List<MypageQnaVO> selectByUserAndStatus(
+        @Param("userNumber") long userNumber,
+        @Param("status") String status
+    );
+
+    /* =========================
+       [°ü¸®ÀÚ] ¹®ÀÇ °ü¸®
+    ========================= */
     List<MypageQnaVO> selectAllInquiries();
-    int updateReply(@Param("inquiryId") long inquiryId, @Param("replyContent") String replyContent);
-    MypageQnaVO selectInquiryDetail(long inquiryId);
+
+    int updateReply(
+        @Param("inquiryId") long inquiryId,
+        @Param("replyContent") String replyContent
+    );
+
+    MypageQnaVO selectInquiryDetail(
+        @Param("inquiryId") long inquiryId
+    );
 }

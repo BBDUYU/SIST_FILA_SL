@@ -2,34 +2,44 @@ package com.fila.app.service.mypage.qna;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.fila.app.domain.mypage.qna.MypageQnaCategoryVO;
 import com.fila.app.domain.mypage.qna.MypageQnaVO;
-import com.fila.app.domain.qna.QnaVO;
 
-
-@Service
 public interface MypageQnaService {
 
-	// [ê³µí†µ] ì¹´í…Œê³ ë¦¬ ëª©ë¡ ì¡°íšŒ
-    List<MypageQnaCategoryVO> getCategories();
+    /* =========================
+       [°øÅë] QnA Ä«Å×°í¸® ¸ñ·Ï
+       - qna_write ¸ğ´Ş¿¡¼­ »ç¿ë
+    ========================= */
+    List<MypageQnaCategoryVO> getQnaCategoryList();
 
-    // [ì‚¬ìš©ì] 1:1 ë¬¸ì˜ ë“±ë¡
+    /* =========================
+       [»ç¿ëÀÚ] 1:1 ¹®ÀÇ µî·Ï
+    ========================= */
     void writeInquiry(MypageQnaVO vo);
 
-    // [ì‚¬ìš©ì] ê°œì¸ì •ë³´ ìˆ˜ì§‘ ë™ì˜ ì—…ë°ì´íŠ¸
+    /* =========================
+       [»ç¿ëÀÚ] °³ÀÎÁ¤º¸ ¼öÁı µ¿ÀÇ
+    ========================= */
     void updatePrivacyAgree(long userNumber, int isAgreed);
 
-    // [ì‚¬ìš©ì] ë‚´ ë¬¸ì˜ ëª©ë¡ ì¡°íšŒ (ì „ì²´ ë˜ëŠ” ìƒíƒœë³„)
+    /* =========================
+       [»ç¿ëÀÚ] ³» ¹®ÀÇ ¸ñ·Ï
+    ========================= */
     List<MypageQnaVO> getMyInquiryList(long userNumber, String status);
 
-    // [ê´€ë¦¬ì] ì „ì²´ ë¬¸ì˜ ëª©ë¡ ì¡°íšŒ
+    /* =========================
+       [°ü¸®ÀÚ] ÀüÃ¼ ¹®ÀÇ ¸ñ·Ï
+    ========================= */
     List<MypageQnaVO> getAllInquiries();
 
-    // [ê´€ë¦¬ì] ë‹µë³€ ë“±ë¡
+    /* =========================
+       [°ü¸®ÀÚ] ´äº¯ µî·Ï
+    ========================= */
     boolean answerInquiry(long inquiryId, String replyContent);
 
-    // [ê³µí†µ] ë¬¸ì˜ ìƒì„¸ ì¡°íšŒ
+    /* =========================
+       [°øÅë] ¹®ÀÇ »ó¼¼
+    ========================= */
     MypageQnaVO getInquiryDetail(long inquiryId);
 }

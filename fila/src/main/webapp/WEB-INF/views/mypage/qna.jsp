@@ -1,66 +1,52 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<section class="my-con" style="user-select: auto !important;">
-           			<h2 class="tit__style4" style="user-select: auto !important;">1:1 문의</h2>
-					<a href="#" class="btn_sld__bk btn_rt qna-write__btn" style="user-select: auto !important;">1:1 문의하기</a>
+<section class="my-con">
+    <h2 class="tit__style4">1:1 문의</h2>
 
-					<ul class="qna__list" style="user-select: auto !important;">
-    <c:choose>
-        <c:when test="${not empty qnaList}">
-            <c:forEach var="dto" items="${qnaList}">
-                <li style="user-select: auto !important;">
-                    <div class="qna-q" style="user-select: auto !important; cursor: pointer;">
-                        <div class="info" style="user-select: auto !important;">
-                            <div style="user-select: auto !important;">
-                                <p class="status ${dto.status == 'DONE' ? 'on' : ''}" style="user-select: auto !important;">
-                                    ${dto.status == 'WAIT' ? '답변대기' : '답변완료'}
-                                </p>
-                                <p class="category" style="user-select: auto !important;">${dto.category_name}</p>
-                            </div>
-                            <p class="date" style="user-select: auto !important;">
-                                <fmt:formatDate value="${dto.created_at}" pattern="yyyy-MM-dd"/>
-                            </p>
-                        </div>
+    <!-- 1:1 문의하기 버튼 -->
+    <a href="#" class="btn_sld__bk btn_rt qna-write__btn">1:1 문의하기</a>
 
-                        <div class="qna-tit" style="user-select: auto !important;">
-                            <p style="user-select: auto !important;">${dto.title}</p>
-                        </div>
-                    </div>
-                    <div class="qna-a" style="user-select: auto !important; display: none;">
-                        <div class="q-txt-box" style="user-select: auto !important;">
-                            <div>
-                                <p style="user-select: auto !important;">${dto.content}</p>
-                            </div>
-                        </div>
-
-                        <c:if test="${dto.status == 'DONE'}">
-                            <div class="a-txt-box" style="user-select: auto !important;">
+    <!-- 문의 리스트 -->
+    <ul class="qna__list">
+        <c:choose>
+            <c:when test="${not empty qnaList}">
+                <c:forEach var="dto" items="${qnaList}">
+                    <li>
+                        <div class="qna-q" style="cursor:pointer;">
+                            <div class="info">
                                 <div>
-                                    <p style="user-select: auto !important;">${dto.reply_content}</p>
+                                    <p class="status ${dto.status == 'DONE' ? 'on' : ''}">
+                                        <c:choose>
+                                            <c:when test="${dto.status == 'DONE'}">답변완료</c:when>
+                                            <c:otherwise>답변대기</c:otherwise>
+                                        </c:choose>
+                                    </p>
+                                    <p class="tit">${dto.title}</p>
                                 </div>
-                                <p class="date" style="user-select: auto !important;">
-                                    <fmt:formatDate value="${dto.reply_at}" pattern="yyyy-MM-dd HH:mm"/>
-                                </p>
+                                <p class="date">${dto.createdAt}</p>
                             </div>
-                        </c:if>
-                    </div>
+                        </div>
+                    </li>
+                </c:forEach>
+            </c:when>
+
+            <c:otherwise>
+                <li class="nodata">
+                    등록된 문의가 없습니다.
                 </li>
-            </c:forEach>
-        </c:when>
-        <c:otherwise>
-            <li class="no-data" style="text-align:center; padding:50px 0;">
-                등록된 문의 내역이 없습니다.
-            </li>
-        </c:otherwise>
-    </c:choose>
-</ul>
-					<!-- //1:1문의 -->
-					<div id="qnaModalOverlay" style="display:none;">
-						    <div id="qnaModalContent"></div>
-						</div>
-				</section>
+            </c:otherwise>
+        </c:choose>
+    </ul>
 
-</div>
-</div>
+    <!-- 모달 오버레이/컨텐츠 -->
+    <div id="qnaModalOverlay" class="common__layer _qna_write" style="display:none;">
+        <div class="layer-bg__wrap" onclick="closeQnaModal()"></div>
+        <div class="inner">
+            <div id="qnaModalContent"></div>
+        </div>
+    </div>
 
+    <%-- 스크립트 include (프로젝트에서 쓰는 방식대로 include 하시면 됩니다) --%>
+    <jsp:include page="/WEB-INF/views/mypage/qna_script.jsp" />
+</section>

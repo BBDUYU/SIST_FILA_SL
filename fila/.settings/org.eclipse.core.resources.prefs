@@ -1,3 +1,8 @@
 eclipse.preferences.version=1
+encoding//src/main/java/com/fila/app/controller/mypage/member/MemberModifyController.java=UTF-8
+encoding//src/main/java/com/fila/app/controller/mypage/qna/MypageQnaController.java=UTF-8
+encoding//src/main/java/com/fila/app/domain/mypage/qna/MypageQnaCategoryVO.java=UTF-8
+encoding//src/main/java/com/fila/app/domain/mypage/qna/MypageQnaVO.java=UTF-8
+encoding//src/main/java/com/fila/app/service/mypage/qna/MypageQnaServiceImpl.java=UTF-8
+encoding//src/main/webapp/WEB-INF/views/mypage/qna_write.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/product/product_detail.jsp=UTF-8
-encoding/<project>=UTF-8

@@ -1,19 +1,14 @@
 package com.fila.app.controller.mypage.qna;
 
 import java.util.List;
-
+import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.fila.app.domain.mypage.qna.MypageQnaVO;
+import org.springframework.web.bind.annotation.*;
 import com.fila.app.domain.mypage.qna.MypageQnaCategoryVO;
+import com.fila.app.domain.mypage.qna.MypageQnaVO;
+import com.fila.app.domain.member.MemberVO;
 import com.fila.app.service.mypage.qna.MypageQnaService;
-
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -23,54 +18,50 @@ public class MypageQnaController {
 
     private final MypageQnaService service;
 
-    /**
-     * 1. 1:1 문의 작성 페이지 이동 (.htm 규칙 적용) 
-     */
-    @RequestMapping(value = "/qnaWriteForm.htm", method = RequestMethod.GET)
-    public String writeForm(Model model) {
-        // 카테고리 목록을 미리 넘겨주어 JSP에서 Select 박스를 구성하게 합니다.
-        List<MypageQnaCategoryVO> categories = service.getCategories();
-        model.addAttribute("categories", categories);
-        
-        return "qna_modal";  // /WEB-INF/views/mypage/qna_write.jsp
+    // 1:1 문의 작성 폼 (모달용 HTML 반환)
+    @GetMapping("/qnaWriteForm.htm")
+    public String qnaWriteForm(Model model) {
+        List<MypageQnaCategoryVO> categories = service.getQnaCategoryList();
+        model.addAttribute("categoryList", categories); // 변수명 확인
+        return "mypage/qna_add"; 
     }
 
-    /**
-     * 2. 1:1 문의 등록 처리 (.htm 규칙 적용)
-     */
-    @RequestMapping(value = "/write.htm", method = RequestMethod.POST)
-    public String write(@ModelAttribute MypageQnaVO vo) {
-        // 서비스 구현체의 실제 메서드명인 writeInquiry 호출
-        service.writeInquiry(vo);
-
-        // 등록 후 목록으로 이동
-        return "redirect:/mypage/qna/list.htm";
-    }
-
-    /**
-     * 3. 내 문의 목록 조회
-     */
-    @RequestMapping(value = "/qna.htm", method = RequestMethod.GET)
-    public String list(@RequestParam(value = "status", required = false, defaultValue = "ALL") String status, 
-                       Model model) {
-        
-        // 실제 프로젝트에서는 세션에서 userNumber를 가져와야 합니다.
-        // 현재는 예시로 1L을 사용하거나, 로그인 정보 객체에서 추출하세요.
-        long userNumber = 1L; 
-        
-        List<MypageQnaVO> list = service.getMyInquiryList(userNumber, status);
-        model.addAttribute("qnaList", list);
-        model.addAttribute("currentStatus", status);
-        
-        return "qna";
-    }
-
-    /**
-     * 4. 문의 카테고리 목록 (AJAX용)
-     */
-    @RequestMapping(value = "/categories.htm", method = RequestMethod.GET)
+    @PostMapping("/write.htm")
     @ResponseBody
-    public List<MypageQnaCategoryVO> categories() {
-        return service.getCategories();
+    public String write(
+            @ModelAttribute MypageQnaVO vo,
+            HttpSession session) {
+
+        MemberVO auth = (MemberVO) session.getAttribute("auth");
+        if (auth == null) {
+            return "NO_AUTH";
+        }
+
+        // ✅ 작성자 세션에서 주입
+        vo.setUserNumber(auth.getUserNumber());
+
+        // ✅ 기본 상태 세팅 (DB default가 없을 경우 대비)
+        vo.setStatus("WAIT");
+
+        service.writeInquiry(vo);
+        return "OK";
     }
+
+
+    // 1:1 문의 목록 페이지
+    @GetMapping("/qna.htm")
+    public String qnaPage(
+            @RequestParam(value = "status", required = false, defaultValue = "ALL") String status,
+            HttpSession session, 
+            Model model) {
+
+        MemberVO auth = (MemberVO) session.getAttribute("auth");
+        if (auth == null) return "redirect:/member/login.htm";
+
+        List<MypageQnaVO> list = service.getMyInquiryList(auth.getUserNumber(), status);
+        model.addAttribute("qnaList", list);
+        return "qna"; 
+    }
+    
+    
 }
