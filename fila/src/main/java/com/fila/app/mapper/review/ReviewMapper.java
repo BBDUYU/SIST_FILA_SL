@@ -19,7 +19,8 @@ public interface ReviewMapper {
         @Param("ratingArr") String[] ratingArr, 
         @Param("userNumber") int userNumber, 
         @Param("sort") String sort, 
-        @Param("keyword") String keyword
+        @Param("keyword") String keyword, 
+        @Param("isPhotoFirst") boolean isPhotoFirst
     );
     
     // 3. 리뷰 통계 정보 (총 개수, 평균 별점, 5점 개수 등)

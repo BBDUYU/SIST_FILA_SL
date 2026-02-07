@@ -35,6 +35,36 @@ function closeReviewModal() {
         document.body.style.overflow = "auto";
     }
 }
+
+$(document).ready(function() {
+    // 1. 상세페이지에 있는 상품 ID 가져오기
+    var productId = "${product.productId}" || new URLSearchParams(window.location.search).get('productId');
+    
+    if (productId) {
+        console.log(">>> 상세페이지 리뷰 개수 동기화 시작: " + productId);
+        
+        // 2. 우리가 만든 리뷰 리스트 컨트롤러 호출 (요약 정보만 필요하니까)
+        $.ajax({
+            url: "${pageContext.request.contextPath}/review/list.htm",
+            type: "GET",
+            data: { productId: productId },
+            dataType: "json",
+            success: function(data) {
+                if (data && data.reviewSummary) {
+                    // 오라클 대문자 이슈 방어 (TOTAL_CNT vs total_cnt)
+                    var count = data.reviewSummary.total_cnt || data.reviewSummary.TOTAL_CNT || 0;
+                    
+                    // 3. 0개라고 적힌 부분을 실제 개수로 변경
+                    $(".crema-product-reviews-count").text(count);
+                    console.log(">>> 리뷰 개수 업데이트 완료: " + count);
+                }
+            },
+            error: function(xhr) {
+                console.error(">>> 리뷰 개수 가져오기 실패");
+            }
+        });
+    }
+});
 </script>
 
 <script>

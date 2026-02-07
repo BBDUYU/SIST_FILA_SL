@@ -1,10 +1,14 @@
 package com.fila.app.controller.review;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,8 +17,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fila.app.domain.member.MemberVO;
 import com.fila.app.domain.review.ReviewVO;
 import com.fila.app.service.review.ReviewService;
 
@@ -27,71 +34,125 @@ public class ReviewController {
     @Setter(onMethod_ = @Autowired)
     private ReviewService reviewService;
     
-    // [POST] 리뷰 등록 처리
+    // [AJAX] 1. 작성 권한 체크 (형이 말한 '작성하기' 버튼 클릭 시 호출용)
+    @GetMapping("/checkAuthority.do")
+    @ResponseBody
+    public String checkAuthority(@RequestParam("productId") String productId, HttpSession session) {
+        // 세션에서 로그인 정보 확인
+        MemberVO auth = (MemberVO) session.getAttribute("auth");
+        if (auth == null) return "login_required";
+
+        // 서비스의 isPurchased 로직 호출 (유저번호, 상품ID 순서)
+        // 옛날 JDBC 로직을 스프링 서비스가 실행하도록 연결
+        boolean canWrite = reviewService.canWriteReview(auth.getUserNumber(), productId);
+        
+        return canWrite ? "success" : "fail";
+    }
+
+    // [POST] 2. 리뷰 등록 처리
     @PostMapping("/write.do")
-    public String write(
-            ReviewVO review, 
-            @RequestParam("reviewFile") MultipartFile file, 
-            HttpServletRequest request,
-            Model model
-            ) throws Exception {
-
-        // 1. 파일 업로드 처리
-        if (!file.isEmpty()) {
-            // [수정 1] 서버 내부 경로(getRealPath)가 아니라, 고정된 로컬 경로(C드라이브) 사용
-            String uploadFolder = "C:\\fila_upload\\review"; 
-            
-            File saveDir = new File(uploadFolder);
-            if (!saveDir.exists()) saveDir.mkdirs(); // 폴더 없으면 생성
-            
-            // [권장] 파일명 중복 방지를 위해 UUID 추가 (선택사항)
-            String uuid = java.util.UUID.randomUUID().toString();
-            String originalName = file.getOriginalFilename();
-            String fileName = uuid + "_" + originalName;
-            
-            // 실제 파일 저장 (C:\fila_upload\review\_파일명.jpg)
-            File saveFile = new File(uploadFolder, fileName);
-            file.transferTo(saveFile);
-            
-            // [수정 2] DB에는 웹 접근 경로("/upload/review/...")로 저장
-            // servlet-context.xml 의 mapping="/upload/**" 설정 덕분에 연결됨
-            // (주의: VO 필드명이 review_img라면 setReview_img 로 쓰셔야 합니다)
-            review.setReviewImg("/upload/review/" + fileName);
-        }
-
-        // 2. 서비스 호출
-        int result = reviewService.writeReview(review);
+    public String write(ReviewVO review, 
+                       @RequestParam(value="reviewFile", required=false) MultipartFile file, 
+                       HttpSession session, // 세션 추가
+                       Model model) throws Exception {
         
-        // 3. 결과 페이지 이동
-        if (result == 1) {
-            model.addAttribute("msg", "리뷰가 정상적으로 등록되었습니다.");
-            // (주의: VO 필드명이 product_id라면 getProduct_id 로 쓰셔야 합니다)
-            model.addAttribute("loc", "/product/detail?product_id=" + review.getProductId());
-        } else {
-            model.addAttribute("msg", "리뷰 등록 실패.");
-            model.addAttribute("loc", "javascript:history.back()");
+        System.err.println(">>> [Write] 등록 요청 도착: " + review.toString());
+
+        // 세션에서 진짜 유저번호 가져오기
+        MemberVO auth = (MemberVO) session.getAttribute("auth");
+        if (auth == null) {
+            model.addAttribute("msg", "로그인이 필요합니다.");
+            model.addAttribute("loc", "/login.htm");
+            return "message";
         }
         
-        return "common/message"; 
+        // 가짜 10001 대신 진짜 유저번호 세팅
+        review.setUserNumber(auth.getUserNumber());
+
+        // 파일 저장 로직
+        if (file != null && !file.isEmpty()) {
+            try {
+                String uploadFolder = "C:\\fila_upload\\review"; 
+                File saveDir = new File(uploadFolder);
+                if (!saveDir.exists()) saveDir.mkdirs(); 
+                
+                String uuid = UUID.randomUUID().toString();
+                String fileName = uuid + "_" + file.getOriginalFilename();
+                File saveFile = new File(uploadFolder, fileName);
+                file.transferTo(saveFile);
+                
+                review.setReviewImg("/upload/review/" + fileName);
+            } catch (Exception e) {
+                System.err.println(">>> [Write] 파일 저장 중 에러: " + e.getMessage());
+            }
+        }
+
+        try {
+            int result = reviewService.writeReview(review);
+            if (result == 1) {
+                model.addAttribute("msg", "리뷰 등록 성공");
+                model.addAttribute("loc", "/product/detail.htm?productId=" + review.getProductId());
+                return "message";
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); 
+        }
+        model.addAttribute("msg", "리뷰 등록 실패");
+        model.addAttribute("loc", "javascript:history.back();");
+        return "message"; 
     }
     
-    // [AJAX] 리뷰 목록 가져오기 (비동기 로딩용)
-    @GetMapping("/list")
-    public String list(
+    // [AJAX] 3. 리뷰 목록 및 요약 정보 가져오기
+    @GetMapping("/list.htm")
+    @ResponseBody
+    public void list(
             @RequestParam("productId") String productId,
-            @RequestParam(value="ratingArr", required=false) String[] ratingArr,
-            @RequestParam(value="userNumber", defaultValue="0") int userNumber,
             @RequestParam(value="sort", defaultValue="latest") String sort,
+            @RequestParam(value="isPhotoFirst", defaultValue="false") boolean isPhotoFirst,
+            @RequestParam(value="ratingArr", required=false) String[] ratingArr,
             @RequestParam(value="keyword", required=false) String keyword,
-            Model model
-            ) {
+            HttpSession session, 
+            HttpServletResponse response) throws Exception {
+
+        MemberVO auth = (MemberVO) session.getAttribute("auth");
+        int userNumber = (auth != null) ? auth.getUserNumber() : 0; 
+
+        System.err.println(">>> [리뷰 목록 요청] productId: " + productId + ", userNumber: " + userNumber);
         
-        List<ReviewVO> list = reviewService.getReviewList(productId, ratingArr, userNumber, sort, keyword);
+        List<ReviewVO> list = reviewService.getReviewList(productId, ratingArr, userNumber, sort, keyword, isPhotoFirst);
         Map<String, Object> summary = reviewService.getReviewSummary(productId);
         
-        model.addAttribute("reviewList", list);
-        model.addAttribute("reviewSummary", summary);
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("reviewList", list);
+        resultMap.put("reviewSummary", summary);
         
-        return "review_list"; 
+        ObjectMapper mapper = new ObjectMapper();
+        response.setContentType("application/json; charset=UTF-8");
+        response.getWriter().write(mapper.writeValueAsString(resultMap));
+    }
+    
+    // [AJAX] 4. 좋아요 처리
+    @PostMapping("/like.do")
+    @ResponseBody
+    public String likeReview(
+            @RequestParam("reviewId") int reviewId,
+            @RequestParam("type") int type,
+            HttpSession session) { 
+        
+        MemberVO auth = (MemberVO) session.getAttribute("auth");
+        if (auth == null) {
+            return "login"; 
+        }
+
+        int userNumber = auth.getUserNumber(); 
+        System.err.println(">>> [좋아요 요청] 유저:" + userNumber + ", 리뷰:" + reviewId + ", 타입:" + type);
+
+        try {
+            int result = reviewService.likeReview(reviewId, userNumber, type);
+            return String.valueOf(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0";
+        }
     }
 }

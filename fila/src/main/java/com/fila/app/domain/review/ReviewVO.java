@@ -22,7 +22,7 @@ public class ReviewVO {
     
     // 날짜 포맷 지정
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private Date regdate; 
+    private Date regDate; 
     
     // 조인용 / 추가 정보 필드
     private int likeId;

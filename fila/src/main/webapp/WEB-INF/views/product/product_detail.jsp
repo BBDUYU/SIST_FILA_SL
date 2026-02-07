@@ -254,11 +254,11 @@
                                         </div>
                                         <div>
                                             <button type="button" class="review-more__btn" onclick="openReviewModal()">
-                                             상품 리뷰
-                                             <span class="crema-product-reviews-count" data-product-code="${product.productId}">
-                                                 ${fn:length(reviewList)}
-                                             </span>
-                                         	</button>
+    상품 리뷰
+    <span id="totalReviewCnt" class="crema-product-reviews-count" data-product-code="${product.productId}">
+        ${fn:length(reviewList)}
+    </span>
+</button>
                                         </div>
                                         
                                         <div>
