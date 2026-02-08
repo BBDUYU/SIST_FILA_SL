@@ -16,5 +16,7 @@ public interface CartListService {
 
     void updateItem(int cartItemId, int quantity) throws Exception;
 
-    void updateItemOption(int cartItemId, String size, int qty) throws Exception;
+    void updateItemOption(int cartItemId, String size, int quantity) throws Exception;
+
+	void updateItemQty(int cartItemId, int userNumber, int quantity) throws Exception;
 }

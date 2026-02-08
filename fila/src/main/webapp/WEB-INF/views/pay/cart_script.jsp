@@ -82,10 +82,11 @@ function updateTotal() {
 }
 
 // 상품 단일 삭제
-function deleteItem(id) {
-    if(confirm("해당 상품을 삭제하시겠습니까?")) {
-        location.href = contextPath + "/pay/cart.htm?ids=" + id;
-    }
+function deleteItem(cartItemId) {
+  if (!confirm("해당 상품을 삭제하시겠습니까?")) return;
+
+  document.getElementById("deleteIds").value = cartItemId;
+  document.getElementById("deleteForm").submit();
 }
 
 // AJAX 옵션 변경 모달 열기
@@ -186,4 +187,29 @@ function cart_action3() {
                         "&qty=" + newQty;
     }
 }
+</script>
+
+<script>
+/* ===== optionModal 전용 브리지 함수 ===== */
+
+// 취소 버튼용
+function closeModal() {
+    // optionModal 닫기
+    document.getElementById("optionModal").style.display = "none";
+}
+</script>
+
+<script>
+	window.submitOption = function () {
+	  const cartItemId = document.getElementById('modalCartItemId').value;
+	  let quantity = parseInt(document.getElementById('modalQty').value, 10);
+	
+	  if (!cartItemId) return alert("cartItemId가 없습니다.");
+	  if (isNaN(quantity) || quantity < 1) quantity = 1;
+	
+	  document.getElementById('u_cartItemId_qty').value = cartItemId;
+	  document.getElementById('u_quantity').value = quantity;
+	
+	  document.getElementById('qtyUpdateForm').submit();
+	};
 </script>

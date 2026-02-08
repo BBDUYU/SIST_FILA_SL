@@ -42,14 +42,20 @@ public class CartListServiceImpl implements CartListService {
 
     @Override
     @Transactional
-    public void updateItemOption(int cartItemId, String size, int qty) throws Exception {
+    public void updateItemOption(int cartItemId, String size, int quantity) throws Exception {
+
+        // 1. cartItemId → productId
         String productId = cartMapper.getProductIdByCartItemId(cartItemId);
-        if (productId == null) return;
 
-        Integer combiId = cartMapper.findCombinationIdBySize(productId, size == null ? null : size.trim());
-        if (combiId == null) return;
+        // 2. productId + size → combinationId
+        Integer combinationId = cartMapper.findCombinationIdBySize(productId, size);
 
-        cartMapper.updateItemOption(cartItemId, combiId, qty);
+        if (combinationId == null) {
+            throw new IllegalStateException("해당 옵션 조합이 존재하지 않습니다.");
+        }
+
+        // 3. update
+        cartMapper.updateItemOption(cartItemId, combinationId, quantity);
     }
 
 	@Override
@@ -57,4 +63,14 @@ public class CartListServiceImpl implements CartListService {
 	public void updateItem(int cartItemId, int quantity) throws Exception {
 		cartMapper.updateQuantity(cartItemId, quantity);
 	}
+	
+	@Override
+    @Transactional
+    public void updateItemQty(int cartItemId, int userNumber, int qty) throws Exception {
+        if (qty < 1) {
+            throw new IllegalArgumentException("수량은 1 이상이어야 합니다.");
+        }
+
+        cartMapper.updateQty(cartItemId, userNumber, qty);
+    }
 }
