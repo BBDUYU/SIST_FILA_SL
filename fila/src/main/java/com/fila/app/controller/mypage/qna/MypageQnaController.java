@@ -32,7 +32,7 @@ public class MypageQnaController {
         List<MypageQnaCategoryVO> categories = service.getCategories();
         model.addAttribute("categories", categories);
         
-        return "qna_modal";  // /WEB-INF/views/mypage/qna_write.jsp
+        return "mypage/qna_write";  // /WEB-INF/views/mypage/qna_write.jsp
     }
 
     /**
