@@ -163,9 +163,10 @@ function goCartAdd() {
 
     // [수정] URL 하드코딩 권장 (변수로 받으면 꼬일 수 있음)
     // 주소 예시: /cart/add.htm
-    location.href = "${pageContext.request.contextPath}/cart/add.htm"
-        + "?quantity=" + encodeURIComponent(qty)
-        + "&combinationId=" + encodeURIComponent(combiId);
+    location.href = "${pageContext.request.contextPath}/pay/cart/add.htm"
+        + "?productId=${product.productId}"
+        + "&quantity=" + qty
+        + "&combinationId=" + combiId;
 }
 
 // 바로 구매

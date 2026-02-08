@@ -18,21 +18,15 @@
 	</div>
 
 	<ul class="odr-tab">
-	  <li>
-	    <a href="${pageContext.request.contextPath}/pay/cart.htm"
-	       id="normalli"
-	       class="${activeTab eq 'normal' ? 'on' : ''}">
-	      일반배송 <sup>${fn:length(cartList)}</sup>
-	    </a>
-	  </li>
-	
-	  <li>
-	    <a href="${pageContext.request.contextPath}/pay/cart2.htm"
-	       id="todayli"
-	       class="${activeTab eq 'today' ? 'on' : ''}">
-	      오늘도착 <sup id="todayCnt">0</sup>
-	    </a>
-	  </li>
+		<li><a href="${pageContext.request.contextPath}/pay/cart.htm"
+			id="normalli" class="${activeTab eq 'normal' ? 'on' : ''}"> 일반배송
+				<sup>${fn:length(cartList)}</sup>
+		</a></li>
+
+		<li><a href="${pageContext.request.contextPath}/pay/cart2.htm"
+			id="todayli" class="${activeTab eq 'today' ? 'on' : ''}"> 오늘도착 <sup
+				id="todayCnt">0</sup>
+		</a></li>
 	</ul>
 
 
@@ -52,41 +46,36 @@
 		<c:when test="${empty cartList}">
 			<div class="cart__empty">
 				<p class="txt">장바구니에 담긴 상품이 없습니다.</p>
-				<a href="${pageContext.request.contextPath}/" class="btn_sld__bk">쇼핑 계속하기</a>
+				<a href="${pageContext.request.contextPath}/" class="btn_sld__bk">쇼핑
+					계속하기</a>
 			</div>
 		</c:when>
 
 		<c:otherwise>
 			<section class="odr-wrap">
+
+				<!-- 왼쪽: 상품 리스트 영역 -->
 				<div class="odr-box">
+
 					<div class="odr-hd">
 						<div>
 							<input type="checkbox" id="checkAll" class="cb__style3"
 								onclick="CheckedAll2(form1);void(0);" checked=""> <label
 								for="checkAll">전체선택<span id="cartlistCnt"></span></label>
 						</div>
+
 						<div class="txt-btn">
-						  <form id="clearCartForm"
-						        action="${pageContext.request.contextPath}/pay/cart/clear.htm"
-						        method="post"
-						        style="display:inline;">
-						    <button type="submit"
-						            style="background:none;border:0 ;padding:0;cursor:pointer;">
-						      전체삭제
-						    </button>
-						  </form>
-						</div>
-						
-						<script>
-						  document.getElementById("clearCartForm").addEventListener("submit", function(e){
-						    if (!confirm("장바구니 상품을 전체 삭제하시겠습니까?")) {
-						      e.preventDefault();
-						    }
-						  });
-						</script>
+							<form id="clearCartForm"
+								action="${pageContext.request.contextPath}/pay/cart/clear.htm"
+								method="post" style="display: inline;">
+								<button type="submit"
+									style="background: none; border: 0; padding: 0; cursor: pointer;">
+									전체삭제</button>
+							</form>
 						</div>
 					</div>
-
+					
+					<!-- 옵션 모달 -->
 					<div id="optionModal" class="modal"
 						style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);">
 						<div class="modal-content"
@@ -94,6 +83,7 @@
 							<h3>옵션/수량 변경</h3>
 							<hr>
 							<input type="hidden" id="modalCartItemId">
+							<input type="hidden" id="modalSize">
 							<div style="margin: 20px 0;">
 								<p>수량</p>
 								<input type="number" id="modalQty" min="1"
@@ -109,15 +99,11 @@
 						</div>
 					</div>
 
+					<!-- 상품 리스트 -->
 					<ul class="odr__list">
 						<c:forEach var="item" items="${cartList}" varStatus="st">
 
-							<c:set var="rawImg" value="${item.mainImageUrl}" />
-							<c:set var="finalImg"
-								value="${fn:replace(rawImg, 'file:///C:/fila_upload', '/upload')}" />
-
 							<li>
-								<!-- 선택 -->
 								<div class="goods_sel">
 									<input type="checkbox" id="checkProduct${st.index}"
 										class="cb__style3 todaydelichk item-chk" checked="checked"
@@ -126,7 +112,8 @@
 										data-pricesale="${item.saleUnitPrice}"
 										data-pq="${item.quantity}"> <label
 										for="checkProduct${st.index}">선택</label>
-								</div> <!-- 상품 이미지 -->
+								</div>
+
 								<div class="goods-thumb">
 									<a
 										href="${pageContext.request.contextPath}/product/product_detail.htm?productId=${item.productId}">
@@ -135,30 +122,21 @@
 										alt="${item.productName}"
 										onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/images/no_image.jpg';">
 									</a>
-								</div> <!-- 상품 정보 -->
+								</div>
+
 								<div class="goods-info">
 									<p class="sex">FILA</p>
 									<p class="tit">${item.productName}</p>
 
 									<div class="info">
-										 
 										<div>
-											 
 											<p>
-												사이즈&nbsp;:&nbsp;
-												<c:choose>
-													<c:when test="${not empty item.size}">
-                                                  ${item.size}
-                                              </c:when>
-													<c:otherwise>
-														<span style="color: red;">사이즈 정보 없음</span>
-													</c:otherwise>
-												</c:choose>
+												사이즈 :
+												<c:out value="${item.size}" />
 											</p>
-											 
 										</div>
 										<div>
-											<p>수량&nbsp;:&nbsp;${item.quantity}개</p>
+											<p>수량 : ${item.quantity}개</p>
 										</div>
 									</div>
 
@@ -188,21 +166,23 @@
 										</div>
 									</div>
 
-									<!-- 오늘도착 -->
 									<p class="today_tag">오늘도착 가능</p>
-								</div> <!-- 기타 버튼 -->
+								</div>
+
 								<div class="goods-etc">
 									<p class="ico">
 										<button type="button" class="del"
 											onclick="deleteItem(${item.cartItemId})">삭제</button>
 									</p>
+
 									<p class="btn-box">
 										<button type="button" class="btn_sld__gr"
-										  onclick="document.getElementById('optionModal').style.display='block';
-										           document.getElementById('modalCartItemId').value='${item.cartItemId}';
-										           document.getElementById('modalQty').value='${item.quantity}';">
-										  옵션 변경
-										</button>
+											onclick="document.getElementById('optionModal').style.display='block';
+						                               document.getElementById('modalCartItemId').value='${item.cartItemId}';
+						                               document.getElementById('modalQty').value='${item.quantity}';
+						                               document.getElementById('modalSize').value='${item.size}';
+						                               ">
+											옵션 변경</button>
 									</p>
 								</div>
 							</li>
@@ -211,7 +191,9 @@
 					</ul>
 
 				</div>
+				<!-- /.odr-box -->
 
+				<!-- 오른쪽: 결제 요약 영역 -->
 				<div class="total-box">
 					<div class="price-box">
 						<div class="price-inner">
@@ -241,7 +223,6 @@
 							</dl>
 
 							<div class="btn-box">
-								<!--a href="javascript:CheckedAllBuy(form1);" class="btn_bg__bk">구매하기</a-->
 								<a href="javascript:CheckedBuy();" class="btn_bg__bk">구매하기</a>
 							</div>
 						</div>
@@ -252,13 +233,52 @@
 							<p>장바구니 보관 중 상품가격이나 혜택이 변동될 수 있습니다.</p>
 						</div>
 					</div>
-
-
 				</div>
+				
+				<form id="deleteForm"
+				      method="post"
+				      action="${pageContext.request.contextPath}/pay/cart/delete.htm"
+				      style="display:none;">
+				    <input type="hidden" name="ids" id="deleteIds">
+				</form>
+				
+				<form id="updateForm"
+				      method="post"
+				      action="${pageContext.request.contextPath}/pay/cart/update.htm"
+				      style="display:none;">
+				  <input type="hidden" name="cartItemId" id="u_cartItemId">
+				  <input type="hidden" name="quantity" id="u_qty">
+				  <input type="hidden" name="size" id="u_size">
+				</form>
+				
+				<form id="optionForm"
+				      method="post"
+				      action="${pageContext.request.contextPath}/cart/update.htm"
+				      style="display:none;">
+				  <input type="hidden" name="cartItemId" id="u_cartItemId">
+				  <input type="hidden" name="quantity" id="u_qty">
+				  <input type="hidden" name="size" id="u_size">
+				</form>
+				
+				<form id="qtyUpdateForm"
+				      method="post"
+				      action="${pageContext.request.contextPath}/pay/cart/updateQty.htm"
+				      style="display:none;">
+				  <input type="hidden" name="cartItemId" id="u_cartItemId_qty">
+				  <input type="hidden" name="quantity" id="u_quantity">
+				</form>
+				
+				<form id="clearCartForm"
+				      action="${pageContext.request.contextPath}/pay/cart/clear.htm"
+				      method="post" style="display:inline;">
+				  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+				</form>
+				
+				
 			</section>
+			
 		</c:otherwise>
 	</c:choose>
 	<div id="cartModalOverlay" style="display: none;">
 		<div id="cartModalContent"></div>
 	</div>
-</div>

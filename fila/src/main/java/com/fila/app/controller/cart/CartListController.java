@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fila.app.domain.cart.CartItemVO;
 import com.fila.app.domain.member.MemberVO;
@@ -34,7 +35,10 @@ public class CartListController {
         int userNumber = ((MemberVO) auth).getUserNumber();
 
         List<CartItemVO> cartList = cartService.selectAll(userNumber);
+
+        request.setAttribute("cartList", cartList);   // ★ 이 줄 추가
         request.setAttribute("activeTab", "normal");
+
         return "pay";
 
     }
@@ -70,9 +74,15 @@ public class CartListController {
             return "redirect:/product/product_detail.htm?product_id=" + pidEnc;
         }
     }
+    
+    @GetMapping("/cart/add.htm")
+    public String addCartGet(HttpSession session, HttpServletRequest request) throws Exception {
+        return addCart(session, request);
+    }
 
     @PostMapping("/cart/delete.htm")
-    public String deleteSelected(HttpSession session, String ids) throws Exception {
+    public String deleteSelected(HttpSession session,
+                                 @RequestParam("ids") String ids) throws Exception {
 
         Object auth = (session == null) ? null : session.getAttribute("auth");
         if (auth == null) return "redirect:/login.htm";
@@ -86,22 +96,41 @@ public class CartListController {
     @PostMapping("/cart/clear.htm")
     public String clearAll(HttpSession session) throws Exception {
 
-        Object auth = (session == null) ? null	 : session.getAttribute("auth");
+        Object auth = session.getAttribute("auth");
         if (auth == null) return "redirect:/login.htm";
 
         int userNumber = ((MemberVO) auth).getUserNumber();
-
         cartService.deleteAllItems(userNumber);
+
         return "redirect:/pay/cart.htm";
     }
 
     @PostMapping("/cart/update.htm")
-    public String updateOption(HttpSession session, int cartItemId, int qty, String size) throws Exception {
+    public String updateOption(
+            HttpSession session,
+            int cartItemId,
+            int qty,
+            String size) throws Exception {
 
-        Object auth = (session == null) ? null : session.getAttribute("auth");
+        MemberVO auth = (MemberVO) session.getAttribute("auth");
         if (auth == null) return "redirect:/login.htm";
 
         cartService.updateItemOption(cartItemId, size, qty);
+        return "redirect:/pay/cart.htm";
+    }
+
+    @PostMapping("/cart/updateQty.htm")
+    public String updateQty(
+            @RequestParam("cartItemId") int cartItemId,
+            @RequestParam("quantity") int quantity,
+            HttpSession session
+    ) throws Exception {
+
+        MemberVO loginUser = (MemberVO) session.getAttribute("auth");
+        if (loginUser == null) return "redirect:/login.htm";
+
+        cartService.updateItemQty(cartItemId, loginUser.getUserNumber(), quantity);
+
         return "redirect:/pay/cart.htm";
     }
     

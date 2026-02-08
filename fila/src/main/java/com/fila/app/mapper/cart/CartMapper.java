@@ -59,5 +59,9 @@ public interface CartMapper {
     int updateItemOption(@Param("cartItemId") int cartItemId,
                          @Param("combinationId") int combinationId,
                          @Param("quantity") int quantity) throws SQLException;
+    
+    int updateQty(@Param("cartItemId") int cartItemId,
+            @Param("userNumber") int userNumber,
+            @Param("qty") int qty) throws SQLException;
 
 }

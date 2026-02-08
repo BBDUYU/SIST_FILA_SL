@@ -81,5 +81,65 @@
     WHERE ci.user_number = #{userNumber}
     ORDER BY ci.added_at DESC
   </select>
+  
+  <insert id="insertCart">
+    INSERT INTO CART_ITEMS (
+        CART_ITEM_ID, USER_NUMBER, PRODUCT_ID, QUANTITY, COMBINATION_ID, ADDED_AT
+    )
+    VALUES (
+        (SELECT NVL(MAX(CART_ITEM_ID),0)+1 FROM CART_ITEMS),
+        #{userNumber},
+        #{productId},
+        #{quantity},
+        #{combinationId},
+        SYSDATE
+    )
+  </insert>
 
+  <delete id="deleteCartItems">
+    DELETE FROM CART_ITEMS
+	WHERE USER_NUMBER = #{userNumber}
+		AND CART_ITEM_ID IN (${cartItemIds})
+
+  </delete>
+  
+  <!-- cartItemId → productId -->
+  <select id="getProductIdByCartItemId" resultType="string">
+      SELECT PRODUCT_ID
+      FROM CART_ITEMS
+      WHERE CART_ITEM_ID = #{cartItemId}
+  </select>
+  	
+  <!-- productId + size → combinationId -->
+  <select id="findCombinationIdBySize" resultType="int">
+      SELECT poc.COMBINATION_ID
+      FROM PRODUCT_OPTION_COMBINATIONS poc
+      JOIN PRODUCT_OPTION_COMBI_VALUES pov
+        ON poc.COMBINATION_ID = pov.COMBINATION_ID
+      WHERE poc.PRODUCT_ID = #{productId}
+        AND pov.SIZE = #{size}
+  </select>
+  	
+  <!-- 옵션 + 수량 업데이트 -->
+  <update id="updateItemOption">
+      UPDATE CART_ITEMS
+      SET
+          COMBINATION_ID = #{combinationId},
+          QUANTITY = #{quantity}
+      WHERE CART_ITEM_ID = #{cartItemId}
+  </update>
+  
+  <update id="updateQty">
+    UPDATE CART_ITEMS
+    SET QUANTITY = #{qty}
+    WHERE CART_ITEM_ID = #{cartItemId}
+      AND USER_NUMBER = #{userNumber}
+  </update>
+
+  <delete id="deleteAllItems">
+    DELETE FROM CART_ITEMS
+    WHERE USER_NUMBER = #{userNumber}
+  </delete>
+  
+  
   </mapper>
