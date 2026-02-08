@@ -48,16 +48,14 @@
   </select>
 
   <select id="selectSelectedCartItems" resultType="com.fila.app.domain.order.OrderItemVO">
-    SELECT ci.PRODUCT_ID AS productId, 
-           p.NAME AS name, 
-           ci.COMBINATION_ID AS combinationId, 
-           ci.QUANTITY AS quantity,
-           p.PRICE AS originalPrice,
-           ROUND(p.PRICE * (100 - NVL(p.DISCOUNT_RATE, 0)) / 100) AS salePrice
-    FROM CART_ITEMS ci
-    JOIN PRODUCTS p ON ci.PRODUCT_ID = p.PRODUCT_ID
-    WHERE ci.CART_ITEM_ID IN (${ids})
-  </select>
+	  SELECT ci.PRODUCT_ID AS productId, 
+	         p.NAME AS productName,  ci.COMBINATION_ID AS combinationId, 
+	         ci.QUANTITY AS quantity,
+	         p.PRICE AS originalPrice,
+	         ROUND(p.PRICE * (100 - NVL(p.DISCOUNT_RATE, 0)) / 100) AS price FROM CART_ITEMS ci
+	  JOIN PRODUCTS p ON ci.PRODUCT_ID = p.PRODUCT_ID
+	  WHERE ci.CART_ITEM_ID IN (${ids})
+	</select>
 
   <select id="selectAllByUser" resultMap="cartItemMap">
     SELECT 

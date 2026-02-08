@@ -109,10 +109,18 @@ public class OrderController {
             }
         } else if (cartItemIds != null && !cartItemIds.isEmpty()) {
             try {
-				orderItems = cartMapper.selectSelectedCartItems(cartItemIds);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+                orderItems = cartMapper.selectSelectedCartItems(cartItemIds);
+           
+                for (OrderItemVO item : orderItems) {
+                    if(item.getPrice() == 0 && item.getOriginalPrice() == 0) {
+                        ProductsVO p = productMapper.getProduct(item.getProductId());
+                        item.setOriginalPrice(p.getPrice());
+                        item.setPrice(p.getPrice() * (100 - p.getDiscountRate()) / 100);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             model.addAttribute("cartItemIds", cartItemIds);
         }
 
@@ -147,6 +155,7 @@ public class OrderController {
         return "order_pay";
     }
 
+    @Transactional(rollbackFor = Exception.class) // 🚩 트랜잭션 보장 (에러 시 전체 취소)
     @PostMapping(value = "/processOrder.htm")
     public String orderSubmit(
             HttpSession session,
@@ -160,7 +169,10 @@ public class OrderController {
         int userNumber = authUser.getUserNumber();
 
         try {
-            // 1) 파라미터 수집
+            // 1) 주문 번호 먼저 생성 (모든 테이블에 공통으로 쓰임)
+            String orderId = orderMapper.generateOrderId();
+
+            // 2) 파라미터 수집
             int addressId = Integer.parseInt(param.get("addressId"));
             int totalAmount = Integer.parseInt(param.get("OrderTotalPrice"));
             String deliveryMethod = param.get("deliveryOption");
@@ -175,8 +187,9 @@ public class OrderController {
             String usemileStr = param.get("usemile");
             if (usemileStr != null && !usemileStr.isEmpty()) usedPoint = Integer.parseInt(usemileStr);
 
-            // 2) 주문 객체 생성
+            // 3) 주문 객체 생성 및 orderId 세팅
             OrderVO order = OrderVO.builder()
+                    .orderId(orderId) // 🚩 주입
                     .userNumber(userNumber)
                     .addressId(addressId)
                     .totalAmount(totalAmount)
@@ -188,7 +201,7 @@ public class OrderController {
                     .orderStatus("결제완료")
                     .build();
 
-            // 3) 주문 아이템 구성
+            // 4) 주문 아이템 리스트 구성
             List<OrderItemVO> items = new ArrayList<>();
             if (cartItemIds != null && !cartItemIds.isEmpty()) {
                 items = cartMapper.selectSelectedCartItems(cartItemIds);
@@ -208,23 +221,35 @@ public class OrderController {
                 }
             }
 
-            // 4) DB 처리 (트랜잭션)
-            String orderId = orderMapper.generateOrderId();
-            order.setOrderId(orderId);
-            orderMapper.insertOrder(order);
+            // 5) [핵심] 모든 아이템에 OrderId 부여 및 재고 차감
+            for (OrderItemVO item : items) {
+                item.setOrderId(orderId); // 🚩 여기서 확실히 모든 아이템에 orderId 주입
+                
+                // 재고 감소 로직
+                int stockResult = orderMapper.updateDecreaseStock(item.getCombinationId(), item.getQuantity());
+                if (stockResult == 0) {
+                    throw new RuntimeException("상품 재고가 부족하거나 옵션 정보가 잘못되었습니다.");
+                }
+            }
+
+            // 6) DB 처리 (부모 -> 자식 순서)
+            orderMapper.insertOrder(order); // 부모 테이블(ORDERS) 먼저 저장
 
             for (OrderItemVO item : items) {
-                item.setOrderId(orderId);
-                // 🚩 재고 감소 로직 추가
+                item.setOrderId(orderId); // 생성된 주문번호 세팅
+                
+                // 🚩 여기서 하나씩 DB에 저장합니다.
+                orderMapper.insertOrderItem(item); 
+                
+                // 재고 감소 로직
                 int stockResult = orderMapper.updateDecreaseStock(item.getCombinationId(), item.getQuantity());
                 if (stockResult == 0) {
                     throw new RuntimeException("상품 재고가 부족합니다.");
                 }
             }
-            orderMapper.insertOrderItems(items);
             orderMapper.insertPayment(orderId, order.getTotalAmount(), order.getPaymentMethod());
 
-            // 5) 포인트 및 쿠폰 처리
+            // 7) 포인트 및 쿠폰 처리
             if (order.getUsedPoint() > 0) {
                 orderMapper.insertPointHistory(order.getUserNumber(), orderId, order.getUsedPoint());
             } else {
@@ -236,7 +261,7 @@ public class OrderController {
                 orderMapper.updateCouponUsed(order.getUserCouponId());
             }
 
-            // 6) 장바구니 비우기
+            // 8) 장바구니 비우기
             if (cartItemIds != null && !cartItemIds.isEmpty()) {
                 cartMapper.deleteCartItems(cartItemIds, order.getUserNumber());
             }
@@ -244,13 +269,12 @@ public class OrderController {
             UserInfoVO newSummary = adminUserService.getMyPageSummary(userNumber);
             session.setAttribute("summary", newSummary);
             
-            // 성공 시 주문완료 페이지로 리다이렉트
             return "redirect:/order/complete.htm?orderId=" + orderId;
 
         } catch (Exception e) {
             e.printStackTrace();
             rttr.addFlashAttribute("error", e.getMessage());
-            return "redirect:/order/orderForm.htm"; // 에러 시 주문폼으로 복귀
+            return "redirect:/order/orderForm.htm"; 
         }
     }
 

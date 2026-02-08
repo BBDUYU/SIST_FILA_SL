@@ -71,7 +71,7 @@ public class CartListController {
         } catch (Exception e) {
             e.printStackTrace();
             String pidEnc = URLEncoder.encode(productId, StandardCharsets.UTF_8.name());
-            return "redirect:/product/product_detail.htm?product_id=" + pidEnc;
+            return "redirect:/product/detail.htm?product_id=" + pidEnc;
         }
     }
     

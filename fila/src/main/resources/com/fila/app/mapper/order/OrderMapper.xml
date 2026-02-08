@@ -20,29 +20,32 @@
         )
     </insert>
 
-    <insert id="insertOrderItems">
-        INSERT INTO ORDER_ITEMS (
-            ORDER_ITEM_ID, ORDER_ID, PRODUCT_ID,
-            COMBINATION_ID, QUANTITY, PRICE, CANCEL_STATUS, STATUS_UPDATED_AT
-        )
-        <foreach collection="items" item="item" separator="UNION ALL">
-            SELECT
-                SEQ_ORDER_ITEM.NEXTVAL,
-                #{item.orderId},
-                #{item.productId},
-                <choose>
-                    <when test="item.combinationId != null and item.combinationId > 0">
-                        #{item.combinationId}
-                    </when>
-                    <otherwise>NULL</otherwise>
-                </choose>,
-                #{item.quantity},
-                #{item.price},
-                'N',
-                SYSDATE
-            FROM DUAL
-        </foreach>
-    </insert>
+    <insert id="insertOrderItem" parameterType="com.fila.app.domain.order.OrderItemVO">
+    INSERT INTO ORDER_ITEMS (
+        ORDER_ITEM_ID, 
+        ORDER_ID, 
+        PRODUCT_ID,
+        COMBINATION_ID, 
+        QUANTITY, 
+        PRICE, 
+        CANCEL_STATUS, 
+        STATUS_UPDATED_AT
+    ) VALUES (
+        SEQ_ORDER_ITEM.NEXTVAL,
+        #{orderId},
+        #{productId},
+        <choose>
+            <when test="combinationId != null and combinationId > 0">
+                #{combinationId}
+            </when>
+            <otherwise>NULL</otherwise>
+        </choose>,
+        #{quantity},
+        #{price},
+        'N',
+        SYSDATE
+    )
+</insert>
 
     <select id="selectUserOrderList" resultType="com.fila.app.domain.order.OrderVO">
         SELECT

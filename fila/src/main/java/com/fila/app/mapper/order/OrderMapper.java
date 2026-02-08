@@ -16,7 +16,7 @@ public interface OrderMapper {
     int insertOrder(OrderVO dto);
 
     // 3. ORDER_ITEMS INSERT (Batch)
-    int insertOrderItems(@Param("items") List<OrderItemVO> items);
+    int insertOrderItem(OrderItemVO item);
 
     // 4. PAYMENT INSERT
     void insertPayment(
