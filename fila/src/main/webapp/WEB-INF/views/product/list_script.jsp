@@ -49,11 +49,14 @@ async function wishToggleFromList(e, btn) {
 
         // 5. 비동기 요청 (AJAX)
         // [수정] web.xml 설정에 맞춰 .htm 유지
-        const res = await fetch(CTX + "/wishlist/toggle.htm", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-            body: body.toString()
-        });
+        const res = await fetch(CTX + "/mypage/wish/toggle.htm", {
+		  method: "POST",
+		  headers: {
+		    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+		  },
+		  body: body.toString()
+		});
+
 
         // 6. 응답 처리
         if (res.status === 401) { // 세션 만료 등
