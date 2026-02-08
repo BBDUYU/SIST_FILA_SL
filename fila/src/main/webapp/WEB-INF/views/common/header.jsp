@@ -340,7 +340,7 @@
                                     <li><a href="${pageContext.request.contextPath}/member/login.htm">로그인</a></li>
                                     <li><a href="${pageContext.request.contextPath}/member/joinMain.htm">회원가입</a></li>
                                                           
-                                    <li><a href="${pageContext.request.contextPath}/member/find-id.htm"> 아이디 / 비밀번호 찾기</a></li>
+                                    <li><a href="${pageContext.request.contextPath}/member/pw-find.htm"> 아이디 / 비밀번호 찾기</a></li>
                                     <li><a href="#">이벤트</a></li>
 
                                 </ul>

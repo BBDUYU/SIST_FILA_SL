@@ -22,7 +22,7 @@ public class PasswordController {
      */
     @GetMapping("/pw-find.htm")
     public String pwFindForm() {
-        return "user/SearchIdPw";
+        return "SearchIdPw";
     }
 
 

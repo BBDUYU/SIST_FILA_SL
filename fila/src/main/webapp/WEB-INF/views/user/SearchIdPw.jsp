@@ -1,6 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 
-<jsp:include page="../common/header.jsp" />
 
 <link rel="stylesheet" href="<%=request.getContextPath()%>/resource/css/common.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/resource/css/layout.css">
@@ -243,4 +242,3 @@ function closePwLayer(){ $('#pwLayer').hide(); }
   </div>
 </div>
 
-<jsp:include page="../common/footer.jsp" />
