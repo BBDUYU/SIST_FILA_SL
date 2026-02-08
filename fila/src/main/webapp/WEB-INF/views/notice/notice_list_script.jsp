@@ -53,14 +53,13 @@ function searchNotice() {
     var category = $("#searchCategory").val(); 
     var keyword = $("#keyword").val();
     
-    // 2. 서버 경로 설정
-    var url = "${pageContext.request.contextPath}/notice/list";
+    var url = "${pageContext.request.contextPath}/noticeList.htm";
     
-    // 3. 파라미터 조합 (값이 있을 때만 깔끔하게 보냄)
+    // 3. 파라미터 조합
     url += "?category=" + encodeURIComponent(category);
     url += "&keyword=" + encodeURIComponent(keyword);
     
-    // 4. 페이지 이동 (이때 DAO의 selectList가 실행됨)
+    // 4. 페이지 이동
     location.href = url;
 }
 </script>
