@@ -28,7 +28,7 @@
 
   <insert id="insertWish">
     INSERT INTO WISHLIST (WISHLIST_ID, USER_NUMBER, PRODUCT_ID, CREATED_AT, SIZE_TEXT)
-    VALUES (SEQ_WISHLIST.NEXTVAL, #{userNumber}, #{productId}, SYSDATE, #{sizeText})
+    VALUES (SEQ_WISHLIST.NEXTVAL, #{userNumber}, #{productId}, SYSDATE, #{sizeText, jdbcType=VARCHAR})
   </insert>
 
   <delete id="deleteOne">

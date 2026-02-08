@@ -7,8 +7,10 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fila.app.domain.member.MemberVO;
 import com.fila.app.service.wishlist.WishListService;
@@ -67,5 +69,22 @@ public class WishAddController {
         if (target.startsWith("/")) return target;
 
         return "/" + target;
+    }
+    
+    @PostMapping(value = "/wishlist/toggle.htm", produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public String toggle(HttpSession session,
+                         String productId,
+                         String sizeText) {
+
+        MemberVO loginUser = (MemberVO) session.getAttribute("auth");
+        if (loginUser == null) {
+            return "{\"error\":\"UNAUTHORIZED\"}";
+        }
+
+        boolean wished =
+            wishListService.toggleWished(loginUser.getUserNumber(), productId, sizeText);
+
+        return "{\"wished\":" + wished + "}";
     }
 }

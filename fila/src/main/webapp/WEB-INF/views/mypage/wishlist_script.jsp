@@ -3,11 +3,14 @@
 <script>
 (function(){
   const $ = window.jQuery;
-  const ctx = "${pageContext.request.contextPath}";
+  const CTX = "${pageContext.request.contextPath}";
 
   // ✅ returnUrl: 현재 페이지 그대로 돌아오게
   function getReturnUrl(){
-    return encodeURIComponent(location.pathname + location.search);
+    const path = location.pathname.startsWith(CTX)
+      ? location.pathname.substring(CTX.length)
+      : location.pathname;
+    return encodeURIComponent(path + location.search);
   }
 
   /* ===============================
@@ -17,7 +20,6 @@
     $('.wishChk').prop('checked', this.checked);
   });
 
-  // ✅ 개별 체크 변경하면 checkAll 상태도 맞추기
   $('.odr__list').on('change', '.wishChk', function(){
     const total = $('.wishChk').length;
     const checked = $('.wishChk:checked').length;
@@ -26,6 +28,7 @@
 
   /* ===============================
      1) 단건 삭제 (.btnDelOne)
+     - "선택삭제 컨트롤러"로 1개만 ids 넘겨서 재사용
   =============================== */
   $('.odr__list').on('click', '.btnDelOne', function(){
     const id = $(this).data('wishid');
@@ -34,7 +37,7 @@
     if(!confirm('삭제하시겠습니까?')) return;
 
     location.href =
-      ctx + "/mypage/wish/delete.htm?wishlist_id=" + encodeURIComponent(id)
+      CTX + "/mypage/wishDeleteSelected.htm?ids=" + encodeURIComponent(id)
       + "&returnUrl=" + getReturnUrl();
   });
 
@@ -47,11 +50,10 @@
       alert('삭제할 상품을 선택하세요.');
       return;
     }
-
     if(!confirm('선택한 상품을 삭제하시겠습니까?')) return;
 
     location.href =
-      ctx + "/mypage/wish/deleteSelected.htm?ids=" + encodeURIComponent(ids.join(','))
+      CTX + "/mypage/wishDeleteSelected.htm?ids=" + encodeURIComponent(ids.join(','))
       + "&returnUrl=" + getReturnUrl();
   });
 
@@ -59,90 +61,79 @@
 </script>
 
 <script>
-/* ✅ [수정] 위시리스트에서 리뷰 모달을 product_detail과 동일 스타일로 띄우기 */
-function openReviewFromWishlist(productId) {
-  const CTX = "${pageContext.request.contextPath}";
+/* =========================================
+   ✅ 리뷰보기 (버튼 onclick 유지)
+   - fetch로 상세페이지 HTML 가져오지 않음
+   - wishlist.jsp에 이미 있는 #reviewModal을 그냥 열고,
+     productId만 주입해서 searchReviews()가 그걸로 조회하게 함
+========================================= */
+window.openReviewFromWishlist = function (productId) {
+	  const CTX = "${pageContext.request.contextPath}";
 
-  fetch(CTX + "/product/product_detail.htm?product_id=" + encodeURIComponent(productId))
-    .then(res => res.text())
-    .then(html => {
-      const temp = document.createElement("div");
-      temp.innerHTML = html;
+	  // 1) 모달 존재 확인
+	  const modal = document.getElementById("reviewModal");
+	  if (!modal) {
+	    alert("wishlist.jsp에 #reviewModal이 없습니다. (include 위치 확인)");
+	    return;
+	  }
 
-      // ✅ 1) product_detail의 CSS들을 wishlist <head>에 주입 (중복은 자동 방지)
-      injectDetailStyles(temp);
+	  // 2) 위시리스트에서 클릭한 상품의 이름/썸네일 찾기
+	  const items = document.querySelectorAll(".odr__list li");
+	  let productName = "";
+	  let productImg = "";
+	  
+	  items.forEach(li => {
+	    const a = li.querySelector(".goods-thumb a");
+	    if (!a) return;
 
-      // ✅ 2) 리뷰 모달만 추출
-      const modal = temp.querySelector("#reviewModal");
-      if (!modal) {
-        alert("리뷰 모달(#reviewModal)을 찾지 못했습니다.");
-        return;
-      }
+	    const u = new URL(a.getAttribute("href"), location.origin);
+	    const pid = u.searchParams.get("productId") || u.searchParams.get("product_id");
+	    if (pid !== productId) return;
 
-      // ✅ 3) 위시리스트 페이지에 꽂기
-      const container = document.getElementById("reviewModalContainer");
-      container.innerHTML = "";
-      container.appendChild(modal);
+	    const tit = li.querySelector(".goods-info .tit");
+	    const img = li.querySelector(".goods-thumb img");
+	    productName = tit ? tit.textContent.trim() : "";
+	    productImg = img ? img.getAttribute("src") : "";
+	  });
 
-      // ✅ 4) product_detail에서 모달 스타일이 body class(view__style1)에 걸려있을 수 있어서
-      //       모달 열릴 동안만 body에 클래스 추가
-      document.body.classList.add("view__style1");
+	  // 3) 모달 헤더에 상품명 세팅
+	  const nameEl = modal.querySelector(".goods-info .info .txt1");
+	  if (nameEl) nameEl.textContent = productName || "상품명";
 
-      // ✅ 5) 열기
-      modal.style.display = "block";
-      document.body.style.overflow = "hidden";
+	  // 4) productId hidden 값 세팅(리스트뷰/작성뷰 둘 다 있을 수 있어서 전체 세팅)
+	  modal.querySelectorAll('input[name="productId"]').forEach((i) => {
+	    i.value = productId;
+	  });
 
-      // ✅ 6) 닫기 함수는 wishlist에서 확실히 먹게 “추가만”으로 오버라이드
-      window.closeReviewModal = function () {
-        const m = document.getElementById("reviewModal");
-        if (m) m.style.display = "none";
-        document.body.style.overflow = "auto";
-        document.body.classList.remove("view__style1"); // ✅ 원복
-      };
+	  // 5) ✅ 이미지 세팅 (리스트뷰/작성뷰의 img가 2개라서 전부 바꿔야 안 틀어짐)
+	  const mainImgUrl =
+	    CTX +
+	    "/displayImage.do?path=" +
+	    encodeURIComponent(
+	      "C:/fila_upload/product/" + productId + "/" + productId + "_main_1.jpg"
+	    );
 
-      // ✅ 7) 모달 내부에 swiper/높이체크 같은게 있다면, 실행 트리거 (있을 때만)
-      if (typeof window.checkReviewHeightLocal === "function") {
-        setTimeout(window.checkReviewHeightLocal, 120);
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      alert("리뷰 로딩 실패");
-    });
-}
+	  modal.querySelectorAll(".goods-info .photo img").forEach((img) => {
+	    img.onerror = null; // 기존 onerror 초기화
+	    img.src = mainImgUrl;
+	    img.onerror = function () {
+	      this.src = CTX + "/images/no_image.jpg";
+	    };
+	  });
 
-/* ✅ [추가] product_detail의 CSS를 wishlist head에 주입 */
-function injectDetailStyles(tempRoot) {
-  const head = document.head;
+	  // (선택) 위시리스트 썸네일을 그대로 쓰고 싶으면 위 mainImgUrl 대신 아래 주석 해제해서 사용
+	  // if (productImg) {
+	  //   modal.querySelectorAll(".goods-info .photo img").forEach(img => img.src = productImg);
+	  // }
 
-  // product_detail의 <link rel="stylesheet">를 전부 가져와서 head에 넣기
-  const links = tempRoot.querySelectorAll('link[rel="stylesheet"][href]');
-  links.forEach(l => {
-    const href = l.getAttribute("href");
-    if (!href) return;
+	  // 6) 리뷰 조회에서 사용할 productId 전역 저장
+	  window.__REVIEW_PRODUCT_ID__ = productId;
 
-    // ✅ 이미 같은 href가 있으면 스킵 (중복 방지)
-    const exists = head.querySelector('link[rel="stylesheet"][href="' + href + '"]');
-    if (exists) return;
+	  // 7) 모달 오픈 + 리뷰 로딩
+	  modal.style.display = "block";
+	  document.body.style.overflow = "hidden";
 
-    const newLink = document.createElement("link");
-    newLink.rel = "stylesheet";
-    newLink.href = href;
-    head.appendChild(newLink);
-  });
-
-  // 혹시 product_detail이 head에 <style>로 모달 스타일을 박아놨으면 그것도 복사
-  const styles = tempRoot.querySelectorAll("style");
-  styles.forEach(s => {
-    const css = (s.textContent || "").trim();
-    if (!css) return;
-
-    // 너무 많이 복사하면 과할 수 있어서, 'review' / 'common__layer' 관련만 골라서 주입
-    if (css.includes("common__layer") || css.includes("_review") || css.includes("review")) {
-      const tag = document.createElement("style");
-      tag.textContent = css;
-      head.appendChild(tag);
-    }
-  });
-}
+	  if (typeof window.switchToList === "function") window.switchToList();
+	  if (typeof window.searchReviews === "function") window.searchReviews();
+	};
 </script>

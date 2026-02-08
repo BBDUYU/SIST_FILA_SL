@@ -69,4 +69,26 @@ public class WishDeleteSelectedController {
 
         return "/" + target;
     }
+    
+    @GetMapping("/mypage/wish/delete.htm")
+    public String wishDeleteOne(
+            HttpSession session,
+            @RequestParam("wishlist_id") int wishlistId,
+            @RequestParam(value = "returnUrl", required = false) String returnUrl
+    ) {
+        MemberVO loginUser = (MemberVO) session.getAttribute("auth");
+        if (loginUser == null) return "redirect:/login.htm";
+
+        // ✅ 단건 삭제
+        wishListService.deleteOne(loginUser.getUserNumber(), wishlistId);
+
+        // ✅ 돌아갈 페이지
+        String target = "/mypage/wishlist.htm";
+        if (returnUrl != null && !returnUrl.trim().isEmpty()) {
+            target = URLDecoder.decode(returnUrl.trim(), StandardCharsets.UTF_8);
+        }
+
+        target = normalizeTarget(target);
+        return "redirect:" + target;
+    }
 }

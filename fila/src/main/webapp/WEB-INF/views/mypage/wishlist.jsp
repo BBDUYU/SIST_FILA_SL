@@ -38,15 +38,15 @@
 		                   class="cb__style1 wishChk">
 		            <label for="${cid}">선택</label>
 		          </div>
-		
-		          <!-- ✅ 공홈처럼 썸네일 -->
-		          <div class="goods-thumb">
-		            <a href="${pageContext.request.contextPath}/product/product_detail.htm?productId=${w.productId}">
-		              <img src="${w.imageUrl}" alt="${w.productName}"
-		                   onerror="this.src='${pageContext.request.contextPath}/images/no_image.jpg';">
-		            </a>
-		          </div>
-		
+					
+					<div class="goods-thumb">
+					  <a href="${pageContext.request.contextPath}/product/detail.htm?productId=${w.productId}">
+						  <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${w.productId}/${w.productId}_main_1.jpg"
+						       alt="${w.productName}"
+						       onerror="this.src='${pageContext.request.contextPath}/resources/images/no_image.jpg';">
+						</a>
+					</div>
+					
 		          <!-- ✅ 공홈처럼 상품정보 -->
 		          <div class="goods-info">
 		            <p class="sex">FILA</p>
@@ -84,6 +84,10 @@
     </form>
   </div>
 </section>
+
+<div id="reviewModalContainer"></div>
+
+<jsp:include page="/WEB-INF/views/review/review_modal.jsp" />
 
 </div>
 </div>

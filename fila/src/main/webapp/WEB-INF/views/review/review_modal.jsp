@@ -275,7 +275,7 @@ function togglePhotoFilter(btn) {
 
 //[1] 리뷰 목록 불러오기 및 렌더링
 function searchReviews() {
-    var productId = "${product.productId}" || $("input[name='productId']").val();
+	var productId = window.__REVIEW_PRODUCT_ID__ || $("input[name='productId']").val();
     var target = $("#reviewListArea");
 
     $.ajax({

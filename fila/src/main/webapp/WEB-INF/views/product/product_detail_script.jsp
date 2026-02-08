@@ -230,13 +230,16 @@ function goWishToggle(e) {
     // 버튼 비활성화 (중복 클릭 방지)
     btn.disabled = true;
 
-    fetch(url, {
-        method: "POST",
-        headers: {"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
-        // [수정] product_id -> productId (서버 DTO 변수명과 일치시킴)
-        body: "productId=" + encodeURIComponent(productId)
-            + "&sizeText=" + encodeURIComponent(sizeText)
-    })
+    fetch("${pageContext.request.contextPath}/mypage/wish/toggle.htm", {
+    	  method: "POST",
+    	  headers: {
+    	    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    	    "Accept": "application/json"
+    	  },
+    	  body: "productId=" + encodeURIComponent(productId)
+    	      + "&sizeText=" + encodeURIComponent(sizeText)
+    	})
+
     .then(async (res) => {
         // 로그인 세션 만료 시
         if (res.status === 401) {

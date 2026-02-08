@@ -219,23 +219,33 @@
 								    <button type="button" class="buy__btn" onclick="goBuyNow();">바로 구매하기</button>
 								
 								    <div>
+								    
+								    	<c:set var="pid"
+										       value="${not empty product.productId
+										               ? product.productId
+										               : (not empty param.productId ? param.productId : param.product_id)}" />
+										
+										<c:set var="wished"
+										       value="${wishedSet != null && wishedSet.contains(pid)}" />
+						
 							            <%-- [WISH 추가] 로그인 상태면 add로, 아니면 login으로 --%>
 										<%-- ✅ WISH: add/delete 베이스 URL (returnUrl은 JS에서 붙임) --%>
 										<c:url var="wishAddUrl" value="/mypage/wish/add.htm">
-										  <c:param name="productId" value="${product.productId}" />
-                                        </c:url>
+										  <c:param name="productId" value="${pid}" />
+										</c:url>
 										
 										<c:url var="wishDeleteUrl" value="/mypage/wish/deleteByProduct.htm">
-										  <c:param name="productId" value="${product.productId}" />
-                                        </c:url>
+										  <c:param name="productId" value="${pid}" />
+										</c:url>
 										
 										<button type="button"
-                                                class="wish__btn${wished ? ' on' : ''}"
-                                                id="wishBtn"
-                                                data-wish="${product.productId}"
-                                                onclick="goWishToggle(event);">
-                                          wish
-                                        </button>
+										        class="wish__btn${wished ? ' on' : ''}"
+										        id="wishBtn"
+										        data-wish="${pid}"
+										        data-wished="${wished}" 
+										        onclick="goWishToggle(event);">
+										  wish
+										</button>
 										
 								        <button type="button" class="cart__btn" id="cartBtn" onclick="goCartAdd();">카트담기</button>
 								    </div>

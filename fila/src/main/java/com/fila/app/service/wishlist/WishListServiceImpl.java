@@ -72,8 +72,8 @@ public class WishListServiceImpl implements WishListService{
             wishListMapper.deleteByProduct(userNumber, productId);
             return false;
         } else {
-            // ✅ 유지: sizeText 빈값이면 null로 저장되게
-            if (sizeText == null || sizeText.trim().isEmpty()) sizeText = null;
+            // ✅ null로 바꾸지 말고 빈문자열로
+            if (sizeText == null) sizeText = "";
             wishListMapper.insertWish(userNumber, productId, sizeText);
             return true;
         }
