@@ -51,7 +51,7 @@
 
         <div class="mid">
             <div class="photo">
-                <a href="${pageContext.request.contextPath}/product/product_detail.htm?product_id=${item.productId}">
+                <a href="${pageContext.request.contextPath}/product/detail.htm?productId=${item.productId}">
                     <img src="${pageContext.request.contextPath}/displayImage.do?path=${item.productImage}" alt="${item.productName}">
                 </a>
             </div>

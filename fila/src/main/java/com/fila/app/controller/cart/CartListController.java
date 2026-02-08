@@ -29,7 +29,7 @@ public class CartListController {
     public String cartPage(HttpSession session, HttpServletRequest request) throws Exception {
 
         Object auth = (session == null) ? null : session.getAttribute("auth");
-        if (auth == null) return "redirect:/login.htm";
+        if (auth == null) return "redirect:/member/login.htm";
 
         int userNumber = ((MemberVO) auth).getUserNumber();
 

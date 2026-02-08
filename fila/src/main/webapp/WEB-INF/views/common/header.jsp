@@ -249,7 +249,7 @@
 													<li><c:choose>
 															<c:when test="${not empty rDto.productId}">
 																<a
-																	href="${pageContext.request.contextPath}/product/product_detail.htm?id=${rDto.productId}">${rDto.name}</a>
+																	href="${pageContext.request.contextPath}/product/detail.htm?id=${rDto.productId}">${rDto.name}</a>
 															</c:when>
 															<c:when test="${not empty rDto.slug}">
 																<a
@@ -282,7 +282,7 @@
 																<div class="goods swiper-slide">
 																	<div class="photo">
 																		<a
-																			href="${pageContext.request.contextPath}/product/product_detail.htm?productId=${pDto.productId}">
+																			href="${pageContext.request.contextPath}/product/detail.htm?productId=${pDto.productId}">
 																			<img
 																			src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${pDto.productId}/${pDto.productId}_main_1.jpg"
 																			alt="${pDto.name}">
@@ -290,7 +290,7 @@
 																	</div>
 																	<div class="info">
 																		<a
-																			href="${pageContext.request.contextPath}/product/product_detail.htm?product_id=${pDto.productId}">
+																			href="${pageContext.request.contextPath}/product/detail.htm?product_id=${pDto.productId}">
 																			<p class="category">RECOMMEND</p>
 																			<p class="name">${pDto.name}</p>
 																			<div class="price">
@@ -340,7 +340,7 @@
                                     <li><a href="${pageContext.request.contextPath}/member/login.htm">로그인</a></li>
                                     <li><a href="${pageContext.request.contextPath}/member/joinMain.htm">회원가입</a></li>
                                                           
-                                    <li><a href="<%=request.getContextPath()%>/view/user/SearchIdPw.jsp"> 아이디 / 비밀번호 찾기</a></li>
+                                    <li><a href="${pageContext.request.contextPath}/member/find-id.htm"> 아이디 / 비밀번호 찾기</a></li>
                                     <li><a href="#">이벤트</a></li>
 
                                 </ul>

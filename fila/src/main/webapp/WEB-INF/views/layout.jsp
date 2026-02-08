@@ -9,23 +9,23 @@
     <tiles:insertAttribute name="style" ignore="true"/>
     <tiles:insertAttribute name="add" ignore="true"/>
     <link rel="icon" type="image/x-icon"
-	href="//filacdn.styleship.com/filacontent2/favicon.ico" />
-<link href="${pageContext.request.contextPath}/css/SpoqaHanSansNeo.css"
-	rel="stylesheet">
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/css/normalize.css">
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/css/opt-default.css">
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/css/swiper-bundle.css">
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/css/layout.css">
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/css/product.css">
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/css/sub.css">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+		href="//filacdn.styleship.com/filacontent2/favicon.ico" />
+	<link href="${pageContext.request.contextPath}/css/SpoqaHanSansNeo.css"
+		rel="stylesheet">
+	<link rel="stylesheet"
+		href="${pageContext.request.contextPath}/css/normalize.css">
+	<link rel="stylesheet"
+		href="${pageContext.request.contextPath}/css/opt-default.css">
+	<link rel="stylesheet"
+		href="${pageContext.request.contextPath}/css/swiper-bundle.css">
+	<link rel="stylesheet"
+		href="${pageContext.request.contextPath}/css/layout.css">
+	<link rel="stylesheet"
+		href="${pageContext.request.contextPath}/css/product.css">
+	<link rel="stylesheet"
+		href="${pageContext.request.contextPath}/css/sub.css">
+	<link rel="stylesheet"
+		href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
     </head>
     
     <%-- c --%>
