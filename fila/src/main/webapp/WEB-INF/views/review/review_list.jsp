@@ -43,26 +43,22 @@
                      <div class="review-text-wrapper" style="margin-bottom: 20px;">
                         <div class="review-text-body" style="white-space: pre-wrap;">${dto.content}</div>
                      </div>
-    
-                     <%-- 이미지 처리 (Java Scriptlet으로 백슬래시 에러 방지) --%>
-                     <c:if test="${not empty dto.reviewImg}">
-                        <div class="review-images" style="margin-bottom: 20px; display:flex; gap:5px;">
-                            <c:set var="imgs" value="${fn:split(dto.reviewImg, ',')}" />
-                            <c:forEach var="imgUrl" items="${imgs}">
-                                <c:set var="originPath" value="${imgUrl}" />
-                                <%
-                                    String clean = (String)pageContext.getAttribute("originPath");
-                                    if(clean != null) {
-                                        clean = clean.replace("\\", "/"); 
-                                        clean = clean.replace("C:/fila_upload", "/upload");
-                                        pageContext.setAttribute("finalPath", clean);
-                                    }
-                                %>
-                                <img src="${finalPath}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px; border:1px solid #eee; cursor:pointer;" onclick="window.open(this.src)">
-                            </c:forEach>
-                        </div>
-                     </c:if>
-                     
+						    <%-- review_list.jsp 이미지 출력 부분 --%>
+						<%-- review_list.jsp 이미지 출력 부분 수정 --%>
+						<c:if test="${not empty dto.reviewImg}">
+						    <div class="review-images" style="margin-bottom: 20px; display:flex; gap:5px;">
+						        <c:set var="imgs" value="${fn:split(dto.reviewImg, ',')}" />
+						        <c:forEach var="imgUrl" items="${imgs}">
+						            <%-- 중요: trim을 사용하여 공백이나 줄바꿈 제거 --%>
+						            <c:set var="cleanImgUrl" value="${fn:trim(imgUrl)}" />
+										<img src="${pageContext.request.contextPath}/displayImage.do?path=${fn:trim(imgUrl)}" 
+										     style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px; border:1px solid #eee; cursor:pointer;" 
+										     onerror="console.log('실패경로 확인용: ' + this.src)"
+										     onclick="window.open(this.src)">
+						        </c:forEach>
+						    </div>
+						</c:if>
+					                     
                      <%-- 도움돼요 버튼 --%>
                      <div class="like-section" style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
                         <button type="button" class="like-btn" style="background:none; border:none; color:#666; font-size:12px;">

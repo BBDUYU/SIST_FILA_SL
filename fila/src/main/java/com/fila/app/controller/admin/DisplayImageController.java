@@ -31,7 +31,8 @@ public class DisplayImageController {
 	    }
 	    // Case B: DB에 "/upload/product/..." 처럼 가상 경로로 저장된 경우
 	    else if (cleanPath.contains("/upload/")) {
-	        localPath = "C:/fila_upload" + cleanPath.substring(cleanPath.indexOf("/upload/") + 7);
+	    	String subPath = cleanPath.substring(cleanPath.indexOf("/upload") + 7); 
+	        localPath = "C:/fila_upload" + subPath;
 	    }
 	    // Case C: 그 외 (파일명만 있거나 상대경로인 경우)
 	    else {

@@ -345,8 +345,16 @@ function searchReviews() {
                 html += '    <div style="margin-bottom: 20px; white-space: pre-wrap; font-size:14px; line-height:1.6; color:#333;">' + cont + '</div>';
                 
                 if(rImg) {
-                    var cleanPath = rImg.replace(/\\/g, "/").replace("C:/fila_upload", "/upload");
-                    html += '    <div style="margin-bottom: 20px;"><img src="' + cleanPath + '" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px; border:1px solid #eee; cursor:pointer;" onclick="window.open(this.src)"></div>';
+                    var cleanPath = rImg.replace(/\\/g, "/");
+                    var contextPath = "${pageContext.request.contextPath}";
+                    var finalSrc = contextPath + "/displayImage.do?path=" + cleanPath;
+
+                    html += '    <div style="margin-bottom: 20px;">';
+                    html += '        <img src="' + finalSrc + '" ';
+                    html += '             style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px; border:1px solid #eee; cursor:pointer;" ';
+                    html += '             onclick="window.open(this.src)"';
+                    html += '             onerror="this.src=\'https://via.placeholder.com/100?text=No+Image\'">';
+                    html += '    </div>';
                 }
 
                 // 버튼 섹션 (서버에서 받은 myL 값에 따라 색상 적용)
@@ -395,7 +403,7 @@ function handleLike(btn, reviewId, type) {
                 alert("이미 참여하신 리뷰입니다.");
             } else if (result === "login") {
                 alert("로그인이 필요합니다.");
-                location.href = "${pageContext.request.contextPath}/login.htm";
+                location.href = "${pageContext.request.contextPath}/member/login.htm";
             }
         }
     });
@@ -469,7 +477,7 @@ function checkReviewPermission() {
     var isLogin = ${empty sessionScope.auth ? "false" : "true"};
     if (isLogin === "false") {
         if(confirm("로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?")) {
-            location.href = "${pageContext.request.contextPath}/login.htm";
+            location.href = "${pageContext.request.contextPath}/member/login.htm";
         }
         return;
     }
@@ -491,7 +499,7 @@ function checkReviewPermission() {
             else if (result === "login_required" || result === "login") { 
                 // [수정] 로그인 알림 후 이동
                 alert("로그인이 필요한 기능입니다. 로그인 페이지로 이동합니다.");
-                location.href = "${pageContext.request.contextPath}/login.htm"; 
+                location.href = "${pageContext.request.contextPath}/member/login.htm"; 
             } 
             else {
                 // 주문 내역이 없거나 이미 다 쓴 경우
@@ -633,7 +641,7 @@ function handleLike(btn, reviewId, type) {
                 alert("이미 참여하신 리뷰입니다.");
             } else if (result === "login") {
                 alert("로그인이 필요한 서비스입니다.");
-                location.href = "${pageContext.request.contextPath}/login.htm";
+                location.href = "${pageContext.request.contextPath}/member/login.htm";
             } else {
                 alert("처리에 실패했습니다.");
             }
