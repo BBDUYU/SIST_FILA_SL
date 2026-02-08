@@ -36,6 +36,9 @@ function closeReviewModal() {
     }
 }
 
+/* ==============================================
+REVIEW 개수 업데이트 스크립트 (자동 실행)
+============================================== */
 $(document).ready(function() {
     // 1. 상세페이지에 있는 상품 ID 가져오기
     var productId = "${product.productId}" || new URLSearchParams(window.location.search).get('productId');
@@ -65,6 +68,32 @@ $(document).ready(function() {
         });
     }
 });
+
+/* ==============================================
+Q&A 개수 업데이트 스크립트 (자동 실행)
+============================================== */
+$(document).ready(function() {
+ updateQnaCount();
+});
+
+function updateQnaCount() {
+ var pid = "${product.productId}";
+ 
+ // 리스트를 살짝 불러와서 개수만 셉니다
+ $.ajax({
+     url: "${pageContext.request.contextPath}/qna/list.htm",
+     type: "GET",
+     data: { productId: pid },
+     success: function(html) {
+         // 가져온 HTML(qna_list.jsp) 안에 <li> 태그가 몇 개인지 셈
+         // $(html)로 감싸면 가상의 DOM이 돼서 find를 쓸 수 있음
+         var count = $(html).find("li").length; 
+         
+         // 숫자 업데이트
+         $(".qna-product-reviews-count").text(count);
+     }
+ });
+}
 </script>
 
 <script>

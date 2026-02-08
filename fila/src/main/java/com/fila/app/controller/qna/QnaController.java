@@ -54,7 +54,7 @@ public class QnaController {
     }
     
     // [AJAX or Include] 문의 목록 가져오기
-    @GetMapping("/list")
+    @GetMapping("/list.htm")
     public String list(
             @RequestParam("productId") String productId,
             Model model
@@ -66,7 +66,7 @@ public class QnaController {
         model.addAttribute("qnaList", list);
         
         // JSP 조각(Fragment) 리턴 -> AJAX로 로드해서 끼워넣기용
-        return "qna/qna_list_fragment"; 
+        return "qna/qna_list"; 
     }
     
     // ==========================================

@@ -166,7 +166,9 @@
         <div class="head">
             <div class="goods-info">
                 <div class="photo">
-                    <img src="${not empty product.imageUrl ? product.imageUrl : '//filacdn.styleship.com/filaproduct2/data/productimages/a/1/FS253IP02F003_734.jpg'}" alt="상품이미지">
+                    <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${product.productId}/${product.productId}_main_1.jpg" 
+                         onerror="this.src='//filacdn.styleship.com/filaproduct2/data/productimages/a/1/FS253IP02F003_734.jpg'" 
+                         alt="상품이미지">
                 </div>
                 <div class="info">
                     <div><p class="txt1">${product.name != null ? product.name : '상품명'}</p></div>
@@ -177,12 +179,12 @@
         </div>
         
         <div class="con" style="padding: 30px; flex:1; overflow-y:auto; -ms-overflow-style:none; scrollbar-width:none;">
-            <div id="qnaListArea"></div>
+            <div id="qnaListArea"></div> 
         </div>
     </div>
 </div>
 
-<div class="common__layer _qna" id="qnaWriteModal" style="display:none;">
+<div class="common__layer _qna" id="qnaWriteModal" style="display:none; z-index:9999;">
     <div class="layer-bg__wrap" onclick="closeQnaWriteModal()" style="background: rgba(0,0,0,0.6);"></div>
     
     <div class="inner"> 
@@ -193,10 +195,11 @@
 
         <div class="con" style="padding:10px 40px 30px; flex:1; overflow-y:auto; -ms-overflow-style:none; scrollbar-width:none;">
             <div style="display:flex; align-items:flex-start; gap:15px; padding-bottom:25px; border-bottom:1px solid #000; margin-bottom:25px;">
-                <img src="${product.imageUrl}" style="width:50px; height:50px; object-fit:cover;">
+                <img src="${pageContext.request.contextPath}/displayImage.do?path=C:/fila_upload/product/${product.productId}/${product.productId}_main_1.jpg" 
+                     onerror="this.src='//filacdn.styleship.com/filaproduct2/data/productimages/a/1/FS253IP02F003_734.jpg'" 
+                     style="width:50px; height:50px; object-fit:cover;">
                 <div>
                     <p style="font-weight:bold; font-size:14px; margin-bottom:5px; margin-top:0;">${product.name}</p>
-
                     <p style="font-size:12px; color:#888; margin:0;">${product.productId}</p>
                 </div>
             </div>
@@ -228,7 +231,7 @@
                 </div>
                 
                 <%-- 비밀글 여부 추가 (기본값: 1 비밀글) --%>
-                <input type="hidden" name="isSecret" value="1">
+                <input type="hidden" name="isSecret" value="0">
 
                 <p class="privacy-tit">개인정보 수집 동의</p>
                 <div class="privacy-list">
@@ -275,12 +278,13 @@ function openQnaWriteModal() {
     var isLogin = ${empty sessionScope.auth ? "false" : "true"};
     if (!isLogin) {
         if(confirm("로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?")) {
-            location.href = "${pageContext.request.contextPath}/login.htm";
+            location.href = "${pageContext.request.contextPath}/member/login.htm";
         }
         return;
     }
     $('#qnaWriteModal').fadeIn(200);
 }
+
 function closeQnaWriteModal() {
     $('#qnaWriteModal').fadeOut(200);
 }
@@ -290,10 +294,11 @@ function loadQnaList() {
     var pid = "${product.productId}"; 
     
     $.ajax({
-        url: "${pageContext.request.contextPath}/qna/list",
+        url: "${pageContext.request.contextPath}/qna/list.htm", 
         type: "GET",
-        data: { productId: pid }, // 파라미터명도 productId로 통일
-        success: function(html) { $("#qnaListArea").html(html); }
+        data: { productId: pid }, 
+        success: function(html) { $("#qnaListArea").html(html); },
+        error: function() { alert("리스트 로드 실패!"); } // 에러 확인용 추가
     });
 }
 
@@ -325,7 +330,7 @@ function submitQnaAjax() {
                 loadQnaList(); 
             } else if (response === "login_required") {
                 alert("로그인이 필요합니다.");
-                location.href = "/login.htm";
+                location.href = "${pageContext.request.contextPath}/member/login.htm";
             } else {
                 alert("등록 실패했습니다. 다시 시도해주세요.");
             }
