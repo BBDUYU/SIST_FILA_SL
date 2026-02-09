@@ -18,14 +18,15 @@
             <!-- 문의유형 -->
             <div class="qna-category-box">
                 <div>
-                    <select class="sel__style1" name="categoryId" id="categoryId">
-                        <option value="">문의유형 선택</option>
-                        <c:forEach var="cat" items="${categoryList}">
-                            <option value="${cat.category_id}">
-                                ${cat.category_name}
-                            </option>
-                        </c:forEach>
-                    </select>
+                   <select class="sel__style1" name="categoryId" id="categoryId">
+    <option value="">문의유형 선택</option>
+    <c:forEach var="cat" items="${categoryList}">
+        <option value="${cat.categoryId}">
+            ${cat.categoryName}
+        </option>
+    </c:forEach>
+</select>
+
                 </div>
             </div>
 

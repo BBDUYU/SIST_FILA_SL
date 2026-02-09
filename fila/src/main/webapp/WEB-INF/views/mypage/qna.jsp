@@ -1,5 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+
 
 <section class="my-con" style="user-select: auto !important;">
            			<h2 class="tit__style4" style="user-select: auto !important;">1:1 문의</h2>
@@ -16,10 +19,10 @@
                                 <p class="status ${dto.status == 'DONE' ? 'on' : ''}" style="user-select: auto !important;">
                                     ${dto.status == 'WAIT' ? '답변대기' : '답변완료'}
                                 </p>
-                                <p class="category" style="user-select: auto !important;">${dto.category_name}</p>
+                            <p class="category" style="user-select: auto !important;">${dto.categoryName}</p>  
                             </div>
                             <p class="date" style="user-select: auto !important;">
-                                <fmt:formatDate value="${dto.created_at}" pattern="yyyy-MM-dd"/>
+                                <fmt:formatDate value="${dto.createdAt}" pattern="yyyy-MM-dd"/>
                             </p>
                         </div>
 
@@ -37,10 +40,11 @@
                         <c:if test="${dto.status == 'DONE'}">
                             <div class="a-txt-box" style="user-select: auto !important;">
                                 <div>
-                                    <p style="user-select: auto !important;">${dto.reply_content}</p>
+                                    <p style="user-select: auto !important;">${dto.replyContent}</p>
                                 </div>
                                 <p class="date" style="user-select: auto !important;">
-                                    <fmt:formatDate value="${dto.reply_at}" pattern="yyyy-MM-dd HH:mm"/>
+                                   <fmt:formatDate value="${dto.replyAt}" pattern="yyyy-MM-dd HH:mm"/>
+
                                 </p>
                             </div>
                         </c:if>

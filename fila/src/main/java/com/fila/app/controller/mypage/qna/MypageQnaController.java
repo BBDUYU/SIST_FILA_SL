@@ -1,6 +1,10 @@
 package com.fila.app.controller.mypage.qna;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fila.app.domain.mypage.qna.MypageQnaVO;
+import com.fila.app.domain.member.MemberVO;
 import com.fila.app.domain.mypage.qna.MypageQnaCategoryVO;
+import com.fila.app.domain.mypage.qna.MypageQnaVO;
 import com.fila.app.service.mypage.qna.MypageQnaService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,12 +33,18 @@ public class MypageQnaController {
      */
     @RequestMapping(value = "/qnaWriteForm.htm", method = RequestMethod.GET)
     public String writeForm(Model model) {
-        // 카테고리 목록을 미리 넘겨주어 JSP에서 Select 박스를 구성하게 합니다.
-        List<MypageQnaCategoryVO> categories = service.getCategories();
-        model.addAttribute("categories", categories);
-        
-        return "mypage/qna_write";  // /WEB-INF/views/mypage/qna_write.jsp
+
+        System.out.println("### qnaWriteForm 컨트롤러 진입 ###");
+
+        List<MypageQnaCategoryVO> categoryList = service.getCategories();
+
+        System.out.println("### category size = " + categoryList.size());
+
+        model.addAttribute("categoryList", categoryList);
+
+        return "mypage/qna_write";
     }
+
 
     /**
      * 2. 1:1 문의 등록 처리 (.htm 규칙 적용)
@@ -47,23 +58,32 @@ public class MypageQnaController {
         return "redirect:/mypage/qna/list.htm";
     }
 
-    /**
-     * 3. 내 문의 목록 조회
-     */
     @RequestMapping(value = "/qna.htm", method = RequestMethod.GET)
-    public String list(@RequestParam(value = "status", required = false, defaultValue = "ALL") String status, 
-                       Model model) {
-        
-        // 실제 프로젝트에서는 세션에서 userNumber를 가져와야 합니다.
-        // 현재는 예시로 1L을 사용하거나, 로그인 정보 객체에서 추출하세요.
-        long userNumber = 1L; 
-        
-        List<MypageQnaVO> list = service.getMyInquiryList(userNumber, status);
+    public String list(
+            @RequestParam(value = "status", required = false, defaultValue = "ALL") String status,
+            HttpSession session,
+            Model model
+    ) {
+        MemberVO auth = (MemberVO) session.getAttribute("auth");
+
+        if (auth == null) {
+            model.addAttribute("qnaList", List.of());
+            model.addAttribute("currentStatus", status);
+            return "qna";
+        }
+
+        long userNumber = auth.getUserNumber();
+
+        List<MypageQnaVO> list =
+                service.getMyInquiryList(userNumber, status); // 🔥 시그니처 일치
+
         model.addAttribute("qnaList", list);
         model.addAttribute("currentStatus", status);
-        
+
         return "qna";
     }
+
+
 
     /**
      * 4. 문의 카테고리 목록 (AJAX용)
@@ -73,4 +93,25 @@ public class MypageQnaController {
     public List<MypageQnaCategoryVO> categories() {
         return service.getCategories();
     }
+    
+    @RequestMapping(value = "/qnaWrite.htm", method = RequestMethod.POST)
+    @ResponseBody
+    public String writeQna(
+            @ModelAttribute MypageQnaVO vo,
+            HttpSession session
+    ) {
+        try {
+            MemberVO auth = (MemberVO) session.getAttribute("auth");
+            vo.setUserNumber(auth.getUserNumber());
+
+            service.writeInquiry(vo);
+
+            return "OK";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "FAIL";
+        }
+    }
+
+
 }
