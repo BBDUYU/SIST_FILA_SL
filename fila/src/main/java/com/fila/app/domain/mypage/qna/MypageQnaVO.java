@@ -37,6 +37,8 @@ public class MypageQnaVO {
     // ===== 상품 문의(Product QnA) 호환용 (필요 시) =====
     private String productId;    // product_id
     private String productName;  // product_name
+    
+    
 
     // getter / setter
 }
